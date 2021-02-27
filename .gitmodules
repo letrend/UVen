@@ -1,0 +1,3 @@
+[submodule "hardware/kicad_db"]
+	path = hardware/kicad_db
+	url = https://github.com/letrend/kicad_db

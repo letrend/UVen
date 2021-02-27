@@ -1,0 +1,247 @@
+EESchema Schematic File Version 4
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Mechanical:MountingHole H1
+U 1 1 603A9329
+P 6125 1775
+F 0 "H1" H 6225 1821 50  0000 L CNN
+F 1 "MountingHole" H 6225 1730 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 6125 1775 50  0001 C CNN
+F 3 "~" H 6125 1775 50  0001 C CNN
+	1    6125 1775
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H2
+U 1 1 603A9363
+P 6125 1950
+F 0 "H2" H 6225 1996 50  0000 L CNN
+F 1 "MountingHole" H 6225 1905 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 6125 1950 50  0001 C CNN
+F 3 "~" H 6125 1950 50  0001 C CNN
+	1    6125 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H3
+U 1 1 603A9385
+P 6125 2125
+F 0 "H3" H 6225 2171 50  0000 L CNN
+F 1 "MountingHole" H 6225 2080 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 6125 2125 50  0001 C CNN
+F 3 "~" H 6125 2125 50  0001 C CNN
+	1    6125 2125
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H4
+U 1 1 603A93AD
+P 6125 2300
+F 0 "H4" H 6225 2346 50  0000 L CNN
+F 1 "MountingHole" H 6225 2255 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 6125 2300 50  0001 C CNN
+F 3 "~" H 6125 2300 50  0001 C CNN
+	1    6125 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H5
+U 1 1 603A93E7
+P 6125 2475
+F 0 "H5" H 6225 2521 50  0000 L CNN
+F 1 "MountingHole" H 6225 2430 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 6125 2475 50  0001 C CNN
+F 3 "~" H 6125 2475 50  0001 C CNN
+	1    6125 2475
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H6
+U 1 1 603A941B
+P 6125 2650
+F 0 "H6" H 6225 2696 50  0000 L CNN
+F 1 "MountingHole" H 6225 2605 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 6125 2650 50  0001 C CNN
+F 3 "~" H 6125 2650 50  0001 C CNN
+	1    6125 2650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Male J1
+U 1 1 603A958C
+P 2950 1800
+F 0 "J1" H 3056 1978 50  0000 C CNN
+F 1 "SpringConnector" H 3056 1887 50  0000 C CNN
+F 2 "custom_lib:TE-2286211-3" H 2950 1800 50  0001 C CNN
+F 3 "~" H 2950 1800 50  0001 C CNN
+	1    2950 1800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Male J2
+U 1 1 603A95DB
+P 2950 2075
+F 0 "J2" H 3056 2253 50  0000 C CNN
+F 1 "SpringConnector" H 3056 2162 50  0000 C CNN
+F 2 "custom_lib:TE-2286211-3" H 2950 2075 50  0001 C CNN
+F 3 "~" H 2950 2075 50  0001 C CNN
+	1    2950 2075
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Male J3
+U 1 1 603A961B
+P 2950 2350
+F 0 "J3" H 3056 2528 50  0000 C CNN
+F 1 "SpringConnector" H 3056 2437 50  0000 C CNN
+F 2 "custom_lib:TE-2286211-3" H 2950 2350 50  0001 C CNN
+F 3 "~" H 2950 2350 50  0001 C CNN
+	1    2950 2350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x01_Male J4
+U 1 1 603A9653
+P 2950 2600
+F 0 "J4" H 3056 2778 50  0000 C CNN
+F 1 "SpringConnector" H 3056 2687 50  0000 C CNN
+F 2 "custom_lib:TE-2286211-3" H 2950 2600 50  0001 C CNN
+F 3 "~" H 2950 2600 50  0001 C CNN
+	1    2950 2600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VDD #PWR0103
+U 1 1 603A9740
+P 3150 1800
+F 0 "#PWR0103" H 3150 1650 50  0001 C CNN
+F 1 "VDD" V 3167 1928 50  0000 L CNN
+F 2 "" H 3150 1800 50  0001 C CNN
+F 3 "" H 3150 1800 50  0001 C CNN
+	1    3150 1800
+	0    1    1    0   
+$EndComp
+$Comp
+L power:VDD #PWR0104
+U 1 1 603A979A
+P 3150 2075
+F 0 "#PWR0104" H 3150 1925 50  0001 C CNN
+F 1 "VDD" V 3167 2203 50  0000 L CNN
+F 2 "" H 3150 2075 50  0001 C CNN
+F 3 "" H 3150 2075 50  0001 C CNN
+	1    3150 2075
+	0    1    1    0   
+$EndComp
+$Comp
+L power:VEE #PWR0105
+U 1 1 603A9818
+P 3150 2350
+F 0 "#PWR0105" H 3150 2200 50  0001 C CNN
+F 1 "VEE" V 3167 2478 50  0000 L CNN
+F 2 "" H 3150 2350 50  0001 C CNN
+F 3 "" H 3150 2350 50  0001 C CNN
+	1    3150 2350
+	0    1    1    0   
+$EndComp
+$Comp
+L power:VEE #PWR0106
+U 1 1 603A984E
+P 3150 2600
+F 0 "#PWR0106" H 3150 2450 50  0001 C CNN
+F 1 "VEE" V 3167 2728 50  0000 L CNN
+F 2 "" H 3150 2600 50  0001 C CNN
+F 3 "" H 3150 2600 50  0001 C CNN
+	1    3150 2600
+	0    1    1    0   
+$EndComp
+$Comp
+L power:VEE #PWR0107
+U 1 1 603A9F72
+P 3800 3000
+F 0 "#PWR0107" H 3800 2850 50  0001 C CNN
+F 1 "VEE" V 3818 3127 50  0000 L CNN
+F 2 "" H 3800 3000 50  0001 C CNN
+F 3 "" H 3800 3000 50  0001 C CNN
+	1    3800 3000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VEE #PWR0108
+U 1 1 603A9FB1
+P 3800 3100
+F 0 "#PWR0108" H 3800 2950 50  0001 C CNN
+F 1 "VEE" V 3818 3227 50  0000 L CNN
+F 2 "" H 3800 3100 50  0001 C CNN
+F 3 "" H 3800 3100 50  0001 C CNN
+	1    3800 3100
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VDD #PWR0109
+U 1 1 603A9FD6
+P 3800 3200
+F 0 "#PWR0109" H 3800 3050 50  0001 C CNN
+F 1 "VDD" V 3818 3327 50  0000 L CNN
+F 2 "" H 3800 3200 50  0001 C CNN
+F 3 "" H 3800 3200 50  0001 C CNN
+	1    3800 3200
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VDD #PWR0110
+U 1 1 603AA015
+P 3800 3300
+F 0 "#PWR0110" H 3800 3150 50  0001 C CNN
+F 1 "VDD" V 3818 3427 50  0000 L CNN
+F 2 "" H 3800 3300 50  0001 C CNN
+F 3 "" H 3800 3300 50  0001 C CNN
+	1    3800 3300
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:Conn_01x06_Female J5
+U 1 1 603AAC33
+P 4000 3100
+F 0 "J5" H 4028 3076 50  0000 L CNN
+F 1 "POWER_LED" H 4028 2985 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical" H 4000 3100 50  0001 C CNN
+F 3 "~" H 4000 3100 50  0001 C CNN
+	1    4000 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VEE #PWR0101
+U 1 1 603AAC99
+P 3800 2900
+F 0 "#PWR0101" H 3800 2750 50  0001 C CNN
+F 1 "VEE" V 3818 3027 50  0000 L CNN
+F 2 "" H 3800 2900 50  0001 C CNN
+F 3 "" H 3800 2900 50  0001 C CNN
+	1    3800 2900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VDD #PWR0102
+U 1 1 603AACC0
+P 3800 3400
+F 0 "#PWR0102" H 3800 3250 50  0001 C CNN
+F 1 "VDD" V 3818 3527 50  0000 L CNN
+F 2 "" H 3800 3400 50  0001 C CNN
+F 3 "" H 3800 3400 50  0001 C CNN
+	1    3800 3400
+	0    -1   -1   0   
+$EndComp
+$EndSCHEMATC
