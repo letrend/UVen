@@ -14,17 +14,6 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L Mechanical:MountingHole H1
-U 1 1 603A9329
-P 6125 1775
-F 0 "H1" H 6225 1821 50  0000 L CNN
-F 1 "MountingHole" H 6225 1730 50  0000 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3" H 6125 1775 50  0001 C CNN
-F 3 "~" H 6125 1775 50  0001 C CNN
-	1    6125 1775
-	1    0    0    -1  
-$EndComp
-$Comp
 L Mechanical:MountingHole H2
 U 1 1 603A9363
 P 6125 1950
@@ -44,17 +33,6 @@ F 1 "MountingHole" H 6225 2080 50  0000 L CNN
 F 2 "MountingHole:MountingHole_3.2mm_M3" H 6125 2125 50  0001 C CNN
 F 3 "~" H 6125 2125 50  0001 C CNN
 	1    6125 2125
-	1    0    0    -1  
-$EndComp
-$Comp
-L Mechanical:MountingHole H4
-U 1 1 603A93AD
-P 6125 2300
-F 0 "H4" H 6225 2346 50  0000 L CNN
-F 1 "MountingHole" H 6225 2255 50  0000 L CNN
-F 2 "MountingHole:MountingHole_3.2mm_M3" H 6125 2300 50  0001 C CNN
-F 3 "~" H 6125 2300 50  0001 C CNN
-	1    6125 2300
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -78,94 +56,6 @@ F 2 "MountingHole:MountingHole_3.2mm_M3" H 6125 2650 50  0001 C CNN
 F 3 "~" H 6125 2650 50  0001 C CNN
 	1    6125 2650
 	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Conn_01x01_Male J1
-U 1 1 603A958C
-P 2950 1800
-F 0 "J1" H 3056 1978 50  0000 C CNN
-F 1 "SpringConnector" H 3056 1887 50  0000 C CNN
-F 2 "custom_lib:TE-2286211-3" H 2950 1800 50  0001 C CNN
-F 3 "~" H 2950 1800 50  0001 C CNN
-	1    2950 1800
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Conn_01x01_Male J2
-U 1 1 603A95DB
-P 2950 2075
-F 0 "J2" H 3056 2253 50  0000 C CNN
-F 1 "SpringConnector" H 3056 2162 50  0000 C CNN
-F 2 "custom_lib:TE-2286211-3" H 2950 2075 50  0001 C CNN
-F 3 "~" H 2950 2075 50  0001 C CNN
-	1    2950 2075
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Conn_01x01_Male J3
-U 1 1 603A961B
-P 2950 2350
-F 0 "J3" H 3056 2528 50  0000 C CNN
-F 1 "SpringConnector" H 3056 2437 50  0000 C CNN
-F 2 "custom_lib:TE-2286211-3" H 2950 2350 50  0001 C CNN
-F 3 "~" H 2950 2350 50  0001 C CNN
-	1    2950 2350
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector:Conn_01x01_Male J4
-U 1 1 603A9653
-P 2950 2600
-F 0 "J4" H 3056 2778 50  0000 C CNN
-F 1 "SpringConnector" H 3056 2687 50  0000 C CNN
-F 2 "custom_lib:TE-2286211-3" H 2950 2600 50  0001 C CNN
-F 3 "~" H 2950 2600 50  0001 C CNN
-	1    2950 2600
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:VDD #PWR0103
-U 1 1 603A9740
-P 3150 1800
-F 0 "#PWR0103" H 3150 1650 50  0001 C CNN
-F 1 "VDD" V 3167 1928 50  0000 L CNN
-F 2 "" H 3150 1800 50  0001 C CNN
-F 3 "" H 3150 1800 50  0001 C CNN
-	1    3150 1800
-	0    1    1    0   
-$EndComp
-$Comp
-L power:VDD #PWR0104
-U 1 1 603A979A
-P 3150 2075
-F 0 "#PWR0104" H 3150 1925 50  0001 C CNN
-F 1 "VDD" V 3167 2203 50  0000 L CNN
-F 2 "" H 3150 2075 50  0001 C CNN
-F 3 "" H 3150 2075 50  0001 C CNN
-	1    3150 2075
-	0    1    1    0   
-$EndComp
-$Comp
-L power:VEE #PWR0105
-U 1 1 603A9818
-P 3150 2350
-F 0 "#PWR0105" H 3150 2200 50  0001 C CNN
-F 1 "VEE" V 3167 2478 50  0000 L CNN
-F 2 "" H 3150 2350 50  0001 C CNN
-F 3 "" H 3150 2350 50  0001 C CNN
-	1    3150 2350
-	0    1    1    0   
-$EndComp
-$Comp
-L power:VEE #PWR0106
-U 1 1 603A984E
-P 3150 2600
-F 0 "#PWR0106" H 3150 2450 50  0001 C CNN
-F 1 "VEE" V 3167 2728 50  0000 L CNN
-F 2 "" H 3150 2600 50  0001 C CNN
-F 3 "" H 3150 2600 50  0001 C CNN
-	1    3150 2600
-	0    1    1    0   
 $EndComp
 $Comp
 L power:VEE #PWR0107
@@ -288,4 +178,104 @@ F 3 "~" H 7575 2350 50  0001 C CNN
 	1    7575 2350
 	1    0    0    -1  
 $EndComp
+$Comp
+L Connector:Conn_01x02_Female J1
+U 1 1 604134DA
+P 4050 1700
+F 0 "J1" H 4078 1676 50  0000 L CNN
+F 1 "SpringConnector" H 4078 1585 50  0000 L CNN
+F 2 "custom_lib:22862113" H 4050 1700 50  0001 C CNN
+F 3 "~" H 4050 1700 50  0001 C CNN
+	1    4050 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VDD #PWR0103
+U 1 1 604141D4
+P 3850 1700
+F 0 "#PWR0103" H 3850 1550 50  0001 C CNN
+F 1 "VDD" V 3867 1828 50  0000 L CNN
+F 2 "" H 3850 1700 50  0001 C CNN
+F 3 "" H 3850 1700 50  0001 C CNN
+	1    3850 1700
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3850 1800 3850 1700
+Connection ~ 3850 1700
+$Comp
+L Connector:Conn_01x02_Female J2
+U 1 1 60415E02
+P 4050 2000
+F 0 "J2" H 4078 1976 50  0000 L CNN
+F 1 "SpringConnector" H 4078 1885 50  0000 L CNN
+F 2 "custom_lib:22862113" H 4050 2000 50  0001 C CNN
+F 3 "~" H 4050 2000 50  0001 C CNN
+	1    4050 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VDD #PWR0104
+U 1 1 60415E08
+P 3850 2000
+F 0 "#PWR0104" H 3850 1850 50  0001 C CNN
+F 1 "VDD" V 3867 2128 50  0000 L CNN
+F 2 "" H 3850 2000 50  0001 C CNN
+F 3 "" H 3850 2000 50  0001 C CNN
+	1    3850 2000
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3850 2100 3850 2000
+Connection ~ 3850 2000
+$Comp
+L Connector:Conn_01x02_Female J3
+U 1 1 604169FD
+P 4050 2250
+F 0 "J3" H 4078 2226 50  0000 L CNN
+F 1 "SpringConnector" H 4078 2135 50  0000 L CNN
+F 2 "custom_lib:22862113" H 4050 2250 50  0001 C CNN
+F 3 "~" H 4050 2250 50  0001 C CNN
+	1    4050 2250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3850 2350 3850 2250
+$Comp
+L Connector:Conn_01x02_Female J4
+U 1 1 60417202
+P 4050 2500
+F 0 "J4" H 4078 2476 50  0000 L CNN
+F 1 "SpringConnector" H 4078 2385 50  0000 L CNN
+F 2 "custom_lib:22862113" H 4050 2500 50  0001 C CNN
+F 3 "~" H 4050 2500 50  0001 C CNN
+	1    4050 2500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3850 2600 3850 2500
+$Comp
+L power:VEE #PWR0105
+U 1 1 60417979
+P 3850 2250
+F 0 "#PWR0105" H 3850 2100 50  0001 C CNN
+F 1 "VEE" V 3867 2378 50  0000 L CNN
+F 2 "" H 3850 2250 50  0001 C CNN
+F 3 "" H 3850 2250 50  0001 C CNN
+	1    3850 2250
+	0    -1   -1   0   
+$EndComp
+Connection ~ 3850 2250
+$Comp
+L power:VEE #PWR0106
+U 1 1 60418078
+P 3850 2500
+F 0 "#PWR0106" H 3850 2350 50  0001 C CNN
+F 1 "VEE" V 3867 2628 50  0000 L CNN
+F 2 "" H 3850 2500 50  0001 C CNN
+F 3 "" H 3850 2500 50  0001 C CNN
+	1    3850 2500
+	0    -1   -1   0   
+$EndComp
+Connection ~ 3850 2500
 $EndSCHEMATC
