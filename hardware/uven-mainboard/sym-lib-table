@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name arduino)(type Legacy)(uri /home/letrend/workspace/UVen/hardware/arduino-kicad-library/arduino.lib)(options "")(descr ""))
+  (lib (name custom)(type Legacy)(uri /home/letrend/workspace/UVen/hardware/kicad_db/lib/custom.lib)(options "")(descr ""))
+)

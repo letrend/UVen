@@ -1,3 +1,6 @@
 [submodule "hardware/kicad_db"]
 	path = hardware/kicad_db
 	url = https://github.com/letrend/kicad_db
+[submodule "hardware/arduino-kicad-library"]
+	path = hardware/arduino-kicad-library
+	url = https://github.com/Alarm-Siren/arduino-kicad-library
