@@ -1,4 +1,5 @@
 EESchema Schematic File Version 4
+LIBS:uven-mainboard-cache
 EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
@@ -523,7 +524,7 @@ F 3 "" H 9650 1450 50  0001 C CNN
 $EndComp
 Text Label 7275 1700 0    50   ~ 0
 LED_CONTROL
-Text Label 9350 1250 2    50   ~ 0
+Text Label 9050 1250 2    50   ~ 0
 LED_CONTROL
 $Comp
 L Device:R R10
@@ -1232,4 +1233,183 @@ Text Label 3350 6200 2    50   ~ 0
 LED_VOUT
 Text Label 3350 6300 2    50   ~ 0
 LED_TEMP_SCALED
+$Comp
+L Connector:Conn_01x03_Female J17
+U 1 1 60512F65
+P 4675 6800
+F 0 "J17" H 4702 6826 50  0000 L CNN
+F 1 "POTI" H 4702 6735 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 4675 6800 50  0001 C CNN
+F 3 "~" H 4675 6800 50  0001 C CNN
+	1    4675 6800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR0130
+U 1 1 605131C7
+P 4475 6800
+F 0 "#PWR0130" H 4475 6650 50  0001 C CNN
+F 1 "+3.3V" V 4490 6928 50  0000 L CNN
+F 2 "" H 4475 6800 50  0001 C CNN
+F 3 "" H 4475 6800 50  0001 C CNN
+	1    4475 6800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR0131
+U 1 1 60513246
+P 4475 6700
+F 0 "#PWR0131" H 4475 6450 50  0001 C CNN
+F 1 "GND" V 4480 6572 50  0000 R CNN
+F 2 "" H 4475 6700 50  0001 C CNN
+F 3 "" H 4475 6700 50  0001 C CNN
+	1    4475 6700
+	0    1    1    0   
+$EndComp
+Text Label 4475 6900 2    50   ~ 0
+POTI
+Text Label 4675 4300 2    50   ~ 0
+POTI
+$Comp
+L Connector:Conn_01x02_Female J18
+U 1 1 60513E84
+P 1700 6425
+F 0 "J18" H 1594 6100 50  0000 C CNN
+F 1 "BUTTON0" H 1594 6191 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical" H 1700 6425 50  0001 C CNN
+F 3 "~" H 1700 6425 50  0001 C CNN
+	1    1700 6425
+	-1   0    0    1   
+$EndComp
+Text Label 1900 6325 0    50   ~ 0
+BUTTON0
+$Comp
+L power:GND #PWR0132
+U 1 1 605141F3
+P 1900 6425
+F 0 "#PWR0132" H 1900 6175 50  0001 C CNN
+F 1 "GND" V 1905 6297 50  0000 R CNN
+F 2 "" H 1900 6425 50  0001 C CNN
+F 3 "" H 1900 6425 50  0001 C CNN
+	1    1900 6425
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:Conn_01x02_Female J19
+U 1 1 605143DC
+P 1700 6900
+F 0 "J19" H 1594 6575 50  0000 C CNN
+F 1 "BUTTON1" H 1594 6666 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical" H 1700 6900 50  0001 C CNN
+F 3 "~" H 1700 6900 50  0001 C CNN
+	1    1700 6900
+	-1   0    0    1   
+$EndComp
+Text Label 1900 6800 0    50   ~ 0
+BUTTON1
+$Comp
+L power:GND #PWR0133
+U 1 1 605143E4
+P 1900 6900
+F 0 "#PWR0133" H 1900 6650 50  0001 C CNN
+F 1 "GND" V 1905 6772 50  0000 R CNN
+F 2 "" H 1900 6900 50  0001 C CNN
+F 3 "" H 1900 6900 50  0001 C CNN
+	1    1900 6900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:Conn_01x02_Female J20
+U 1 1 60515B18
+P 1700 7350
+F 0 "J20" H 1594 7025 50  0000 C CNN
+F 1 "BUTTON2" H 1594 7116 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical" H 1700 7350 50  0001 C CNN
+F 3 "~" H 1700 7350 50  0001 C CNN
+	1    1700 7350
+	-1   0    0    1   
+$EndComp
+Text Label 1900 7250 0    50   ~ 0
+BUTTON2
+$Comp
+L power:GND #PWR0134
+U 1 1 60515B20
+P 1900 7350
+F 0 "#PWR0134" H 1900 7100 50  0001 C CNN
+F 1 "GND" V 1905 7222 50  0000 R CNN
+F 2 "" H 1900 7350 50  0001 C CNN
+F 3 "" H 1900 7350 50  0001 C CNN
+	1    1900 7350
+	0    -1   -1   0   
+$EndComp
+Text Label 7275 4800 0    50   ~ 0
+BUTTON0
+Text Label 7275 4700 0    50   ~ 0
+BUTTON1
+Text Label 7275 4600 0    50   ~ 0
+BUTTON2
+$Comp
+L Connector:Conn_01x02_Female J21
+U 1 1 605179F8
+P 2750 6900
+F 0 "J21" H 2644 6575 50  0000 C CNN
+F 1 "KILL0" H 2644 6666 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical" H 2750 6900 50  0001 C CNN
+F 3 "~" H 2750 6900 50  0001 C CNN
+	1    2750 6900
+	-1   0    0    1   
+$EndComp
+Text Label 2950 6800 0    50   ~ 0
+KILL0
+$Comp
+L power:GND #PWR0135
+U 1 1 60517A00
+P 2950 6900
+F 0 "#PWR0135" H 2950 6650 50  0001 C CNN
+F 1 "GND" V 2955 6772 50  0000 R CNN
+F 2 "" H 2950 6900 50  0001 C CNN
+F 3 "" H 2950 6900 50  0001 C CNN
+	1    2950 6900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:Conn_01x02_Female J22
+U 1 1 605189B4
+P 2750 7325
+F 0 "J22" H 2644 7000 50  0000 C CNN
+F 1 "KILL1" H 2644 7091 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical" H 2750 7325 50  0001 C CNN
+F 3 "~" H 2750 7325 50  0001 C CNN
+	1    2750 7325
+	-1   0    0    1   
+$EndComp
+Text Label 2950 7225 0    50   ~ 0
+KILL1
+$Comp
+L power:GND #PWR0136
+U 1 1 605189BC
+P 2950 7325
+F 0 "#PWR0136" H 2950 7075 50  0001 C CNN
+F 1 "GND" V 2955 7197 50  0000 R CNN
+F 2 "" H 2950 7325 50  0001 C CNN
+F 3 "" H 2950 7325 50  0001 C CNN
+	1    2950 7325
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	9350 1250 9050 1250
+Text Label 9050 1375 2    50   ~ 0
+KILL0
+Text Label 9050 1475 2    50   ~ 0
+KILL1
+Wire Wire Line
+	9350 1375 9350 1250
+Wire Wire Line
+	9050 1375 9350 1375
+Connection ~ 9350 1250
+Wire Wire Line
+	9050 1475 9350 1475
+Wire Wire Line
+	9350 1475 9350 1375
+Connection ~ 9350 1375
 $EndSCHEMATC
