@@ -16,12 +16,12 @@ $EndDescr
 $Comp
 L arduino:Arduino_Due_Shield XA1
 U 1 1 6050A864
-P 6575 3850
-F 0 "XA1" H 6575 1470 60  0000 C CNN
-F 1 "Arduino_Due_Shield" H 6575 1364 60  0000 C CNN
-F 2 "Arduino:Arduino_Due_Shield" H 7275 6600 60  0001 C CNN
-F 3 "https://store.arduino.cc/arduino-due" H 7275 6600 60  0001 C CNN
-	1    6575 3850
+P 5975 3850
+F 0 "XA1" H 5975 1470 60  0000 C CNN
+F 1 "Arduino_Due_Shield" H 5975 1364 60  0000 C CNN
+F 2 "Arduino:Arduino_Due_Shield" H 6675 6600 60  0001 C CNN
+F 3 "https://store.arduino.cc/arduino-due" H 6675 6600 60  0001 C CNN
+	1    5975 3850
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -79,15 +79,15 @@ F 3 "" H 9725 5950 50  0001 C CNN
 	1    9775 5950
 	1    0    0    -1  
 $EndComp
-Text Label 6325 1250 1    50   ~ 0
+Text Label 5725 1250 1    50   ~ 0
 MISO
-Text Label 6425 1250 1    50   ~ 0
+Text Label 5825 1250 1    50   ~ 0
 MOSI
-Text Label 6525 1250 1    50   ~ 0
+Text Label 5925 1250 1    50   ~ 0
 SCK
-NoConn ~ 6625 1250
-NoConn ~ 6725 1250
-NoConn ~ 6825 1250
+NoConn ~ 6025 1250
+NoConn ~ 6125 1250
+NoConn ~ 6225 1250
 Text Label 9375 2525 2    50   ~ 0
 MISO
 Text Label 9375 3400 2    50   ~ 0
@@ -111,37 +111,37 @@ SCK
 $Comp
 L power:+3.3V #PWR0101
 U 1 1 6050BD44
-P 5275 5600
-F 0 "#PWR0101" H 5275 5450 50  0001 C CNN
-F 1 "+3.3V" V 5290 5728 50  0000 L CNN
-F 2 "" H 5275 5600 50  0001 C CNN
-F 3 "" H 5275 5600 50  0001 C CNN
-	1    5275 5600
+P 4675 5600
+F 0 "#PWR0101" H 4675 5450 50  0001 C CNN
+F 1 "+3.3V" V 4690 5728 50  0000 L CNN
+F 2 "" H 4675 5600 50  0001 C CNN
+F 3 "" H 4675 5600 50  0001 C CNN
+	1    4675 5600
 	0    -1   -1   0   
 $EndComp
 $Comp
 L power:GND #PWR0103
 U 1 1 6050BDE0
-P 5275 5100
-F 0 "#PWR0103" H 5275 4850 50  0001 C CNN
-F 1 "GND" V 5280 4972 50  0000 R CNN
-F 2 "" H 5275 5100 50  0001 C CNN
-F 3 "" H 5275 5100 50  0001 C CNN
-	1    5275 5100
+P 4675 5100
+F 0 "#PWR0103" H 4675 4850 50  0001 C CNN
+F 1 "GND" V 4680 4972 50  0000 R CNN
+F 2 "" H 4675 5100 50  0001 C CNN
+F 3 "" H 4675 5100 50  0001 C CNN
+	1    4675 5100
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	5275 5500 5275 5400
-Connection ~ 5275 5100
-Connection ~ 5275 5200
+	4675 5500 4675 5400
+Connection ~ 4675 5100
+Connection ~ 4675 5200
 Wire Wire Line
-	5275 5200 5275 5100
-Connection ~ 5275 5300
+	4675 5200 4675 5100
+Connection ~ 4675 5300
 Wire Wire Line
-	5275 5300 5275 5200
-Connection ~ 5275 5400
+	4675 5300 4675 5200
+Connection ~ 4675 5400
 Wire Wire Line
-	5275 5400 5275 5300
+	4675 5400 4675 5300
 $Comp
 L power:+3.3V #PWR0111
 U 1 1 6050BFCA
@@ -184,128 +184,128 @@ Text Label 9375 3700 2    50   ~ 0
 OCD_LED1
 Text Label 9375 2825 2    50   ~ 0
 OCD_LED0
-Text Label 7875 1800 0    50   ~ 0
+Text Label 7275 1800 0    50   ~ 0
 CS_LED0
-Text Label 7875 1900 0    50   ~ 0
+Text Label 7275 1900 0    50   ~ 0
 CS_LED1
-Text Label 7875 2000 0    50   ~ 0
+Text Label 7275 2000 0    50   ~ 0
 CS_LED2
-Text Label 7875 2100 0    50   ~ 0
+Text Label 7275 2100 0    50   ~ 0
 CS_LED3
-Text Label 7875 2200 0    50   ~ 0
+Text Label 7275 2200 0    50   ~ 0
 CS_LED4
-Text Label 7875 2300 0    50   ~ 0
+Text Label 7275 2300 0    50   ~ 0
 OCD_LED0
-Text Label 7875 2400 0    50   ~ 0
+Text Label 7275 2400 0    50   ~ 0
 OCD_LED1
-Text Label 7875 2500 0    50   ~ 0
+Text Label 7275 2500 0    50   ~ 0
 OCD_LED2
-Text Label 7875 2600 0    50   ~ 0
+Text Label 7275 2600 0    50   ~ 0
 OCD_LED3
-Text Label 7875 2700 0    50   ~ 0
+Text Label 7275 2700 0    50   ~ 0
 OCD_LED4
 $Comp
 L Display_Character:CC56-12EWA U6
 U 1 1 6050CE96
-P 2275 2250
-F 0 "U6" H 2275 2917 50  0000 C CNN
-F 1 "CC56-12EWA" H 2275 2826 50  0000 C CNN
-F 2 "Display_7Segment:CA56-12EWA" H 2275 1650 50  0001 C CNN
-F 3 "http://www.kingbrightusa.com/images/catalog/SPEC/CA56-12EWA.pdf" H 1845 2280 50  0001 C CNN
-	1    2275 2250
+P 1925 2200
+F 0 "U6" H 1925 2867 50  0000 C CNN
+F 1 "CC56-12EWA" H 1925 2776 50  0000 C CNN
+F 2 "custom_lib:3461AS-1" H 1925 1600 50  0001 C CNN
+F 3 "http://www.kingbrightusa.com/images/catalog/SPEC/CA56-12EWA.pdf" H 1495 2230 50  0001 C CNN
+	1    1925 2200
 	1    0    0    -1  
 $EndComp
-Text Label 3675 2350 0    50   ~ 0
+Text Label 3325 2300 0    50   ~ 0
 digit_pin0
-Text Label 3675 2450 0    50   ~ 0
+Text Label 3325 2400 0    50   ~ 0
 digit_pin1
-Text Label 3675 2550 0    50   ~ 0
+Text Label 3325 2500 0    50   ~ 0
 digit_pin2
-Text Label 3675 2650 0    50   ~ 0
+Text Label 3325 2600 0    50   ~ 0
 digit_pin3
-Text Label 7875 5700 0    50   ~ 0
+Text Label 2450 1100 3    50   ~ 0
 digit_pin0
-Text Label 7875 5800 0    50   ~ 0
+Text Label 2250 1100 3    50   ~ 0
 digit_pin1
-Text Label 7875 5900 0    50   ~ 0
+Text Label 2650 1100 3    50   ~ 0
 digit_pin2
-Text Label 7875 6000 0    50   ~ 0
+Text Label 2750 1100 3    50   ~ 0
 digit_pin3
 $Comp
 L Device:R R6
 U 1 1 6050DA3D
-P 3525 2350
-F 0 "R6" V 3450 2225 50  0000 C CNN
-F 1 "330" V 3525 2350 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3455 2350 50  0001 C CNN
-F 3 "~" H 3525 2350 50  0001 C CNN
-	1    3525 2350
+P 3175 2300
+F 0 "R6" V 3100 2175 50  0000 C CNN
+F 1 "330" V 3175 2300 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3105 2300 50  0001 C CNN
+F 3 "~" H 3175 2300 50  0001 C CNN
+	1    3175 2300
 	0    1    1    0   
 $EndComp
 $Comp
 L Device:R R7
 U 1 1 6050DBF7
-P 3525 2450
-F 0 "R7" V 3450 2325 50  0000 C CNN
-F 1 "330" V 3525 2450 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3455 2450 50  0001 C CNN
-F 3 "~" H 3525 2450 50  0001 C CNN
-	1    3525 2450
+P 3175 2400
+F 0 "R7" V 3100 2275 50  0000 C CNN
+F 1 "330" V 3175 2400 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3105 2400 50  0001 C CNN
+F 3 "~" H 3175 2400 50  0001 C CNN
+	1    3175 2400
 	0    1    1    0   
 $EndComp
 $Comp
 L Device:R R8
 U 1 1 6050DC1D
-P 3525 2550
-F 0 "R8" V 3450 2425 50  0000 C CNN
-F 1 "330" V 3525 2550 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3455 2550 50  0001 C CNN
-F 3 "~" H 3525 2550 50  0001 C CNN
-	1    3525 2550
+P 3175 2500
+F 0 "R8" V 3100 2375 50  0000 C CNN
+F 1 "330" V 3175 2500 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3105 2500 50  0001 C CNN
+F 3 "~" H 3175 2500 50  0001 C CNN
+	1    3175 2500
 	0    1    1    0   
 $EndComp
 $Comp
 L Device:R R9
 U 1 1 6050DC6A
-P 3525 2650
-F 0 "R9" V 3450 2525 50  0000 C CNN
-F 1 "330" V 3525 2650 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3455 2650 50  0001 C CNN
-F 3 "~" H 3525 2650 50  0001 C CNN
-	1    3525 2650
+P 3175 2600
+F 0 "R9" V 3100 2475 50  0000 C CNN
+F 1 "330" V 3175 2600 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 3105 2600 50  0001 C CNN
+F 3 "~" H 3175 2600 50  0001 C CNN
+	1    3175 2600
 	0    1    1    0   
 $EndComp
-Text Label 1175 1950 2    50   ~ 0
+Text Label 825  1900 2    50   ~ 0
 a
-Text Label 1175 2050 2    50   ~ 0
+Text Label 825  2000 2    50   ~ 0
 b
-Text Label 1175 2150 2    50   ~ 0
+Text Label 825  2100 2    50   ~ 0
 c
-Text Label 1175 2250 2    50   ~ 0
+Text Label 825  2200 2    50   ~ 0
 d
-Text Label 1175 2350 2    50   ~ 0
+Text Label 825  2300 2    50   ~ 0
 e
-Text Label 1175 2450 2    50   ~ 0
+Text Label 825  2400 2    50   ~ 0
 f
-Text Label 1175 2550 2    50   ~ 0
+Text Label 825  2500 2    50   ~ 0
 g
-Text Label 1175 2650 2    50   ~ 0
+Text Label 825  2600 2    50   ~ 0
 dpx
-Text Label 7875 5600 0    50   ~ 0
+Text Label 1750 1100 3    50   ~ 0
 dpx
-Text Label 7875 5500 0    50   ~ 0
+Text Label 2350 1100 3    50   ~ 0
 g
-Text Label 7875 5400 0    50   ~ 0
+Text Label 2150 1100 3    50   ~ 0
 f
-Text Label 7875 5300 0    50   ~ 0
+Text Label 1950 1100 3    50   ~ 0
 e
-Text Label 7875 5200 0    50   ~ 0
+Text Label 2050 1100 3    50   ~ 0
 d
-Text Label 7875 5100 0    50   ~ 0
+Text Label 1850 1100 3    50   ~ 0
 c
-Text Label 7875 5000 0    50   ~ 0
+Text Label 2550 1100 3    50   ~ 0
 b
-Text Label 7875 4900 0    50   ~ 0
+Text Label 1650 1100 3    50   ~ 0
 a
 $Comp
 L Device:C C1
@@ -522,7 +522,7 @@ F 3 "" H 9650 1450 50  0001 C CNN
 	1    9650 1450
 	1    0    0    -1  
 $EndComp
-Text Label 7875 1700 0    50   ~ 0
+Text Label 7275 1700 0    50   ~ 0
 LED_CONTROL
 Text Label 9350 1250 2    50   ~ 0
 LED_CONTROL
@@ -597,15 +597,15 @@ F 3 "" H 1750 3575 50  0001 C CNN
 	1    1750 3575
 	0    1    1    0   
 $EndComp
-Text Label 5275 3400 2    50   ~ 0
+Text Label 4675 3400 2    50   ~ 0
 TEMP_LED0
-Text Label 5275 3500 2    50   ~ 0
+Text Label 4675 3500 2    50   ~ 0
 TEMP_LED1
-Text Label 5275 3600 2    50   ~ 0
+Text Label 4675 3600 2    50   ~ 0
 TEMP_LED2
-Text Label 5275 3700 2    50   ~ 0
+Text Label 4675 3700 2    50   ~ 0
 TEMP_LED3
-Text Label 5275 3800 2    50   ~ 0
+Text Label 4675 3800 2    50   ~ 0
 TEMP_LED4
 $Comp
 L Device:R R1
@@ -838,12 +838,369 @@ F 3 "" H 1375 5075 50  0001 C CNN
 	1    1375 5075
 	0    -1   -1   0   
 $EndComp
-Text Label 5275 3900 2    50   ~ 0
+Text Label 4675 3900 2    50   ~ 0
 I_LED_SCALED
-Text Label 5275 4000 2    50   ~ 0
+Text Label 4675 4000 2    50   ~ 0
 IL_SCALED
-Text Label 5275 4100 2    50   ~ 0
+Text Label 4675 4100 2    50   ~ 0
 LED_VOUT
-Text Label 5275 4200 2    50   ~ 0
+Text Label 4675 4200 2    50   ~ 0
 LED_TEMP_SCALED
+$Comp
+L power:+12V #PWR0126
+U 1 1 60519180
+P 4675 6000
+F 0 "#PWR0126" H 4675 5850 50  0001 C CNN
+F 1 "+12V" V 4690 6128 50  0000 L CNN
+F 2 "" H 4675 6000 50  0001 C CNN
+F 3 "" H 4675 6000 50  0001 C CNN
+	1    4675 6000
+	0    -1   -1   0   
+$EndComp
+NoConn ~ 4675 5700
+NoConn ~ 4675 5800
+NoConn ~ 4675 5900
+$Comp
+L Connector:Conn_01x02_Female J7
+U 1 1 6051A57B
+P 1575 5825
+F 0 "J7" H 1469 5500 50  0000 C CNN
+F 1 "POWER_12V" H 1469 5591 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_1x02_P2.54mm_Vertical" H 1575 5825 50  0001 C CNN
+F 3 "~" H 1575 5825 50  0001 C CNN
+	1    1575 5825
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:GND #PWR0127
+U 1 1 6051A653
+P 1775 5825
+F 0 "#PWR0127" H 1775 5575 50  0001 C CNN
+F 1 "GND" V 1780 5697 50  0000 R CNN
+F 2 "" H 1775 5825 50  0001 C CNN
+F 3 "" H 1775 5825 50  0001 C CNN
+	1    1775 5825
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:+12V #PWR0128
+U 1 1 6051A6D6
+P 1775 5725
+F 0 "#PWR0128" H 1775 5575 50  0001 C CNN
+F 1 "+12V" V 1790 5853 50  0000 L CNN
+F 2 "" H 1775 5725 50  0001 C CNN
+F 3 "" H 1775 5725 50  0001 C CNN
+	1    1775 5725
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:Conn_01x02_Female J8
+U 1 1 6051AECA
+P 3300 3475
+F 0 "J8" H 3327 3451 50  0000 L CNN
+F 1 "TEMP_LED0" H 3327 3360 50  0000 L CNN
+F 2 "Connector_PinSocket_1.27mm:PinSocket_1x02_P1.27mm_Vertical" H 3300 3475 50  0001 C CNN
+F 3 "~" H 3300 3475 50  0001 C CNN
+	1    3300 3475
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Thermistor_NTC TH1
+U 1 1 6051B024
+P 2950 3475
+F 0 "TH1" V 2825 3475 50  0000 C CNN
+F 1 "10k" V 2950 3475 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 2950 3525 50  0001 C CNN
+F 3 "~" H 2950 3525 50  0001 C CNN
+	1    2950 3475
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2800 3475 2800 3575
+Wire Wire Line
+	2800 3575 3100 3575
+$Comp
+L Connector:Conn_01x02_Female J9
+U 1 1 6051BB65
+P 3300 3875
+F 0 "J9" H 3327 3851 50  0000 L CNN
+F 1 "TEMP_LED1" H 3327 3760 50  0000 L CNN
+F 2 "Connector_PinSocket_1.27mm:PinSocket_1x02_P1.27mm_Vertical" H 3300 3875 50  0001 C CNN
+F 3 "~" H 3300 3875 50  0001 C CNN
+	1    3300 3875
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Thermistor_NTC TH2
+U 1 1 6051BB6C
+P 2950 3875
+F 0 "TH2" V 2825 3875 50  0000 C CNN
+F 1 "10k" V 2950 3875 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 2950 3925 50  0001 C CNN
+F 3 "~" H 2950 3925 50  0001 C CNN
+	1    2950 3875
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2800 3875 2800 3975
+Wire Wire Line
+	2800 3975 3100 3975
+$Comp
+L Connector:Conn_01x02_Female J10
+U 1 1 6051C587
+P 3300 4275
+F 0 "J10" H 3327 4251 50  0000 L CNN
+F 1 "TEMP_LED2" H 3327 4160 50  0000 L CNN
+F 2 "Connector_PinSocket_1.27mm:PinSocket_1x02_P1.27mm_Vertical" H 3300 4275 50  0001 C CNN
+F 3 "~" H 3300 4275 50  0001 C CNN
+	1    3300 4275
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Thermistor_NTC TH3
+U 1 1 6051C58E
+P 2950 4275
+F 0 "TH3" V 2825 4275 50  0000 C CNN
+F 1 "10k" V 2950 4275 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 2950 4325 50  0001 C CNN
+F 3 "~" H 2950 4325 50  0001 C CNN
+	1    2950 4275
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2800 4275 2800 4375
+Wire Wire Line
+	2800 4375 3100 4375
+$Comp
+L Connector:Conn_01x02_Female J11
+U 1 1 6051C597
+P 3300 4675
+F 0 "J11" H 3327 4651 50  0000 L CNN
+F 1 "TEMP_LED3" H 3327 4560 50  0000 L CNN
+F 2 "Connector_PinSocket_1.27mm:PinSocket_1x02_P1.27mm_Vertical" H 3300 4675 50  0001 C CNN
+F 3 "~" H 3300 4675 50  0001 C CNN
+	1    3300 4675
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Thermistor_NTC TH4
+U 1 1 6051C59E
+P 2950 4675
+F 0 "TH4" V 2825 4675 50  0000 C CNN
+F 1 "10k" V 2950 4675 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 2950 4725 50  0001 C CNN
+F 3 "~" H 2950 4725 50  0001 C CNN
+	1    2950 4675
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2800 4675 2800 4775
+Wire Wire Line
+	2800 4775 3100 4775
+$Comp
+L Connector:Conn_01x02_Female J12
+U 1 1 6051E71D
+P 3300 5075
+F 0 "J12" H 3327 5051 50  0000 L CNN
+F 1 "TEMP_LED4" H 3327 4960 50  0000 L CNN
+F 2 "Connector_PinSocket_1.27mm:PinSocket_1x02_P1.27mm_Vertical" H 3300 5075 50  0001 C CNN
+F 3 "~" H 3300 5075 50  0001 C CNN
+	1    3300 5075
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Thermistor_NTC TH5
+U 1 1 6051E724
+P 2950 5075
+F 0 "TH5" V 2825 5075 50  0000 C CNN
+F 1 "10k" V 2950 5075 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 2950 5125 50  0001 C CNN
+F 3 "~" H 2950 5125 50  0001 C CNN
+	1    2950 5075
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2800 5075 2800 5175
+Wire Wire Line
+	2800 5175 3100 5175
+$Comp
+L Mechanical:MountingHole_Pad H10
+U 1 1 60520631
+P 10175 5950
+F 0 "H10" H 10075 5908 50  0000 R CNN
+F 1 "VEE" H 10075 5999 50  0000 R CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_DIN965_Pad" H 10175 5950 50  0001 C CNN
+F 3 "~" H 10175 5950 50  0001 C CNN
+	1    10175 5950
+	-1   0    0    1   
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H4
+U 1 1 6052C5A4
+P 10175 5100
+F 0 "H4" H 10075 5058 50  0000 R CNN
+F 1 "VEE" H 10075 5149 50  0000 R CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_DIN965_Pad" H 10175 5100 50  0001 C CNN
+F 3 "~" H 10175 5100 50  0001 C CNN
+	1    10175 5100
+	-1   0    0    1   
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H3
+U 1 1 6052D9FC
+P 10175 4250
+F 0 "H3" H 10075 4208 50  0000 R CNN
+F 1 "VEE" H 10075 4299 50  0000 R CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_DIN965_Pad" H 10175 4250 50  0001 C CNN
+F 3 "~" H 10175 4250 50  0001 C CNN
+	1    10175 4250
+	-1   0    0    1   
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H2
+U 1 1 6052EB20
+P 10175 3400
+F 0 "H2" H 10075 3358 50  0000 R CNN
+F 1 "VEE" H 10075 3449 50  0000 R CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_DIN965_Pad" H 10175 3400 50  0001 C CNN
+F 3 "~" H 10175 3400 50  0001 C CNN
+	1    10175 3400
+	-1   0    0    1   
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H1
+U 1 1 605301B4
+P 10175 2525
+F 0 "H1" H 10075 2483 50  0000 R CNN
+F 1 "VEE" H 10075 2574 50  0000 R CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_DIN965_Pad" H 10175 2525 50  0001 C CNN
+F 3 "~" H 10175 2525 50  0001 C CNN
+	1    10175 2525
+	-1   0    0    1   
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H7
+U 1 1 60536B31
+P 10275 4050
+F 0 "H7" V 10229 4200 50  0000 L CNN
+F 1 "LED2-" V 10320 4200 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_DIN965_Pad" H 10275 4050 50  0001 C CNN
+F 3 "~" H 10275 4050 50  0001 C CNN
+	1    10275 4050
+	0    1    1    0   
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H6
+U 1 1 605379BA
+P 10275 3200
+F 0 "H6" V 10229 3350 50  0000 L CNN
+F 1 "LED1-" V 10320 3350 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_DIN965_Pad" H 10275 3200 50  0001 C CNN
+F 3 "~" H 10275 3200 50  0001 C CNN
+	1    10275 3200
+	0    1    1    0   
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H5
+U 1 1 60537A5E
+P 10275 2325
+F 0 "H5" V 10229 2475 50  0000 L CNN
+F 1 "LED0-" V 10320 2475 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_DIN965_Pad" H 10275 2325 50  0001 C CNN
+F 3 "~" H 10275 2325 50  0001 C CNN
+	1    10275 2325
+	0    1    1    0   
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H8
+U 1 1 60537B0A
+P 10275 4900
+F 0 "H8" V 10229 5050 50  0000 L CNN
+F 1 "LED3-" V 10320 5050 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_DIN965_Pad" H 10275 4900 50  0001 C CNN
+F 3 "~" H 10275 4900 50  0001 C CNN
+	1    10275 4900
+	0    1    1    0   
+$EndComp
+$Comp
+L Mechanical:MountingHole_Pad H9
+U 1 1 60537B9C
+P 10275 5750
+F 0 "H9" V 10229 5900 50  0000 L CNN
+F 1 "LED4-" V 10320 5900 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3_DIN965_Pad" H 10275 5750 50  0001 C CNN
+F 3 "~" H 10275 5750 50  0001 C CNN
+	1    10275 5750
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:Conn_01x12_Female J14
+U 1 1 6053AC7D
+P 7475 5400
+F 0 "J14" H 7502 5376 50  0000 L CNN
+F 1 "DISPLAY" H 7502 5285 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x12_P2.54mm_Horizontal" H 7475 5400 50  0001 C CNN
+F 3 "~" H 7475 5400 50  0001 C CNN
+	1    7475 5400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x12_Female J13
+U 1 1 6053BCB8
+P 2150 900
+F 0 "J13" H 2177 876 50  0000 L CNN
+F 1 "DISPLAY" H 2177 785 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x12_P2.54mm_Horizontal" H 2150 900 50  0001 C CNN
+F 3 "~" H 2150 900 50  0001 C CNN
+	1    2150 900 
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Mechanical:MountingHole H11
+U 1 1 60543F1E
+P 3200 1150
+F 0 "H11" H 3300 1196 50  0000 L CNN
+F 1 "MountingHole" H 3300 1105 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 3200 1150 50  0001 C CNN
+F 3 "~" H 3200 1150 50  0001 C CNN
+	1    3200 1150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H12
+U 1 1 60543FD0
+P 3200 1350
+F 0 "H12" H 3300 1396 50  0000 L CNN
+F 1 "MountingHole" H 3300 1305 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 3200 1350 50  0001 C CNN
+F 3 "~" H 3200 1350 50  0001 C CNN
+	1    3200 1350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x02_Female J15
+U 1 1 6054641C
+P 3300 5425
+F 0 "J15" H 3327 5401 50  0000 L CNN
+F 1 "TEMP_LED5" H 3327 5310 50  0000 L CNN
+F 2 "Connector_PinSocket_1.27mm:PinSocket_1x02_P1.27mm_Vertical" H 3300 5425 50  0001 C CNN
+F 3 "~" H 3300 5425 50  0001 C CNN
+	1    3300 5425
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Thermistor_NTC TH6
+U 1 1 60546423
+P 2950 5425
+F 0 "TH6" V 2825 5425 50  0000 C CNN
+F 1 "10k" V 2950 5425 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 2950 5475 50  0001 C CNN
+F 3 "~" H 2950 5475 50  0001 C CNN
+	1    2950 5425
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2800 5425 2800 5525
+Wire Wire Line
+	2800 5525 3100 5525
 $EndSCHEMATC
