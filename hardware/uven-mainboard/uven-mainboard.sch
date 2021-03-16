@@ -85,7 +85,6 @@ Text Label 5825 1250 1    50   ~ 0
 MOSI
 Text Label 5925 1250 1    50   ~ 0
 SCK
-NoConn ~ 6025 1250
 NoConn ~ 6125 1250
 NoConn ~ 6225 1250
 Text Label 9375 2525 2    50   ~ 0
@@ -1139,7 +1138,7 @@ U 1 1 6053AC7D
 P 7475 5400
 F 0 "J14" H 7502 5376 50  0000 L CNN
 F 1 "DISPLAY" H 7502 5285 50  0000 L CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x12_P2.54mm_Horizontal" H 7475 5400 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x12_P2.54mm_Vertical" H 7475 5400 50  0001 C CNN
 F 3 "~" H 7475 5400 50  0001 C CNN
 	1    7475 5400
 	1    0    0    -1  
@@ -1150,7 +1149,7 @@ U 1 1 6053BCB8
 P 2150 900
 F 0 "J13" H 2177 876 50  0000 L CNN
 F 1 "DISPLAY" H 2177 785 50  0000 L CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x12_P2.54mm_Horizontal" H 2150 900 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x12_P2.54mm_Vertical" H 2150 900 50  0001 C CNN
 F 3 "~" H 2150 900 50  0001 C CNN
 	1    2150 900 
 	0    -1   -1   0   
@@ -1203,4 +1202,34 @@ Wire Wire Line
 	2800 5425 2800 5525
 Wire Wire Line
 	2800 5525 3100 5525
+$Comp
+L power:+5V #PWR0129
+U 1 1 605489F4
+P 6025 1250
+F 0 "#PWR0129" H 6025 1100 50  0001 C CNN
+F 1 "+5V" H 6040 1423 50  0000 C CNN
+F 2 "" H 6025 1250 50  0001 C CNN
+F 3 "" H 6025 1250 50  0001 C CNN
+	1    6025 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x04_Female J16
+U 1 1 6054A274
+P 3550 6100
+F 0 "J16" H 3577 6076 50  0000 L CNN
+F 1 "LVHC_monitor" H 3577 5985 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 3550 6100 50  0001 C CNN
+F 3 "~" H 3550 6100 50  0001 C CNN
+	1    3550 6100
+	1    0    0    -1  
+$EndComp
+Text Label 3350 6000 2    50   ~ 0
+I_LED_SCALED
+Text Label 3350 6100 2    50   ~ 0
+IL_SCALED
+Text Label 3350 6200 2    50   ~ 0
+LED_VOUT
+Text Label 3350 6300 2    50   ~ 0
+LED_TEMP_SCALED
 $EndSCHEMATC
