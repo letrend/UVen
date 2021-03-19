@@ -1,5 +1,6 @@
 EESchema Schematic File Version 4
-EELAYER 30 0
+LIBS:uven-mainboard-cache
+EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -14,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L uven-mainboard-rescue:Arduino_Due_Shield-arduino XA1
+L arduino:Arduino_Due_Shield XA1
 U 1 1 6050A864
 P 5975 3850
 F 0 "XA1" H 5975 1470 60  0000 C CNN
@@ -25,7 +26,7 @@ F 3 "https://store.arduino.cc/arduino-due" H 6675 6600 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L uven-mainboard-rescue:TLI4970-custom U1
+L custom:TLI4970 U1
 U 1 1 6050B352
 P 9775 2525
 F 0 "U1" H 9775 2950 50  0000 C CNN
@@ -36,7 +37,7 @@ F 3 "" H 9725 2525 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L uven-mainboard-rescue:TLI4970-custom U2
+L custom:TLI4970 U2
 U 1 1 6050B3B2
 P 9775 3400
 F 0 "U2" H 9775 3825 50  0000 C CNN
@@ -47,7 +48,7 @@ F 3 "" H 9725 3400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L uven-mainboard-rescue:TLI4970-custom U3
+L custom:TLI4970 U3
 U 1 1 6050B410
 P 9775 4250
 F 0 "U3" H 9775 4675 50  0000 C CNN
@@ -58,7 +59,7 @@ F 3 "" H 9725 4250 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L uven-mainboard-rescue:TLI4970-custom U4
+L custom:TLI4970 U4
 U 1 1 6050B500
 P 9775 5100
 F 0 "U4" H 9775 5525 50  0000 C CNN
@@ -69,7 +70,7 @@ F 3 "" H 9725 5100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L uven-mainboard-rescue:TLI4970-custom U5
+L custom:TLI4970 U5
 U 1 1 6050B55C
 P 9775 5950
 F 0 "U5" H 9775 6375 50  0000 C CNN
