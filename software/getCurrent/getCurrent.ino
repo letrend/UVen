@@ -38,6 +38,7 @@ void setup() {
 }
 
 bool toggle = false;
+float temp = 0;
 
 // the loop function runs over and over again forever
 void loop() {
@@ -55,7 +56,8 @@ void loop() {
 //      Serial.println(current_sensor[i].getCurrent());
 //    }
 //  }
-  sevseg.setNumber(analogRead(A0), 0);
+  temp = 0.99*temp+0.01*analogRead(A0);
+  sevseg.setNumber(int(temp),0);
     sevseg.refreshDisplay(); // Must run repeatedly
 //  delay(500);
 
