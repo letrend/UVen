@@ -7,11 +7,7 @@ Tli4970 current_sensor[5] = {Tli4970(),Tli4970(),Tli4970(),Tli4970(),Tli4970()};
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-  Serial.begin(9600);
-  while(!Serial);
-  
-  // Use default SPI for communication with the Tli4970 (no OCD pin is defined)
-//  Tli4970CurrentSensor.begin();
+  Serial.begin(115200);
   // Use custom SPI
   current_sensor[0].begin(SPI, (uint8_t)3u, (uint8_t)8u);
   current_sensor[1].begin(SPI, (uint8_t)4u, (uint8_t)9u);
@@ -30,35 +26,30 @@ void setup() {
    byte numDigits = 4;  
     byte digitPins[] = {50, 48, 52, 53};
     byte segmentPins[] = {42, 51, 44, 46, 45, 47, 49, 43};
-    bool resistorsOnSegments = 0; 
-    // variable above indicates that 4 resistors were placed on the digit pins.
-    // set variable to 1 if you want to use 8 resistors on the segment pins.
-    sevseg.begin(COMMON_CATHODE, numDigits, digitPins, segmentPins, resistorsOnSegments);
-    sevseg.setBrightness(90);
+    sevseg.begin(COMMON_CATHODE, numDigits, digitPins, segmentPins, 0);
+    sevseg.setBrightness(150);
 }
 
 bool toggle = false;
-float temp = 0;
+float poly[4] = { -9.11401328e-07,   1.12277904e-03,  -5.54068598e-01,   1.35816421e+02};
+int analogValue[5] = {0}, analogPin[5] = {A0,A1,A2,A3,A4};
+float temperature[5] = {0}, current[5] = {0};
+
+float calcTemp(int val){
+  float temp = poly[0]*val*val*val+poly[1]*val*val+poly[2]*val+poly[3];
+  return temp;
+}
 
 // the loop function runs over and over again forever
 void loop() {
-  digitalWrite(2,toggle);
-  toggle = !toggle;
-//  for(int i=0;i<5;i++){
-//    if(current_sensor[i].readOut())
-//    {
-//      Serial.print(i);
-//      Serial.print(" FAILED");
-//      Serial.println(current_sensor[i].getStatus());
-//    }
-//    else
-//    {
-//      Serial.println(current_sensor[i].getCurrent());
-//    }
-//  }
-  temp = 0.99*temp+0.01*analogRead(A0);
-  sevseg.setNumber(int(temp),0);
-    sevseg.refreshDisplay(); // Must run repeatedly
-//  delay(500);
+//  digitalWrite(2,toggle);
+//  toggle = !toggle;
+  for(int i=0;i<5;i++){
+    current[i] = current_sensor[i].getCurrent();
+    analogValue[i] = analogRead(analogPin[i]);  
+    temperature[i] = calcTemp(analogValue[i]);
+  }
+  sevseg.setNumber(int(temperature[0]),0);
+  sevseg.refreshDisplay(); // Must run repeatedly
 
 }
