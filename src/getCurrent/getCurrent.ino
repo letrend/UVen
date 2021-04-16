@@ -39,26 +39,29 @@ void setup() {
 
 bool toggle = false;
 float temp = 0;
+float current[5];
 
 // the loop function runs over and over again forever
 void loop() {
-  digitalWrite(2,toggle);
-  toggle = !toggle;
-//  for(int i=0;i<5;i++){
-//    if(current_sensor[i].readOut())
-//    {
-//      Serial.print(i);
-//      Serial.print(" FAILED");
-//      Serial.println(current_sensor[i].getStatus());
-//    }
-//    else
-//    {
-//      Serial.println(current_sensor[i].getCurrent());
-//    }
-//  }
-  temp = 0.99*temp+0.01*analogRead(A0);
-  sevseg.setNumber(int(temp),0);
-    sevseg.refreshDisplay(); // Must run repeatedly
-//  delay(500);
+//  digitalWrite(2,toggle);
+//  toggle = !toggle;
+  for(int i=4;i<5;i++){
+    if(current_sensor[i].readOut())
+    {
+      Serial.print(i);
+      Serial.print(" FAILED");
+      Serial.println(current_sensor[i].getStatus());
+    }
+    else
+    {
+      current[i] = current_sensor[i].getCurrent();
+      Serial.println(current[i]);
+    }
+  }
+//  temp = 0.99*temp+0.01*analogRead(A0);
+//float current[4] = current_sensor[i].getCurrent();
+//  sevseg.setNumber(int(temp),0);
+//    sevseg.refreshDisplay(); // Must run repeatedly
+  delay(500);
 
 }
