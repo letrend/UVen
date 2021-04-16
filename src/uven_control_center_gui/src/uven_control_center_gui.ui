@@ -22,7 +22,7 @@
   <widget class="QFrame" name="frame">
    <property name="geometry">
     <rect>
-     <x>370</x>
+     <x>160</x>
      <y>10</y>
      <width>341</width>
      <height>731</height>
@@ -347,167 +347,203 @@
     </property>
    </widget>
   </widget>
-  <widget class="QFrame" name="frame_3">
+  <widget class="QwtDial" name="temp_dial_0">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>10</y>
-     <width>341</width>
-     <height>181</height>
+     <x>10</x>
+     <y>50</y>
+     <width>131</width>
+     <height>131</height>
     </rect>
    </property>
-   <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
+   <property name="invertedControls">
+    <bool>false</bool>
    </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
-   <widget class="QFrame" name="frame_23">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>40</y>
-      <width>341</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QCustomPlot" name="torque" native="true">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>341</width>
-       <height>131</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QLabel" name="label_3">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>5</y>
-      <width>131</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>22</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>TORQUE</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QFrame" name="frame_4">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>200</y>
-     <width>341</width>
-     <height>181</height>
-    </rect>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
-   <widget class="QFrame" name="frame_24">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>40</y>
-      <width>341</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QCustomPlot" name="rps" native="true">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>341</width>
-       <height>131</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QLabel" name="label_4">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>5</y>
-      <width>131</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>22</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>RPS</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QPushButton" name="less_torque">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>390</y>
-     <width>101</width>
-     <height>91</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>less torque</string>
+   <property name="lineWidth">
+    <number>4</number>
    </property>
   </widget>
-  <widget class="QPushButton" name="keep_torque">
+  <widget class="QwtDial" name="temp_dial_1">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>390</y>
-     <width>101</width>
-     <height>91</height>
+     <x>10</x>
+     <y>190</y>
+     <width>131</width>
+     <height>131</height>
     </rect>
    </property>
-   <property name="text">
-    <string>keep torque</string>
+   <property name="invertedControls">
+    <bool>false</bool>
+   </property>
+   <property name="lineWidth">
+    <number>4</number>
    </property>
   </widget>
-  <widget class="QPushButton" name="more_torque">
+  <widget class="QwtDial" name="temp_dial_2">
    <property name="geometry">
     <rect>
-     <x>240</x>
-     <y>390</y>
-     <width>101</width>
-     <height>91</height>
+     <x>10</x>
+     <y>330</y>
+     <width>131</width>
+     <height>131</height>
     </rect>
    </property>
-   <property name="text">
-    <string>more torque</string>
+   <property name="invertedControls">
+    <bool>false</bool>
+   </property>
+   <property name="lineWidth">
+    <number>4</number>
+   </property>
+  </widget>
+  <widget class="QwtDial" name="temp_dial_3">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>470</y>
+     <width>131</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="invertedControls">
+    <bool>false</bool>
+   </property>
+   <property name="lineWidth">
+    <number>4</number>
+   </property>
+  </widget>
+  <widget class="QwtDial" name="temp_dial_4">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>610</y>
+     <width>131</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="invertedControls">
+    <bool>false</bool>
+   </property>
+   <property name="lineWidth">
+    <number>4</number>
+   </property>
+  </widget>
+  <widget class="QwtDial" name="current_dial_0">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>50</y>
+     <width>131</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="upperBound">
+    <double>5.000000000000000</double>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="invertedControls">
+    <bool>false</bool>
+   </property>
+   <property name="lineWidth">
+    <number>4</number>
+   </property>
+  </widget>
+  <widget class="QwtDial" name="current_dial_1">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>190</y>
+     <width>131</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="upperBound">
+    <double>5.000000000000000</double>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="invertedControls">
+    <bool>false</bool>
+   </property>
+   <property name="lineWidth">
+    <number>4</number>
+   </property>
+  </widget>
+  <widget class="QwtDial" name="current_dial_2">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>330</y>
+     <width>131</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="upperBound">
+    <double>5.000000000000000</double>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="invertedControls">
+    <bool>false</bool>
+   </property>
+   <property name="lineWidth">
+    <number>4</number>
+   </property>
+  </widget>
+  <widget class="QwtDial" name="current_dial_3">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>470</y>
+     <width>131</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="upperBound">
+    <double>5.000000000000000</double>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="invertedControls">
+    <bool>false</bool>
+   </property>
+   <property name="lineWidth">
+    <number>4</number>
+   </property>
+  </widget>
+  <widget class="QwtDial" name="current_dial_4">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>610</y>
+     <width>131</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="upperBound">
+    <double>5.000000000000000</double>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="invertedControls">
+    <bool>false</bool>
+   </property>
+   <property name="lineWidth">
+    <number>4</number>
    </property>
   </widget>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QwtDial</class>
+   <extends>QWidget</extends>
+   <header>qwt_dial.h</header>
+  </customwidget>
   <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>

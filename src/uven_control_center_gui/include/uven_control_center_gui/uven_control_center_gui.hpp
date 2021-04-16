@@ -13,6 +13,7 @@
 #include <QLabel>
 #include <uven_control_center_gui/ui_uven_control_center_gui.h>
 #include <std_msgs/Float32.h>
+#include <qwt_dial_needle.h>
 
 #endif
 
@@ -59,9 +60,9 @@ QColor color_pallette[16] = {Qt::blue, Qt::red, Qt::green, Qt::cyan, Qt::magenta
                              Qt::darkBlue, Qt::darkCyan, Qt::darkMagenta, Qt::darkYellow, Qt::black, Qt::gray, Qt::green, Qt::cyan};
 QWidget *widget_;
 ros::NodeHandlePtr nh;
-ros::Publisher more_torque, less_torque, keep_torque;
-ros::Subscriber temp_subscriber[5], current_subscriber[5], rps_subscriber, torque_subscriber;
+ros::Subscriber temp_subscriber[5], current_subscriber[5];
 map<string,QVector<double> > values;
 boost::shared_ptr<ros::AsyncSpinner> spinner;
 ros::Time start_time;
+float warm = 40, hot = 60, nominal_current = 2.25, a_lot_of_current = 3.5;
 };

@@ -2,16 +2,18 @@ cmake_minimum_required(VERSION 2.8.3)
 project(uven_control_center_gui)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O0 -g")
-
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 find_package(catkin REQUIRED COMPONENTS roscpp roslint rqt_gui rqt_gui_cpp std_msgs sensor_msgs)
 
 find_package(PkgConfig REQUIRED )
+find_package(QWT REQUIRED)
 
 # yaml-cpp
 pkg_check_modules( yaml-cpp REQUIRED yaml-cpp)
 include_directories(${yaml-cpp_INCLUDE_DIRS})
 
-include_directories(include qcustomplot)
+include_directories(include qcustomplot ${QWT_INCLUDE_DIR}
+)
 
 ## System dependencies are found with CMake's conventions
 
@@ -58,7 +60,7 @@ endif ()
 add_library(uven_control_center_gui src/uven_control_center_gui.cpp
         ${uven_control_center_gui_MOCS} ${uven_control_center_gui_UIS_H}
         qcustomplot/qcustomplot.cpp )
-target_link_libraries(uven_control_center_gui ${VISP_LIBRARIES} ${catkin_LIBRARIES} ${yaml-cpp_LIBRARIES} -ldl)
+target_link_libraries(uven_control_center_gui ${VISP_LIBRARIES} ${catkin_LIBRARIES} ${yaml-cpp_LIBRARIES} ${QWT_LIBRARIES} -ldl)
 
 if ("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
     target_link_libraries(uven_control_center_gui Qt5::Widgets)
