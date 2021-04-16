@@ -5,6 +5,7 @@
 #include <std_msgs/Float32.h>
 #include <std_msgs/Int32.h>
 #include <std_msgs/Empty.h>
+#include <std_msgs/Bool.h>
 
 SevSeg sevseg; 
 Tli4970 current_sensor[5] = {Tli4970(),Tli4970(),Tli4970(),Tli4970(),Tli4970()};
@@ -12,18 +13,28 @@ Tli4970 current_sensor[5] = {Tli4970(),Tli4970(),Tli4970(),Tli4970(),Tli4970()};
 #define BUTTON0 40
 #define BUTTON1 41
 #define BUTTON2 39
+int buttons[3] = {BUTTON0, BUTTON1, BUTTON2};
 
 #define LED 2
 
 unsigned long t0,t1;
 
 void buttonChange(){
-  
+  bool b0 = digitalRead(BUTTON0);
+  bool b1 = digitalRead(BUTTON1);
+  if(b0 && !b1){ //off
+    analogWrite(LED,0);
+  }else if(b0 && b1){ // 50%
+    analogWrite(LED,127); 
+  }else if(!b0 && b1){
+    analogWrite(LED,255);  // 100 %
+  }
 }
 
 ros::NodeHandle nh;
 std_msgs::Float32 temp[5], current[5];
 std_msgs::Int32 over_current, over_temperature;
+std_msgs::Bool button[3];
 std_msgs::Empty toggle_msg;
 ros::Publisher over_current_pub("over_current", &over_current);
 ros::Publisher over_temperature_pub("over_temperature", &over_temperature);
@@ -33,6 +44,7 @@ ros::Publisher temp_pub[5]= { ros::Publisher("temp0", &temp[0]),ros::Publisher("
 ros::Publisher current_pub[5]= { ros::Publisher("current0", &current[0]),ros::Publisher("current1", &current[1]),
                               ros::Publisher("current2", &current[2]),ros::Publisher("current3", &current[3]),
                               ros::Publisher("current4", &current[4])};
+ros::Publisher button_pub[3] = {ros::Publisher("button0", &button[0]), ros::Publisher("button1", &button[1]), ros::Publisher("button2", &button[2])};                              
 //ros::Subscriber<std_msgs::Empty> more_torque_sub("more_torque", &moreTorque );
 
 void setup() {
@@ -58,7 +70,7 @@ void setup() {
   current_sensor[3].setPinOCD((uint8_t)11);
   current_sensor[4].setPinOCD((uint8_t)12);
   pinMode(LED,OUTPUT);
-  digitalWrite(2,0);
+  digitalWrite(LED,0);
   
   t0 = millis();
   attachInterrupt(digitalPinToInterrupt(BUTTON0), buttonChange, CHANGE);
@@ -71,6 +83,9 @@ void setup() {
   for(int i=0;i<5;i++){
     nh.advertise(temp_pub[i]);  
     nh.advertise(current_pub[i]);  
+  }
+  for(int i=0;i<3;i++){
+    nh.advertise(button_pub[i]);  
   }
 //  nh.subscribe(more_torque_sub);
 }
@@ -96,6 +111,10 @@ void loop() {
       temp[i].data = temp[i].data*0.9+ 0.1*calcTemp(analogValue[i]);
       temp_pub[i].publish(&temp[i]);
       current_pub[i].publish(&current[i]);
+    }
+    for(int i=0;i<3;i++){
+      button[i].data = !digitalRead(buttons[i]);
+      button_pub[i].publish(&button[i]);
     }
 
     sevseg.setNumber(int(temp[0].data ));
