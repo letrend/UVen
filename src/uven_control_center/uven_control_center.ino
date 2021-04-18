@@ -6,19 +6,22 @@
 #include <std_msgs/Int32.h>
 #include <std_msgs/Empty.h>
 #include <std_msgs/Bool.h>
+#include <Adafruit_NeoPixel.h>
 
 SevSeg sevseg; 
 Tli4970 current_sensor[5] = {Tli4970(),Tli4970(),Tli4970(),Tli4970(),Tli4970()};
 
 #define BUTTON0 40
 #define BUTTON1 41
-#define BUTTON2 39
-int buttons[3] = {BUTTON0, BUTTON1, BUTTON2};
+//#define BUTTON2 39
+int buttons[2] = {BUTTON0, BUTTON1};
 
 #define LED 2
 #define POTI A9
+#define NEOPIXEL_PIN    39
+Adafruit_NeoPixel strip(1, NEOPIXEL_PIN, NEO_RGBW + NEO_KHZ400);
 
-unsigned long t0,t1,fire_time=0,t2,elapsed_time;
+unsigned long t0,t1,fire_time=0,t2,elapsed_time,t3;
 
 enum STATES{
   IDLE,
@@ -54,13 +57,12 @@ ros::Publisher temp_pub[5]= { ros::Publisher("temp0", &temp[0]),ros::Publisher("
 ros::Publisher current_pub[5]= { ros::Publisher("current0", &current[0]),ros::Publisher("current1", &current[1]),
                               ros::Publisher("current2", &current[2]),ros::Publisher("current3", &current[3]),
                               ros::Publisher("current4", &current[4])};
-ros::Publisher button_pub[3] = {ros::Publisher("button0", &button[0]), ros::Publisher("button1", &button[1]), ros::Publisher("button2", &button[2])};                              
+ros::Publisher button_pub[2] = {ros::Publisher("button0", &button[0]), ros::Publisher("button1", &button[1])};                              
 //ros::Subscriber<std_msgs::Empty> more_torque_sub("more_torque", &moreTorque );
 
 void setup() {
   pinMode(BUTTON0,INPUT_PULLUP);
   pinMode(BUTTON1,INPUT_PULLUP);
-//  pinMode(BUTTON2,INPUT_PULLUP);
   pinMode(A9,INPUT);
   
   byte numDigits = 4;  
@@ -86,7 +88,6 @@ void setup() {
   t0 = millis();
   attachInterrupt(digitalPinToInterrupt(BUTTON0), buttonChange, CHANGE);
   attachInterrupt(digitalPinToInterrupt(BUTTON1), buttonChange, CHANGE);
-//  attachInterrupt(digitalPinToInterrupt(BUTTON2), buttonChange, CHANGE);
 
   nh.initNode();
   nh.advertise(over_current_pub);
@@ -95,10 +96,10 @@ void setup() {
     nh.advertise(temp_pub[i]);  
     nh.advertise(current_pub[i]);  
   }
-  for(int i=0;i<3;i++){
+  for(int i=0;i<2;i++){
     nh.advertise(button_pub[i]);  
   }
-//  nh.subscribe(more_torque_sub);
+  strip.begin();
 }
 
 float poly[4] = { -9.11401328e-07,   1.12277904e-03,  -5.54068598e-01,   1.35816421e+02};
@@ -125,7 +126,7 @@ void loop() {
       temp_pub[i].publish(&temp[i]);
       current_pub[i].publish(&current[i]);
     }
-    for(int i=0;i<3;i++){
+    for(int i=0;i<2;i++){
       button[i].data = !digitalRead(buttons[i]);
       button_pub[i].publish(&button[i]);
     }
@@ -139,10 +140,21 @@ void loop() {
     sevseg.setNumber(fire_time);
     armed_and_ready = false;
     analogWrite(LED,0);
+    strip.setPixelColor(0, 255, 0, 0, 0);
+    strip.show(); 
   }else if(state==ARMED){
     armed_and_ready = true;
     sevseg.setNumber(fire_time);
     analogWrite(LED,0);
+    if(t1-t3>1000){
+      t3 = t1;
+    }else if(t1-t3<200){
+      strip.setPixelColor(0, 0, 255, 0, 0);
+      strip.show(); 
+    }else{
+      strip.setPixelColor(0, 0, 0, 0, 0);
+      strip.show(); 
+    }
   }else if(state==FIRE){    
     if(armed_and_ready){ // we just fired
       t2 = millis();
@@ -167,6 +179,8 @@ void loop() {
     }else{
       if(elapsed_time<fire_time){
         analogWrite(LED,255);
+        strip.setPixelColor(0, 0, 255, 0, 0);
+        strip.show(); 
       }else{
         analogWrite(LED,0);
         state = ARMED;
@@ -180,6 +194,15 @@ void loop() {
       }
       if(over_temperature_flag){
         over_temperature_pub.publish(&over_temperature);
+      }
+      if(t1-t3>1000){
+        t3 = t1;
+      }else if(t1-t3>500){
+        strip.setPixelColor(0, 0, 255, 0, 0);
+        strip.show(); 
+      }else{
+        strip.setPixelColor(0, 255, 0, 0, 0);
+        strip.show(); 
       }
   }
 
