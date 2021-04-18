@@ -16,18 +16,28 @@ Tli4970 current_sensor[5] = {Tli4970(),Tli4970(),Tli4970(),Tli4970(),Tli4970()};
 int buttons[3] = {BUTTON0, BUTTON1, BUTTON2};
 
 #define LED 2
+#define POTI A9
 
-unsigned long t0,t1;
+unsigned long t0,t1,fire_time=0,t2,elapsed_time;
+
+enum STATES{
+  IDLE,
+  ARMED,
+  FIRE,
+  ERROR
+};
+
+int state = IDLE;
 
 void buttonChange(){
   bool b0 = digitalRead(BUTTON0);
   bool b1 = digitalRead(BUTTON1);
   if(b0 && !b1){ //off
-    analogWrite(LED,0);
-  }else if(b0 && b1){ // 50%
-    analogWrite(LED,127); 
+    state = IDLE;
+  }else if(b0 && b1){ 
+    state = ARMED;
   }else if(!b0 && b1){
-    analogWrite(LED,255);  // 100 %
+    state = FIRE;
   }
 }
 
@@ -50,7 +60,8 @@ ros::Publisher button_pub[3] = {ros::Publisher("button0", &button[0]), ros::Publ
 void setup() {
   pinMode(BUTTON0,INPUT_PULLUP);
   pinMode(BUTTON1,INPUT_PULLUP);
-  pinMode(BUTTON2,INPUT_PULLUP);
+//  pinMode(BUTTON2,INPUT_PULLUP);
+  pinMode(A9,INPUT);
   
   byte numDigits = 4;  
   byte digitPins[] = {50, 48, 52, 53};
@@ -75,7 +86,7 @@ void setup() {
   t0 = millis();
   attachInterrupt(digitalPinToInterrupt(BUTTON0), buttonChange, CHANGE);
   attachInterrupt(digitalPinToInterrupt(BUTTON1), buttonChange, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(BUTTON2), buttonChange, CHANGE);
+//  attachInterrupt(digitalPinToInterrupt(BUTTON2), buttonChange, CHANGE);
 
   nh.initNode();
   nh.advertise(over_current_pub);
@@ -97,6 +108,8 @@ float calcTemp(int val){
   return poly[0]*val*val*val+poly[1]*val*val+poly[2]*val+poly[3];
 }
 
+bool armed_and_ready = false, over_current_flag = false, over_temperature_flag = false;
+
 void loop() {
   t1 = millis();
   
@@ -117,11 +130,60 @@ void loop() {
       button_pub[i].publish(&button[i]);
     }
 
-    sevseg.setNumber(int(temp[0].data ));
-
     t0 = t1;
     nh.spinOnce();
   }
+
+  if(state==IDLE){
+    fire_time = int(fire_time*0.999f+0.001f*(analogRead(A9)-55)*10);
+    sevseg.setNumber(fire_time);
+    armed_and_ready = false;
+    analogWrite(LED,0);
+  }else if(state==ARMED){
+    armed_and_ready = true;
+    sevseg.setNumber(fire_time);
+    analogWrite(LED,0);
+  }else if(state==FIRE){    
+    if(armed_and_ready){ // we just fired
+      t2 = millis();
+      armed_and_ready = false;
+    }
+    elapsed_time = millis()-t2;
+    
+    // over current and over temperature check
+    for(int i=0;i<5;i++){
+      if(current[i].data>3.5){
+        over_current_flag = true;
+        over_current.data = i;
+      }
+      if(temp[i].data>40){
+        over_temperature_flag = true;
+        over_temperature.data = i;
+      }
+    }
+    if(over_current_flag || over_temperature_flag){
+      analogWrite(LED,0);  
+      state = ERROR;
+    }else{
+      if(elapsed_time<fire_time){
+        analogWrite(LED,255);
+      }else{
+        analogWrite(LED,0);
+        state = ARMED;
+      }
+      sevseg.setNumber(int(fire_time-elapsed_time));
+    }
+  }else if(state == ERROR){
+      sevseg.setChars("err");
+      if(over_current_flag){
+        over_current_pub.publish(&over_current);
+      }
+      if(over_temperature_flag){
+        over_temperature_pub.publish(&over_temperature);
+      }
+  }
+
+
   
   sevseg.refreshDisplay(); // Must run repeatedly
 }
