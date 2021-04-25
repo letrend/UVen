@@ -27,7 +27,8 @@ enum STATES{
   IDLE,
   ARMED,
   FIRE,
-  ERROR
+  ERROR,
+  LID_OPEN
 };
 
 int state = IDLE;
@@ -136,16 +137,18 @@ void loop() {
   }
 
   if(state==IDLE){
-    fire_time = int(fire_time*0.999f+0.001f*(analogRead(A9)-55)*10);
+    fire_time = int(fire_time*0.9f+0.1f*(float(analogRead(A9))-55.0f));
     sevseg.setNumber(fire_time);
     armed_and_ready = false;
-    analogWrite(LED,0);
+    pinMode(LED,OUTPUT);
+    digitalWrite(LED,0); 
     strip.setPixelColor(0, 255, 0, 0, 0);
     strip.show(); 
   }else if(state==ARMED){
     armed_and_ready = true;
     sevseg.setNumber(fire_time);
-    analogWrite(LED,0);
+    pinMode(LED,OUTPUT);
+    digitalWrite(LED,0); 
     if(t1-t3>1000){
       t3 = t1;
     }else if(t1-t3<200){
@@ -157,11 +160,11 @@ void loop() {
     }
   }else if(state==FIRE){    
     if(armed_and_ready){ // we just fired
+      pinMode(LED,INPUT_PULLUP);// fire!
       t2 = millis();
       armed_and_ready = false;
     }
     elapsed_time = millis()-t2;
-    
     // over current and over temperature check
     for(int i=0;i<5;i++){
       if(current[i].data>3.5){
@@ -173,21 +176,29 @@ void loop() {
         over_temperature.data = i;
       }
     }
+    if(!digitalRead(LED)){ // check if lid is open
+      state = LID_OPEN;
+      pinMode(LED,OUTPUT);
+      digitalWrite(LED,0); 
+    }
     if(over_current_flag || over_temperature_flag){
-      analogWrite(LED,0);  
+      pinMode(LED,OUTPUT);
+      digitalWrite(LED,0); 
       state = ERROR;
     }else{
       if(elapsed_time<fire_time){
-        analogWrite(LED,255);
         strip.setPixelColor(0, 0, 255, 0, 0);
         strip.show(); 
       }else{
-        analogWrite(LED,0);
+        pinMode(LED,OUTPUT);
+        digitalWrite(LED,0); 
         state = ARMED;
       }
       sevseg.setNumber(int(fire_time-elapsed_time));
     }
   }else if(state == ERROR){
+      pinMode(LED,OUTPUT);
+      digitalWrite(LED,0); 
       sevseg.setChars("err");
       if(over_current_flag){
         over_current_pub.publish(&over_current);
@@ -204,6 +215,19 @@ void loop() {
         strip.setPixelColor(0, 255, 0, 0, 0);
         strip.show(); 
       }
+  }else if(state == LID_OPEN){
+    pinMode(LED,OUTPUT);
+    digitalWrite(LED,0); 
+    sevseg.setChars("lid");
+    if(t1-t3>1000){
+        t3 = t1;
+    }else if(t1-t3>500){
+      strip.setPixelColor(0, 0, 0, 255, 0);
+      strip.show(); 
+    }else{
+      strip.setPixelColor(0, 0, 0, 0, 255);
+      strip.show(); 
+    }
   }
 
 
