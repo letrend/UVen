@@ -144,6 +144,8 @@ void loop() {
     digitalWrite(LED,0); 
     strip.setPixelColor(0, 255, 0, 0, 0);
     strip.show(); 
+    over_current_flag = false;
+    over_temperature_flag = false;
   }else if(state==ARMED){
     armed_and_ready = true;
     sevseg.setNumber(fire_time);
@@ -167,11 +169,11 @@ void loop() {
     elapsed_time = millis()-t2;
     // over current and over temperature check
     for(int i=0;i<5;i++){
-      if(current[i].data>3.5){
+      if(current[i].data>4.1){
         over_current_flag = true;
         over_current.data = i;
       }
-      if(temp[i].data>40){
+      if(temp[i].data>30){
         over_temperature_flag = true;
         over_temperature.data = i;
       }
