@@ -1,4 +1,3 @@
-#define USE_USBCON
 #include <ros.h>
 #include <std_msgs/UInt8.h>
 
