@@ -15,6 +15,9 @@ module top (
     output PIN_10,
     output PIN_11,
     output PIN_12,
+    input PIN_14,
+    input PIN_15,
+    input PIN_16,
     input PIN_17,
     input PIN_18,
     input PIN_19,
@@ -71,17 +74,17 @@ i2c_controller i2c(
   );
 
 
-  wire [5:0] button_input;
-  SB_IO #( .PIN_TYPE(6'b000001), .PULLUP(1'b1)) button0_input( .PACKAGE_PIN(PIN_22), .D_IN_0(button_input[0]));
-  SB_IO #( .PIN_TYPE(6'b000001), .PULLUP(1'b1)) button1_input( .PACKAGE_PIN(PIN_21), .D_IN_0(button_input[1]));
-  SB_IO #( .PIN_TYPE(6'b000001), .PULLUP(1'b1)) button2_input( .PACKAGE_PIN(PIN_20), .D_IN_0(button_input[2]));
-  SB_IO #( .PIN_TYPE(6'b000001), .PULLUP(1'b1)) button3_input( .PACKAGE_PIN(PIN_19), .D_IN_0(button_input[3]));
-  SB_IO #( .PIN_TYPE(6'b000001), .PULLUP(1'b1)) button4_input( .PACKAGE_PIN(PIN_18), .D_IN_0(button_input[4]));
-  SB_IO #( .PIN_TYPE(6'b000001), .PULLUP(1'b1)) button5_input( .PACKAGE_PIN(PIN_17), .D_IN_0(button_input[5]));
+  wire [2:0] button_input;
+  SB_IO #( .PIN_TYPE(6'b000001), .PULLUP(1'b1)) button4_input( .PACKAGE_PIN(PIN_18), .D_IN_0(button_input[0]));
+  SB_IO #( .PIN_TYPE(6'b000001), .PULLUP(1'b1)) button5_input( .PACKAGE_PIN(PIN_17), .D_IN_0(button_input[1]));
+
+  assign button_input[2] = PIN_16;
+  integer encoder_count;
+  quad q(CLK,PIN_14,PIN_15,encoder_count);
 
   assign LED = button[0];
-  wire [5:0]button;
-  reg [5:0]button_prev;
+  wire [2:0]button;
+  reg [2:0]button_prev;
   debounce debounce_buttons(
     .clk(CLK),
     .reset_n(1'b1),
@@ -89,46 +92,88 @@ i2c_controller i2c(
     .data_out(button)
     );
 
-  always @ ( posedge CLK ) begin: BUTTON_STATE
-    enable <= 0;
-    if(button[0]==0 && button_prev[0]==1)begin
-      value <= 0;
-      data_in <= 0;
-      enable <= 1;
-    end else if(button[1]==0 && button_prev[1]==1)begin
-      if(value<100)begin
-        value <= value+1;
-      end
-      data_in <= value;
-      enable <= 1;
-    end else if(button[2]==0 && button_prev[2]==1)begin
-      if(value>0)begin
-        value <= value-1;
-      end
-      data_in <= value;
-      enable <= 1;
-    end
+  parameter IDLE = 0, ARMED = 1, FIRE = 2;
 
 
+  reg [1:0] control_state;
+  always @ ( posedge CLK ) begin
     button_prev <= button;
-    // counter <= counter+1;
-    // enable <= 0;
-    // if(counter>16_000_0)begin
-    //   enable <= 1;
-    //   counter <= 0;
-    //   if(state)begin
-    //     data_in <= 0;
-    //   end else begin
-    //     data_in <= 100;
-    //   end
-    //   state <= !state;
-    //   // data_in <= data_in+1;
-    //   // if(data_in>=100)begin
-    //   //   data_in <= 0;
-    //   // end
+    case (button[1:0])
+      2'b10: control_state <= 0;
+      2'b11: control_state <= 1;
+      2'b01: if(button_prev==2'b11)begin
+        control_state <= 2;
+      end
+    endcase
+    // if(encoder_count<0)begin
+    //   value <= 9999+encoder_count;
+    // end else begin
+    //   value <= encoder_count;
     // end
-
   end
+
+  integer on_time, off_time, repetitions, intensity, encoder_count_offset;
+  integer on_time_saved, off_time_saved, repetitions_saved, intensity_saved;
+  reg [1:0] value_selector;
+  reg encoder_button_prev;
+
+  parameter ON_TIME = 0, OFF_TIME = 1, REPETITIONS = 2, INTENSITY = 3;
+
+  always @ ( posedge CLK ) begin
+    if(control_state==IDLE)begin
+      case (value_selector)
+        ON_TIME: begin
+                  on_time <= on_time_saved+(encoder_count-encoder_count_offset);
+                  value <= on_time;
+        end
+        OFF_TIME: begin
+                  off_time <= off_time_saved+(encoder_count-encoder_count_offset);
+                  value <= off_time;
+        end
+        REPETITIONS: begin
+                  repetitions <= repetitions_saved+(encoder_count-encoder_count_offset);
+                  value <= repetitions;
+        end
+        INTENSITY: begin
+                  intensity <= intensity_saved+(encoder_count-encoder_count_offset);
+                  value <= intensity;
+        end
+      endcase
+      // value <= value_selector;
+      if(button_prev[2] && !button[2])begin
+        value_selector <= value_selector+1;
+        encoder_count_offset <= encoder_count;
+        on_time_saved <= on_time;
+        off_time_saved <= off_time;
+        repetitions_saved <= repetitions;
+        intensity_saved <= intensity;
+      end
+    end
+  end
+
+  // always @ ( posedge CLK ) begin: BUTTON_STATE
+  //   enable <= 0;
+  //   if(button[0]==0 && button_prev[0]==1)begin
+  //     value <= 0;
+  //     data_in <= 0;
+  //     enable <= 1;
+  //   end else if(button[1]==0 && button_prev[1]==1)begin
+  //     if(value<100)begin
+  //       value <= value+1;
+  //     end
+  //     data_in <= value;
+  //     enable <= 1;
+  //   end else if(button[2]==0 && button_prev[2]==1)begin
+  //     if(value>0)begin
+  //       value <= value-1;
+  //     end
+  //     data_in <= value;
+  //     enable <= 1;
+  //   end
+  //
+  //
+  //   button_prev <= button;
+  // end
 
   reg [3:0] digit;
 
@@ -165,10 +210,6 @@ i2c_controller i2c(
       counter2 <= counter2 + 1;
       if(counter>16_000_0)begin
         counter <= 0;
-        // value <= value+1;
-        // if(value>9999)begin
-        //   value <= 0;
-        // end
         start <= 1;
       end
       if(dv)begin

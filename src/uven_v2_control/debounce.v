@@ -17,7 +17,7 @@ module debounce (
   data_out
 );
 
-  parameter WIDTH = 6;           // set to be the width of the bus being debounced
+  parameter WIDTH = 3;           // set to be the width of the bus being debounced
   parameter POLARITY = "LOW";    // set to be "HIGH" for active high debounce or "LOW" for active low debounce
   parameter TIMEOUT = 50000;      // number of input clock cycles the input signal needs to be in the active state
   parameter TIMEOUT_WIDTH = 16;   // set to be ceil(log2(TIMEOUT))
