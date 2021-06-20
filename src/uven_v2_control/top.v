@@ -15,6 +15,7 @@ module top (
     output PIN_10,
     output PIN_11,
     output PIN_12,
+    output PIN_13,
     input PIN_14,
     input PIN_15,
     input PIN_16,
@@ -94,59 +95,129 @@ i2c_controller i2c(
 
   parameter IDLE = 0, ARMED = 1, FIRE = 2;
 
-
+  reg relay_fire;
+  assign PIN_13 = relay_fire && (control_state==FIRE);
   reg [1:0] control_state;
-  always @ ( posedge CLK ) begin
-    button_prev <= button;
-    case (button[1:0])
-      2'b10: control_state <= 0;
-      2'b11: control_state <= 1;
-      2'b01: if(button_prev==2'b11)begin
-        control_state <= 2;
-      end
-    endcase
-    // if(encoder_count<0)begin
-    //   value <= 9999+encoder_count;
-    // end else begin
-    //   value <= encoder_count;
-    // end
-  end
 
-  integer on_time, off_time, repetitions, intensity, encoder_count_offset;
+  integer on_time=3000, off_time=100, repetitions=1, intensity=50, encoder_count_offset;
+  integer on_time_actual, off_time_actual, repetitions_actual;
   integer on_time_saved, off_time_saved, repetitions_saved, intensity_saved;
+  integer ms_clock_counter;
   reg [1:0] value_selector;
+  reg value_toggle;
   reg encoder_button_prev;
+  reg fire_sleep;
 
   parameter ON_TIME = 0, OFF_TIME = 1, REPETITIONS = 2, INTENSITY = 3;
 
   always @ ( posedge CLK ) begin
     if(control_state==IDLE)begin
-      case (value_selector)
-        ON_TIME: begin
-                  on_time <= on_time_saved+(encoder_count-encoder_count_offset);
-                  value <= on_time;
-        end
-        OFF_TIME: begin
-                  off_time <= off_time_saved+(encoder_count-encoder_count_offset);
-                  value <= off_time;
-        end
-        REPETITIONS: begin
-                  repetitions <= repetitions_saved+(encoder_count-encoder_count_offset);
-                  value <= repetitions;
-        end
-        INTENSITY: begin
-                  intensity <= intensity_saved+(encoder_count-encoder_count_offset);
-                  value <= intensity;
-        end
-      endcase
       // value <= value_selector;
       if(button_prev[2] && !button[2])begin
-        value_selector <= value_selector+1;
+        value_toggle <= !value_toggle;
         encoder_count_offset <= encoder_count;
         on_time_saved <= on_time;
         off_time_saved <= off_time;
         repetitions_saved <= repetitions;
         intensity_saved <= intensity;
+      end
+      if(!value_toggle)begin
+        value_selector <= value_selector+(encoder_count-encoder_count_offset)>>3;
+      end else begin
+        case (value_selector)
+          ON_TIME: begin
+            on_time <= on_time_saved+(encoder_count-encoder_count_offset);
+            if(on_time>9999)begin
+              on_time <= 9999;
+            end else if(on_time<0) begin
+              on_time <= 0;
+            end
+            value <= on_time;
+          end
+          OFF_TIME: begin
+            off_time <= off_time_saved+(encoder_count-encoder_count_offset);
+            if(off_time>9999)begin
+              off_time <= 9999;
+            end else if(off_time<0) begin
+              off_time <= 0;
+            end
+            value <= off_time;
+          end
+          REPETITIONS: begin
+            repetitions <= repetitions_saved+(encoder_count-encoder_count_offset);
+            if(repetitions>9999)begin
+              repetitions <= 9999;
+            end else if(repetitions<0) begin
+              repetitions <= 0;
+            end
+            value <= repetitions;
+          end
+          INTENSITY: begin
+            intensity <= intensity_saved+(encoder_count-encoder_count_offset);
+            if(intensity>100)begin
+              intensity <= 100;
+            end else if(intensity<0) begin
+              intensity <= 0;
+            end
+            value <= intensity;
+          end
+        endcase
+      end
+    end
+    enable <= 0;
+    button_prev <= button;
+    case (button[1:0])
+      2'b10: control_state <= IDLE;
+      2'b11: begin
+        control_state <= ARMED;
+        on_time_actual <= 0;
+        off_time_actual <= 0;
+        repetitions_actual <= 0;
+        if(button_prev[1:0]!=2'b11)begin
+          // on more sanity check
+          if(intensity>100)begin
+            data_in <= 100;
+          end else if(intensity<0)begin
+            data_in <= 0;
+          end else begin
+            data_in <= intensity;
+          end
+          enable <= 1;
+        end
+      end
+      2'b01: if(button_prev[1:0]==2'b11)begin
+        control_state <= FIRE;
+      end
+    endcase
+    if(control_state==FIRE)begin
+      if(repetitions_actual<repetitions)begin
+        if(!fire_sleep)begin
+          relay_fire <= 1;
+          ms_clock_counter <= ms_clock_counter+1;
+          if(ms_clock_counter>=16_000)begin
+            ms_clock_counter <= 0;
+            on_time_actual <= on_time_actual+1;
+            if(on_time_actual>on_time)begin
+              relay_fire <= 0;
+              on_time_actual <= 0;
+              fire_sleep <= 1;
+            end
+          end
+        end else begin
+          relay_fire <= 0;
+          ms_clock_counter <= ms_clock_counter+1;
+          if(ms_clock_counter>=16_000)begin
+            ms_clock_counter <= 0;
+            off_time_actual <= off_time_actual+1;
+            if(off_time_actual>off_time)begin
+              off_time_actual <= 0;
+              fire_sleep <= 0;
+              repetitions_actual <= repetitions_actual+1;
+            end
+          end
+        end
+      end else begin
+        control_state <= ARMED;
       end
     end
   end
@@ -178,25 +249,26 @@ i2c_controller i2c(
   reg [3:0] digit;
 
   wire [6:0] sev_seg_digit;
+  reg [6:0] sev_seg_digit_manual;
 
   SevSeg sevseg(CLK,digit,sev_seg_digit);
 
   integer number;
   reg [3:0] digit_enable_n;
-  assign PIN_8 = sev_seg_digit[0];
-  assign PIN_6 = sev_seg_digit[1];
-  assign PIN_4 = sev_seg_digit[2];
-  assign PIN_5 = sev_seg_digit[3];
-  assign PIN_3 = sev_seg_digit[4];
-  assign PIN_10 = sev_seg_digit[5];
-  assign PIN_1 = sev_seg_digit[6];
+  assign PIN_8 = (value_toggle?sev_seg_digit[0]:sev_seg_digit_manual[0]);
+  assign PIN_6 = (value_toggle?sev_seg_digit[1]:sev_seg_digit_manual[1]);
+  assign PIN_4 = (value_toggle?sev_seg_digit[2]:sev_seg_digit_manual[2]);
+  assign PIN_5 = (value_toggle?sev_seg_digit[3]:sev_seg_digit_manual[3]);
+  assign PIN_3 = (value_toggle?sev_seg_digit[4]:sev_seg_digit_manual[4]);
+  assign PIN_10 = (value_toggle?sev_seg_digit[5]:sev_seg_digit_manual[5]);
+  assign PIN_1 = (value_toggle?sev_seg_digit[6]:sev_seg_digit_manual[6]);
   assign PIN_2 = 0; // dpx
   assign PIN_9 = digit_enable_n[0]; // d0
   assign PIN_7 = digit_enable_n[1]; // d1
   assign PIN_11 = digit_enable_n[2]; // d2
   assign PIN_12 = digit_enable_n[3]; // d3
-  integer counter,counter2;
-  integer value;
+  integer refresh_counter;
+  integer value, value_prev = -1;
   integer display_digit;
   reg start;
   reg [15:0] bcd;
@@ -206,33 +278,70 @@ i2c_controller i2c(
   DoubleDabble double_dabble(CLK,value,start,bcd,dv);
 
   always @(posedge CLK) begin
-      counter <= counter + 1;
-      counter2 <= counter2 + 1;
-      if(counter>16_000_0)begin
-        counter <= 0;
+      if(value!=value_prev)begin
+        value_prev <= value;
         start <= 1;
       end
       if(dv)begin
         bcd_result <= bcd;
       end
-
-      if(counter2>16_000)begin
-        counter2<= 0;
+      refresh_counter <= refresh_counter + 1;
+      if(refresh_counter>16_000)begin // 1000Hz
+        refresh_counter <= 0;
         case (display_digit)
           0: begin
-            digit <= bcd_result[3:0];
+            if(value_toggle)begin
+              digit <= bcd_result[3:0];
+            end else begin
+              case (value_selector)
+                ON_TIME: begin sev_seg_digit_manual <= 0; end
+                OFF_TIME: begin sev_seg_digit_manual <= 7'b1000111; end
+                REPETITIONS: begin sev_seg_digit_manual <= 7'b1100111; end
+                INTENSITY: begin sev_seg_digit_manual <= 7'b0001111; end
+              endcase
+            end
             digit_enable_n <= 4'b0111;
           end
           1: begin
-            digit <= bcd_result[7:4];
+            if(value_toggle)begin
+              digit <= bcd_result[7:4];
+            end else begin
+              case (value_selector)
+                ON_TIME: begin sev_seg_digit_manual <= 7'b0010101; end
+                OFF_TIME: begin sev_seg_digit_manual <= 7'b1000111; end
+                REPETITIONS: begin sev_seg_digit_manual <= 7'b1001111; end
+                INTENSITY: begin sev_seg_digit_manual <= 7'b0010101; end
+                default : sev_seg_digit_manual<= 0;
+              endcase
+            end
             digit_enable_n <= 4'b1011;
           end
           2: begin
-            digit <= bcd_result[11:8];
+            if(value_toggle)begin
+              digit <= bcd_result[11:8];
+            end else begin
+              case (value_selector)
+                ON_TIME: begin sev_seg_digit_manual <= 7'b1111110; end
+                OFF_TIME: begin sev_seg_digit_manual <= 7'b1111110; end
+                REPETITIONS: begin sev_seg_digit_manual <= 7'b0000101; end
+                INTENSITY: begin sev_seg_digit_manual <= 7'b0000110; end
+                default : sev_seg_digit_manual<= 0;
+              endcase
+            end
             digit_enable_n <= 4'b1101;
           end
           3: begin
-            digit <= bcd_result[15:12];
+            if(value_toggle)begin
+              digit <= bcd_result[15:12];
+            end else begin
+              case (value_selector)
+                ON_TIME: begin sev_seg_digit_manual <= 1; end
+                OFF_TIME: begin sev_seg_digit_manual <= 1; end
+                REPETITIONS: begin sev_seg_digit_manual <= 1; end
+                INTENSITY: begin sev_seg_digit_manual <= 1; end
+                default : sev_seg_digit_manual<= 0;
+              endcase
+            end
             digit_enable_n <= 4'b1110;
           end
           default: ;
