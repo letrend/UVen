@@ -142,7 +142,7 @@ void loop() {
   }
 
   if(state==IDLE){
-    fire_time = int(fire_time*0.9f+0.1f*(float(analogRead(A9))-55.0f));
+    fire_time = int(fire_time*0.9f+0.1f*(float(analogRead(A9))-55.0f)*10);
     sevseg.setNumber(fire_time);
     armed_and_ready = false;
     pinMode(LED,OUTPUT);
@@ -172,7 +172,7 @@ void loop() {
     elapsed_time = millis()-t2;
     // over current and over temperature check
     for(int i=0;i<5;i++){
-      if(current[i].data>3.5){
+      if(current[i].data>4.0){
         over_current_flag = true;
         over_current.data = i;
       }
