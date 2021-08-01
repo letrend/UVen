@@ -25,8 +25,8 @@ Adafruit_NeoPixel strip(1, NEOPIXEL_PIN, NEO_RGBW + NEO_KHZ400);
 // 1) fire for firetime period
 // 2) delay 10 seconds
 // 3) repeat 1)
-bool endless_loop = true; 
-unsigned long t0,t1,fire_time=0,t2,elapsed_time,t3;
+bool endless_loop = true, cool_down = true, cool_down_activated = true; 
+unsigned long t0,t1,fire_time=0,t2,elapsed_time,t3,t4;
 
 enum STATES{
   IDLE,
@@ -194,17 +194,34 @@ void loop() {
       if(elapsed_time<fire_time){
         strip.setPixelColor(0, 0, 255, 0, 0);
         strip.show(); 
+        sevseg.setNumber(int(fire_time-elapsed_time));
       }else{
         pinMode(LED,OUTPUT);
         digitalWrite(LED,0); 
         if(endless_loop){
-          delay(10000);
-          armed_and_ready = true;
+          if(cool_down){
+            if(cool_down_activated){
+              t4 = millis();
+              cool_down_activated = false;
+            }else{
+              int elapsed_cool_down_time = millis()-t4;
+              if(elapsed_cool_down_time>10000){
+                cool_down = false;
+              }
+              strip.setPixelColor(int(elapsed_cool_down_time/10000.0f*255), 0, 0, 0, 0);
+              strip.show();
+            }
+            sevseg.setChars("COOL");
+          }else{
+            cool_down = true;
+            cool_down_activated = true;
+            armed_and_ready = true;
+          }
         }else{
           state = ARMED;
         }
       }
-      sevseg.setNumber(int(fire_time-elapsed_time));
+      
     }
   }else if(state == ERROR){
       pinMode(LED,OUTPUT);
