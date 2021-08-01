@@ -21,6 +21,11 @@ int buttons[2] = {BUTTON0, BUTTON1};
 #define NEOPIXEL_PIN    39
 Adafruit_NeoPixel strip(1, NEOPIXEL_PIN, NEO_RGBW + NEO_KHZ400);
 
+// set endless_loop = true results in
+// 1) fire for firetime period
+// 2) delay 10 seconds
+// 3) repeat 1)
+bool endless_loop = true; 
 unsigned long t0,t1,fire_time=0,t2,elapsed_time,t3;
 
 enum STATES{
@@ -192,7 +197,12 @@ void loop() {
       }else{
         pinMode(LED,OUTPUT);
         digitalWrite(LED,0); 
-        state = ARMED;
+        if(endless_loop){
+          delay(10000);
+          armed_and_ready = true;
+        }else{
+          state = ARMED;
+        }
       }
       sevseg.setNumber(int(fire_time-elapsed_time));
     }
