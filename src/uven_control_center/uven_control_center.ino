@@ -181,11 +181,7 @@ void loop() {
         over_temperature.data = i;
       }
     }
-    if(!digitalRead(LED)){ // check if lid is open
-      state = LID_OPEN;
-      pinMode(LED,OUTPUT);
-      digitalWrite(LED,0); 
-    }
+    
     if(over_current_flag || over_temperature_flag){
       pinMode(LED,OUTPUT);
       digitalWrite(LED,0); 
@@ -195,6 +191,11 @@ void loop() {
         strip.setPixelColor(0, 0, 255, 0, 0);
         strip.show(); 
         sevseg.setNumber(int(fire_time-elapsed_time));
+        if(!digitalRead(LED)){ // check if lid is open
+          state = LID_OPEN;
+          pinMode(LED,OUTPUT);
+          digitalWrite(LED,0); 
+        }
       }else{
         pinMode(LED,OUTPUT);
         digitalWrite(LED,0); 
