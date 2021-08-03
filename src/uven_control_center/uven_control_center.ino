@@ -142,8 +142,8 @@ void loop() {
   }
 
   if(state==IDLE){
-    fire_time = int(fire_time*0.9f+0.1f*(float(analogRead(A9))-55.0f)*10);
-    sevseg.setNumber(fire_time);
+    fire_time = int(fire_time*0.9f+0.1f*(float(analogRead(A9))-55.0f)*100);
+    sevseg.setNumber((fire_time/10));
     armed_and_ready = false;
     pinMode(LED,OUTPUT);
     digitalWrite(LED,0); 
@@ -151,7 +151,7 @@ void loop() {
     strip.show(); 
   }else if(state==ARMED){
     armed_and_ready = true;
-    sevseg.setNumber(fire_time);
+    sevseg.setNumber((fire_time/10));
     pinMode(LED,OUTPUT);
     digitalWrite(LED,0); 
     if(t1-t3>1000){
@@ -176,7 +176,7 @@ void loop() {
         over_current_flag = true;
         over_current.data = i;
       }
-      if(temp[i].data>30){
+      if(temp[i].data>60){
         over_temperature_flag = true;
         over_temperature.data = i;
       }
@@ -190,7 +190,7 @@ void loop() {
       if(elapsed_time<fire_time){
         strip.setPixelColor(0, 0, 255, 0, 0);
         strip.show(); 
-        sevseg.setNumber(int(fire_time-elapsed_time));
+        sevseg.setNumber(int(fire_time-elapsed_time)/10);
         if(!digitalRead(LED)){ // check if lid is open
           state = LID_OPEN;
           pinMode(LED,OUTPUT);
@@ -206,10 +206,10 @@ void loop() {
               cool_down_activated = false;
             }else{
               int elapsed_cool_down_time = millis()-t4;
-              if(elapsed_cool_down_time>10000){
+              if(elapsed_cool_down_time>30000){
                 cool_down = false;
               }
-              strip.setPixelColor(int(elapsed_cool_down_time/10000.0f*255), 0, 0, 0, 0);
+              strip.setPixelColor(int(elapsed_cool_down_time/30000.0f*255), 0, 0, 0, 0);
               strip.show();
             }
             sevseg.setChars("COOL");
