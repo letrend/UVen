@@ -95,8 +95,7 @@ i2c_controller i2c(
 
   parameter IDLE = 0, ARMED = 1, FIRE = 2;
 
-  reg relay_fire;
-  assign PIN_13 = relay_fire && (control_state==FIRE);
+  assign PIN_13 = (control_state==FIRE);
   reg [1:0] control_state;
 
   integer on_time=3000, off_time=3000, repetitions=1, intensity=10, encoder_count_offset;
@@ -184,7 +183,7 @@ i2c_controller i2c(
           repetitions_actual <= 0;
           fire_sleep <= 0;
           if(button_prev[1:0]!=2'b11)begin
-            // on more sanity check
+            // one more sanity check
             if(intensity>100)begin
               data_in <= 100;
             end else if(intensity<0)begin
@@ -203,20 +202,28 @@ i2c_controller i2c(
       if(control_state==FIRE)begin
         if(repetitions_actual<repetitions)begin
           if(!fire_sleep)begin
-            relay_fire <= 1;
+            // one more sanity check
+            if(intensity>100)begin
+              data_in <= 100;
+            end else if(intensity<0)begin
+              data_in <= 0;
+            end else begin
+              data_in <= intensity;
+            end
+            enable <= 1;
             ms_clock_counter <= ms_clock_counter+1;
             if(ms_clock_counter>=16_000)begin
               ms_clock_counter <= 0;
               on_time_actual <= on_time_actual+1;
               value <= on_time_actual;
               if(on_time_actual>on_time-1)begin
-                relay_fire <= 0;
                 on_time_actual <= 0;
                 fire_sleep <= 1;
               end
             end
           end else begin
-            relay_fire <= 0;
+            data_in <= 0;
+            enable <= 1;
             ms_clock_counter <= ms_clock_counter+1;
             if(ms_clock_counter>=16_000)begin
               ms_clock_counter <= 0;
