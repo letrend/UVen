@@ -98,7 +98,7 @@ i2c_controller i2c(
   assign PIN_13 = (control_state==FIRE);
   reg [1:0] control_state;
 
-  integer on_time=3000, off_time=3000, repetitions=1, intensity=10, encoder_count_offset;
+  integer on_time=100, off_time=100, repetitions=1, intensity=75, encoder_count_offset;
   integer on_time_actual, off_time_actual, repetitions_actual;
   integer on_time_saved, off_time_saved, repetitions_saved, intensity_saved;
   integer ms_clock_counter;
