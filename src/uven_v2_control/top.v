@@ -81,7 +81,9 @@ i2c_controller i2c(
 
   assign button_input[2] = PIN_16;
   integer encoder_count;
-  quad q(CLK,PIN_14,PIN_15,encoder_count);
+  wire [1:0] ab_input = {PIN_15,PIN_14};
+  wire [1:0] ab;
+  quad q(CLK,ab[0],ab[1],encoder_count);
 
   assign LED = button[0];
   wire [2:0]button;
@@ -91,6 +93,13 @@ i2c_controller i2c(
     .reset_n(1'b1),
     .data_in(button_input),
     .data_out(button)
+    );
+
+  debounce debounce_encoder(
+    .clk(CLK),
+    .reset_n(1'b1),
+    .data_in(ab_input),
+    .data_out(ab)
     );
 
   parameter IDLE = 0, ARMED = 1, FIRE = 2;
@@ -150,7 +159,7 @@ i2c_controller i2c(
                 value <= off_time;
               end
               REPETITIONS: begin
-                repetitions <= repetitions_saved+((encoder_count-encoder_count_offset)>>>3);
+                repetitions <= repetitions_saved+((encoder_count-encoder_count_offset)>>>1);
                 if(repetitions>9999)begin
                   repetitions <= 9999;
                 end else if(repetitions<1) begin
@@ -159,7 +168,7 @@ i2c_controller i2c(
                 value <= repetitions;
               end
               INTENSITY: begin
-                intensity <= intensity_saved+((encoder_count-encoder_count_offset)>>>3);
+                intensity <= intensity_saved+((encoder_count-encoder_count_offset)>>>4);
                 if(intensity>100)begin
                   intensity <= 100;
                 end else if(intensity<0) begin
