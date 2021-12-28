@@ -1,0 +1,252 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Regulator_Switching:LM3407MY U?
+U 1 1 61CB1320
+P 4400 3000
+F 0 "U?" H 4450 3375 50  0000 C CNN
+F 1 "LM3407MY" H 4450 3466 50  0000 C CNN
+F 2 "Package_SO:MSOP-8-1EP_3x3mm_P0.65mm_EP1.73x1.85mm_ThermalVias" H 4500 2650 50  0001 L CIN
+F 3 "http://www.ti.com/lit/ds/symlink/lm3407.pdf" H 4400 3000 50  0001 C CNN
+	1    4400 3000
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 61CB174B
+P 3450 2800
+F 0 "#PWR?" H 3450 2650 50  0001 C CNN
+F 1 "VCC" V 3468 2927 50  0000 L CNN
+F 2 "" H 3450 2800 50  0001 C CNN
+F 3 "" H 3450 2800 50  0001 C CNN
+	1    3450 2800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 61CB18A2
+P 3550 2500
+F 0 "#PWR?" H 3550 2250 50  0001 C CNN
+F 1 "GND" V 3555 2372 50  0000 R CNN
+F 2 "" H 3550 2500 50  0001 C CNN
+F 3 "" H 3550 2500 50  0001 C CNN
+	1    3550 2500
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3450 2800 3550 2800
+$Comp
+L Device:C C?
+U 1 1 61CB38B8
+P 3550 2650
+F 0 "C?" H 3665 2696 50  0000 L CNN
+F 1 "10V 1uF" H 3665 2605 50  0000 L CNN
+F 2 "" H 3588 2500 50  0001 C CNN
+F 3 "~" H 3550 2650 50  0001 C CNN
+	1    3550 2650
+	1    0    0    -1  
+$EndComp
+Connection ~ 3550 2800
+Wire Wire Line
+	3550 2800 3900 2800
+Wire Wire Line
+	4300 2600 4300 2500
+Wire Wire Line
+	4300 2500 3550 2500
+Connection ~ 3550 2500
+Wire Wire Line
+	4300 2500 4400 2500
+Wire Wire Line
+	4400 2500 4400 2600
+Connection ~ 4300 2500
+$Comp
+L Device:C C?
+U 1 1 61CB4EFD
+P 5000 3350
+F 0 "C?" H 5115 3396 50  0000 L CNN
+F 1 "25V 3.3uF" H 5115 3305 50  0000 L CNN
+F 2 "" H 5038 3200 50  0001 C CNN
+F 3 "~" H 5000 3350 50  0001 C CNN
+	1    5000 3350
+	1    0    0    -1  
+$EndComp
+Connection ~ 5000 3200
+Wire Wire Line
+	5000 3200 4800 3200
+$Comp
+L power:GND #PWR?
+U 1 1 61CB518C
+P 5000 3500
+F 0 "#PWR?" H 5000 3250 50  0001 C CNN
+F 1 "GND" H 5005 3327 50  0000 C CNN
+F 2 "" H 5000 3500 50  0001 C CNN
+F 3 "" H 5000 3500 50  0001 C CNN
+	1    5000 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L pspice:INDUCTOR L?
+U 1 1 61CB5809
+P 3600 3450
+F 0 "L?" V 3646 3406 50  0000 R CNN
+F 1 "22uH" V 3555 3406 50  0000 R CNN
+F 2 "" H 3600 3450 50  0001 C CNN
+F 3 "~" H 3600 3450 50  0001 C CNN
+	1    3600 3450
+	0    -1   -1   0   
+$EndComp
+Connection ~ 3600 3200
+Wire Wire Line
+	3600 3200 3900 3200
+$Comp
+L Device:C C?
+U 1 1 61CB723E
+P 3200 3700
+F 0 "C?" V 2948 3700 50  0000 C CNN
+F 1 "6V 1uF" V 3039 3700 50  0000 C CNN
+F 2 "" H 3238 3550 50  0001 C CNN
+F 3 "~" H 3200 3700 50  0001 C CNN
+	1    3200 3700
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3350 3700 3600 3700
+$Comp
+L Connector:Conn_01x02_Female J?
+U 1 1 61CBA45D
+P 3250 4200
+F 0 "J?" V 3096 4248 50  0000 L CNN
+F 1 "LED" V 3187 4248 50  0000 L CNN
+F 2 "" H 3250 4200 50  0001 C CNN
+F 3 "~" H 3250 4200 50  0001 C CNN
+	1    3250 4200
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3350 3200 3600 3200
+Wire Wire Line
+	3600 3900 3600 3700
+Connection ~ 3600 3700
+Wire Wire Line
+	5200 3200 5000 3200
+$Comp
+L power:+12V #PWR?
+U 1 1 61CB220F
+P 5200 3200
+F 0 "#PWR?" H 5200 3050 50  0001 C CNN
+F 1 "+12V" V 5215 3328 50  0000 L CNN
+F 2 "" H 5200 3200 50  0001 C CNN
+F 3 "" H 5200 3200 50  0001 C CNN
+	1    5200 3200
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+12V #PWR?
+U 1 1 61CBE67D
+P 2800 3200
+F 0 "#PWR?" H 2800 3050 50  0001 C CNN
+F 1 "+12V" V 2815 3328 50  0000 L CNN
+F 2 "" H 2800 3200 50  0001 C CNN
+F 3 "" H 2800 3200 50  0001 C CNN
+	1    2800 3200
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2800 3200 2850 3200
+Wire Wire Line
+	2850 3200 2850 3700
+Wire Wire Line
+	2850 3700 3050 3700
+Connection ~ 2850 3200
+Wire Wire Line
+	2850 3200 3050 3200
+Wire Wire Line
+	2850 3900 2850 3700
+Connection ~ 2850 3700
+Wire Wire Line
+	3250 3900 3250 4000
+Wire Wire Line
+	3250 3900 3600 3900
+Wire Wire Line
+	3150 4000 3150 3900
+Wire Wire Line
+	3150 3900 2850 3900
+$Comp
+L Device:R R?
+U 1 1 61CC1330
+P 4900 2650
+F 0 "R?" H 4970 2696 50  0000 L CNN
+F 1 "40.2k" H 4970 2605 50  0000 L CNN
+F 2 "" V 4830 2650 50  0001 C CNN
+F 3 "~" H 4900 2650 50  0001 C CNN
+	1    4900 2650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4900 2800 4800 2800
+$Comp
+L power:GND #PWR?
+U 1 1 61CC2911
+P 4900 2500
+F 0 "#PWR?" H 4900 2250 50  0001 C CNN
+F 1 "GND" H 4905 2327 50  0000 C CNN
+F 2 "" H 4900 2500 50  0001 C CNN
+F 3 "" H 4900 2500 50  0001 C CNN
+	1    4900 2500
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 61CC2F5D
+P 2900 2900
+F 0 "R?" V 2693 2900 50  0000 C CNN
+F 1 "0.665" V 2784 2900 50  0000 C CNN
+F 2 "" V 2830 2900 50  0001 C CNN
+F 3 "~" H 2900 2900 50  0001 C CNN
+	1    2900 2900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3900 3000 3550 3000
+Wire Wire Line
+	3550 3000 3550 2900
+Wire Wire Line
+	3550 2900 3050 2900
+$Comp
+L power:GND #PWR?
+U 1 1 61CC3C9F
+P 2750 2900
+F 0 "#PWR?" H 2750 2650 50  0001 C CNN
+F 1 "GND" V 2755 2772 50  0000 R CNN
+F 2 "" H 2750 2900 50  0001 C CNN
+F 3 "" H 2750 2900 50  0001 C CNN
+	1    2750 2900
+	0    1    1    0   
+$EndComp
+Text Notes 2350 2550 0    50   ~ 0
+0.198V/0.3A=0.66
+$Comp
+L Device:D_Schottky D?
+U 1 1 61CC4DBA
+P 3200 3200
+F 0 "D?" H 3200 3416 50  0000 C CNN
+F 1 "20V 1A" H 3200 3325 50  0000 C CNN
+F 2 "" H 3200 3200 50  0001 C CNN
+F 3 "~" H 3200 3200 50  0001 C CNN
+	1    3200 3200
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
