@@ -1,0 +1,4 @@
+(fp_lib_table
+  (lib (name custom_lib)(type KiCad)(uri /home/letrend/workspace/uven/hardware/kicad_db/custom_modules/custom_lib.pretty)(options "")(descr ""))
+  (lib (name 2041119-1)(type Legacy)(uri /home/letrend/workspace/uven/hardware/kicad_db/custom_modules/2041119-1.mod)(options "")(descr ""))
+)
