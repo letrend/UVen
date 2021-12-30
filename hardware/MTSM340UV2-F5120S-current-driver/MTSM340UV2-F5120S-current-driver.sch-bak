@@ -1259,9 +1259,9 @@ F 3 "" H 6300 6525 50  0001 C CNN
 	1    6300 6525
 	0    -1   -1   0   
 $EndComp
-Text GLabel 6300 6625 2    50   Input ~ 0
-RX
 Text GLabel 6300 6725 2    50   Input ~ 0
+RX
+Text GLabel 6300 6625 2    50   Input ~ 0
 TX
 $Comp
 L Device:LED D25
@@ -1350,5 +1350,49 @@ F 2 "" H 3650 4150 50  0001 C CNN
 F 3 "" H 3650 4150 50  0001 C CNN
 	1    3650 4150
 	0    1    1    0   
+$EndComp
+$Comp
+L Mechanical:MountingHole H?
+U 1 1 61DA8E40
+P 2800 2225
+F 0 "H?" H 2900 2271 50  0000 L CNN
+F 1 "MountingHole" H 2900 2180 50  0000 L CNN
+F 2 "" H 2800 2225 50  0001 C CNN
+F 3 "~" H 2800 2225 50  0001 C CNN
+	1    2800 2225
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H?
+U 1 1 61DA9707
+P 2800 2450
+F 0 "H?" H 2900 2496 50  0000 L CNN
+F 1 "MountingHole" H 2900 2405 50  0000 L CNN
+F 2 "" H 2800 2450 50  0001 C CNN
+F 3 "~" H 2800 2450 50  0001 C CNN
+	1    2800 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H?
+U 1 1 61DAA097
+P 2800 2675
+F 0 "H?" H 2900 2721 50  0000 L CNN
+F 1 "MountingHole" H 2900 2630 50  0000 L CNN
+F 2 "" H 2800 2675 50  0001 C CNN
+F 3 "~" H 2800 2675 50  0001 C CNN
+	1    2800 2675
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H?
+U 1 1 61DB061A
+P 2800 2900
+F 0 "H?" H 2900 2946 50  0000 L CNN
+F 1 "MountingHole" H 2900 2855 50  0000 L CNN
+F 2 "" H 2800 2900 50  0001 C CNN
+F 3 "~" H 2800 2900 50  0001 C CNN
+	1    2800 2900
+	1    0    0    -1  
 $EndComp
 $EndSCHEMATC
