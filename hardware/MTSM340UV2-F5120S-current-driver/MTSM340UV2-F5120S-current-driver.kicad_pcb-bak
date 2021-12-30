@@ -2,8 +2,8 @@
 
   (general
     (thickness 1.6)
-    (drawings 17)
-    (tracks 1323)
+    (drawings 18)
+    (tracks 1321)
     (zones 0)
     (modules 244)
     (nets 138)
@@ -238,6 +238,7 @@
     (via_drill 0.4)
     (uvia_dia 0.3)
     (uvia_drill 0.1)
+    (add_net +12V)
     (add_net +5V)
     (add_net /LM3407-current-controller/LED-)
     (add_net /sheet61CCCCC4/LED-)
@@ -383,7 +384,6 @@
     (via_drill 0.4)
     (uvia_dia 0.3)
     (uvia_drill 0.1)
-    (add_net +12V)
   )
 
   (module Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder (layer F.Cu) (tedit 5F68FEEF) (tstamp 61CE3980)
@@ -9679,6 +9679,9 @@
     (pad 1 np_thru_hole circle (at 0 0) (size 3.2 3.2) (drill 3.2) (layers *.Cu *.Mask))
   )
 
+  (gr_text "uven 3.0" (at 67.1 157.2) (layer F.SilkS)
+    (effects (font (size 3 3) (thickness 0.5)))
+  )
   (gr_text GND (at 82.1 92.6) (layer F.SilkS) (tstamp 61CFF612)
     (effects (font (size 1 1) (thickness 0.15)))
   )
@@ -9987,10 +9990,8 @@
   (segment (start 70.4 133.9) (end 66 129.5) (width 2) (layer B.Cu) (net 2))
   (segment (start 91.4 133.9) (end 70.4 133.9) (width 2) (layer B.Cu) (net 2))
   (segment (start 164.5 132) (end 167 129.5) (width 2) (layer B.Cu) (net 2))
-  (segment (start 164.5 139) (end 164.5 132) (width 3) (layer B.Cu) (net 2))
+  (segment (start 164.1 139) (end 164.1 132) (width 3) (layer B.Cu) (net 2))
   (segment (start 164.5 118) (end 167 115.5) (width 2) (layer B.Cu) (net 2))
-  (segment (start 164.5 132) (end 164.5 131.2) (width 3) (layer B.Cu) (net 2))
-  (segment (start 164.5 139) (end 164.5 134.779998) (width 3) (layer B.Cu) (net 2))
   (segment (start 131.8 120.3) (end 127 115.5) (width 2) (layer B.Cu) (net 2))
   (segment (start 150.020002 120.3) (end 131.8 120.3) (width 2) (layer B.Cu) (net 2))
   (segment (start 107.659259 116.159259) (end 107 115.5) (width 2) (layer B.Cu) (net 2))
