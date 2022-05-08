@@ -107,7 +107,7 @@ i2c_controller i2c(
   assign PIN_13 = (control_state==FIRE);
   reg [1:0] control_state;
 
-  integer on_time=100, off_time=100, repetitions=1, intensity=75, encoder_count_offset;
+  integer on_time=1000, off_time=1000, repetitions=1, intensity=70, encoder_count_offset;
   integer on_time_actual, off_time_actual, repetitions_actual;
   integer on_time_saved, off_time_saved, repetitions_saved, intensity_saved;
   integer ms_clock_counter;
@@ -141,7 +141,7 @@ i2c_controller i2c(
           end else begin
             case (value_selector)
               ON_TIME: begin
-                on_time <= on_time_saved+(encoder_count-encoder_count_offset);
+                on_time <= on_time_saved+((encoder_count-encoder_count_offset)>>>1)*10;
                 if(on_time>9999)begin
                   on_time <= 9999;
                 end else if(on_time<0) begin
@@ -150,7 +150,7 @@ i2c_controller i2c(
                 value <= on_time;
               end
               OFF_TIME: begin
-                off_time <= off_time_saved+(encoder_count-encoder_count_offset);
+                off_time <= off_time_saved+((encoder_count-encoder_count_offset)>>>1)*10;
                 if(off_time>9999)begin
                   off_time <= 9999;
                 end else if(off_time<0) begin
