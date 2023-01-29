@@ -44,7 +44,7 @@ float poly[3][3] = { {8.57991735e-05, -2.05112717e-01,  1.05402649e+02},
 {1.30629020e-04, -2.35951069e-01,  1.08283965e+02} };
 int analogValue[3] = {0};
 int analogPin[3] = {A0,A1,A2};
-float temp_setpoint = 20, temp_gain = 10;
+float temp_setpoint = 20, temp_gain = 100;
 
 float calcTemp(int val, float *p){
   return p[0]*val*val+p[1]*val+p[2];
@@ -64,16 +64,25 @@ void setup() {
 
   pinMode(LED_0_DISABLE,OUTPUT);
   pinMode(LED_1_DISABLE,OUTPUT);
+  
+  digitalWrite(LED_0_DISABLE,true);
+  digitalWrite(LED_1_DISABLE,true);
+
+  Wire.beginTransmission(pot_address);
+  Wire.write(0); // 
+  Wire.endTransmission();
+
+  Wire1.beginTransmission(pot_address);
+  Wire1.write(0); // 
+  Wire1.endTransmission();
+  
   pinMode(BUTTON_0,INPUT_PULLUP);
   pinMode(BUTTON_1,INPUT_PULLUP);
   pinMode(BUTTON_2,INPUT_PULLUP);
   pinMode(TEC_LED0_STATUS,INPUT_PULLUP);
   pinMode(TEC_LED1_STATUS,INPUT_PULLUP);
-  analogWrite(TEC_LED0_IN,0);
-  analogWrite(TEC_LED1_IN,0);
-
-  digitalWrite(LED_0_DISABLE,true);
-  digitalWrite(LED_1_DISABLE,true);
+  pinMode(TEC_LED0_IN,OUTPUT);
+  pinMode(TEC_LED1_IN,OUTPUT);
 
   byte numDigits = 4;  
   byte digitPins[] = {50, 48, 52, 53};
@@ -92,7 +101,7 @@ void loop() {
   // tft.fillScreen(ST77XX_BLUE);
   // testdrawtext(distance, ST77XX_WHITE,6,"penis");
   // Serial.println(distance);
-  if(encoder_pos>=0 && encoder_pos<20){
+  if(encoder_pos>=0 && encoder_pos<100){
     if(poti_setpoint!=encoder_pos && !led_fire){
       Wire.beginTransmission(pot_address);
       Wire.write(poti_setpoint); // 
@@ -118,6 +127,8 @@ void loop() {
   sevseg.refreshDisplay(); // Must run repeatedly
   
   t1 = millis();
+
+  
   
   if(t1-t0>100){
     for(int i=0;i<3;i++){
@@ -127,25 +138,36 @@ void loop() {
     }
     t0 = t1;
     nh.spinOnce();
+
     if(temp[0].data>temp_setpoint){
-      float error = temp[0].data-temp_setpoint;
-      if(error*temp_gain<1023){
-        analogWrite(TEC_LED0_IN,int(error*temp_gain));
-      }else{
-        analogWrite(TEC_LED0_IN,0);
-      }
+      digitalWrite(TEC_LED1_IN,1);
     }else{
-      analogWrite(TEC_LED0_IN,0);
+      digitalWrite(TEC_LED1_IN,0);
     }
     if(temp[1].data>temp_setpoint){
-      float error = temp[1].data-temp_setpoint;
-      if(error*temp_gain<1023){
-        analogWrite(TEC_LED1_IN,int(error*temp_gain));
-      }else{
-        analogWrite(TEC_LED1_IN,0);
-      }
+      digitalWrite(TEC_LED0_IN,1);
     }else{
-      analogWrite(TEC_LED1_IN,0);
+      digitalWrite(TEC_LED0_IN,0);
     }
+//    if(temp[0].data>temp_setpoint){
+//      float error = temp[0].data-temp_setpoint;
+//      if(error*temp_gain<1023){
+//        analogWrite(TEC_LED0_IN,int(error*temp_gain));
+//      }else{
+//        analogWrite(TEC_LED0_IN,1023);
+//      }
+//    }else{
+//      analogWrite(TEC_LED0_IN,0);
+//    }
+//    if(temp[1].data>temp_setpoint){
+//      float error = temp[1].data-temp_setpoint;
+//      if(error*temp_gain<1023){
+//        analogWrite(TEC_LED1_IN,int(error*temp_gain));
+//      }else{
+//        analogWrite(TEC_LED1_IN,1023);
+//      }
+//    }else{
+//      analogWrite(TEC_LED1_IN,0);
+//    }
   }
 }
