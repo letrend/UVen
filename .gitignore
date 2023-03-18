@@ -3,3 +3,4 @@ devel/
 .catkin_workspace
 .idea/
 #auto_saved_files#
+*-backups/
