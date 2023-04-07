@@ -42,7 +42,7 @@ uint32_t time_setpoint = 0;
 #define SPI0_INTERRUPT_NUMBER (IRQn_Type)24
 
 // Buffer sized as needed
-#define BUFFER_SIZE 20
+#define BUFFER_SIZE 24
 
 // Default chip select pin, not tested with any other pins
 #define CS 10
@@ -51,13 +51,14 @@ union SPI_FRAME{
   struct{
     uint8_t control[2];
     uint8_t intensity[2];
+    uint32_t time;
     float temperature[3];
     uint32_t crc;
   }values;
   byte data[BUFFER_SIZE];
 };
 
-static volatile SPI_FRAME cmd, tmp_cmd, res;
+static volatile SPI_FRAME cmd, tmp_cmd, res, tmp_res;
 
 // Initialize the buffer
 uint8_t buff [BUFFER_SIZE];
@@ -111,6 +112,7 @@ void setup() {
 
   cmd.values.control[0] = 0;
   cmd.values.control[1] = 0;
+  cmd.values.time = 0;
   cmd.values.temperature[0] = 24;
   cmd.values.temperature[1] = 24;
   cmd.values.temperature[2] = 24;
@@ -157,62 +159,71 @@ void loop() {
   if ( pos == BUFFER_SIZE )
   {
     for(int i=0;i<BUFFER_SIZE;i++){
-      Serial.print(buff[i],HEX);
-      Serial.print("\t");
+//      Serial.print(buff[i],HEX);
+//      Serial.print("\t");
       tmp_cmd.data[i] = buff[i];
     }
 
-    if(crc32.calc((uint8_t const *)&tmp_cmd.data[0], 16)==tmp_cmd.values.crc){
+    if(crc32.calc((uint8_t const *)&tmp_cmd.data[0], 20)==tmp_cmd.values.crc){
       for(int i=0;i<BUFFER_SIZE;i++){
         cmd.data[i] = tmp_cmd.data[i];
       }
-      Serial.println();
-      Serial.print("control_field: ");
-      Serial.print(cmd.values.control[0]);
-      Serial.print("\t");
-      Serial.println(cmd.values.control[1]);
-      Serial.print("intensity: ");
-      Serial.print(cmd.values.intensity[0]);
-      Serial.print("\t");
-      Serial.println(cmd.values.intensity[1]);
-      Serial.print("temperature: ");
-      Serial.print(cmd.values.temperature[0]);
-      Serial.print("\t");
-      Serial.print(cmd.values.temperature[1]);
-      Serial.print("\t");
-      Serial.println(cmd.values.temperature[2]);
+//      Serial.println();
+//      Serial.print("control_field: ");
+//      Serial.print(cmd.values.control[0]);
+//      Serial.print("\t");
+//      Serial.println(cmd.values.control[1]);
+//      Serial.print("intensity: ");
+//      Serial.print(cmd.values.intensity[0]);
+//      Serial.print("\t");
+//      Serial.println(cmd.values.intensity[1]);
+//      Serial.print("temperature: ");
+//      Serial.print(cmd.values.temperature[0]);
+//      Serial.print("\t");
+//      Serial.print(cmd.values.temperature[1]);
+//      Serial.print("\t");
+//      Serial.println(cmd.values.temperature[2]);
     }else{
       Serial.println("crc mismatch");
     }
     
-    res.values.control[0] = cmd.values.control[0];
-    res.values.control[1] = cmd.values.control[1];
-    res.values.intensity[0] = cmd.values.intensity[0];
-    res.values.intensity[1] = cmd.values.intensity[1];
-    res.values.crc = crc32.calc((uint8_t const *)&res.data[0], 16);
+    tmp_res.values.control[0] = cmd.values.control[0];
+    tmp_res.values.control[1] = 
+      ran_once<<4|
+      (tmp_res.values.temperature[2]>cmd.values.temperature[2])<<3|
+      (tmp_res.values.temperature[1]>cmd.values.temperature[1])<<2|
+      (tmp_res.values.temperature[0]>cmd.values.temperature[0])<<1|
+      led_fire;
+    tmp_res.values.time = (led_fire?(millis()-fire_start_time):0);
+    tmp_res.values.intensity[0] = cmd.values.intensity[0];
+    tmp_res.values.intensity[1] = cmd.values.intensity[1];
+    tmp_res.values.crc = crc32.calc((uint8_t const *)&tmp_res.data[0], 20);
+    for(int i=0;i<BUFFER_SIZE;i++){
+      res.data[i] = tmp_res.data[i];
+    }
     
     pos = 0;
     REG_SPI0_TDR = res.data[0];
   }
 
-  if(t0-t1>1000){
+  if(t0-t1>100){
     t1 = t0;
     for(int i=0;i<3;i++){
       analogValue[i] = analogRead(analogPin[i]);  
-      res.values.temperature[i] = calcTemp(analogValue[i],poly[i]);
+      tmp_res.values.temperature[i] = calcTemp(analogValue[i],poly[i]);
     }
   
-    if(res.values.temperature[0]>cmd.values.temperature[0]){
+    if(tmp_res.values.temperature[0]>cmd.values.temperature[0]){
       digitalWrite(TEC_LED0,true);
     }else{
       digitalWrite(TEC_LED0,false);
     }
-    if(res.values.temperature[1]>cmd.values.temperature[1]){
-      digitalWrite(TEC_LED0,true);
+    if(tmp_res.values.temperature[1]>cmd.values.temperature[1]){
+      digitalWrite(TEC_LED1,true);
     }else{
-      digitalWrite(TEC_LED0,false);
+      digitalWrite(TEC_LED1,false);
     }
-    if(res.values.temperature[2]>cmd.values.temperature[2]){
+    if(tmp_res.values.temperature[2]>cmd.values.temperature[2]){
       digitalWrite(TEC_LED0_IN,true);
       digitalWrite(TEC_LED1_IN,true);
     }else{
