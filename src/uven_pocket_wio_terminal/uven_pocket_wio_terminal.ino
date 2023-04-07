@@ -28,7 +28,7 @@ void setup() {
   SPI.begin();
   SPI.setBitOrder(MSBFIRST);
   SPI.setDataMode(SPI_MODE0);
-  SPI.setClockDivider(SPI_CLOCK_DIV4);
+  SPI.setClockDivider(SPI_CLOCK_DIV16);
 
   Serial.begin(115200);
 }
@@ -47,7 +47,7 @@ void loop() {
 
   for(int i=0;i<BUFFER_SIZE;i++){
     buff[i] = SPI.transfer(cmd.data[i]);
-    delay(1);
+    delay(5);
 //    Serial.print(cmd.data[i],HEX);Serial.print("\t");
   }
   Serial.println();
@@ -80,5 +80,5 @@ void loop() {
     Serial.println("crc mismatch");
   }
 
-  delay(1000); // Wait
+  delay(100); // Wait
 }
