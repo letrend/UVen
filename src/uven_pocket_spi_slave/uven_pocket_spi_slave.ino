@@ -10,13 +10,14 @@
 
 #include <SPI.h>
 #include <stdint.h>
-
+#include <Arduino_CRC32.h>
+Arduino_CRC32 crc32;
 
 // SPI 0 interrupt for the SAM3XA chip:
 #define SPI0_INTERRUPT_NUMBER (IRQn_Type)24
 
 // Buffer sized as needed
-#define BUFFER_SIZE 16
+#define BUFFER_SIZE 20
 
 // Default chip select pin, not tested with any other pins
 #define CS 10
@@ -26,6 +27,7 @@ union SPI_FRAME{
     uint8_t control[2];
     uint8_t intensity[2];
     float temperature[3];
+    uint32_t crc;
   }values;
   byte data[BUFFER_SIZE];
 };
@@ -92,22 +94,26 @@ void loop() {
       Serial.print("\t");
       cmd.data[i] = buff[i];
     }
-    
-    Serial.println();
-    Serial.print("control_field: ");
-    Serial.print(cmd.values.control[0]);
-    Serial.print("\t");
-    Serial.println(cmd.values.control[1]);
-    Serial.print("intensity: ");
-    Serial.print(cmd.values.intensity[0]);
-    Serial.print("\t");
-    Serial.println(cmd.values.intensity[1]);
-    Serial.print("temperature: ");
-    Serial.print(cmd.values.temperature[0]);
-    Serial.print("\t");
-    Serial.print(cmd.values.temperature[1]);
-    Serial.print("\t");
-    Serial.println(cmd.values.temperature[2]);
+
+    if(crc32.calc((uint8_t const *)&cmd.data[0], 16)==cmd.values.crc){
+      Serial.println();
+      Serial.print("control_field: ");
+      Serial.print(cmd.values.control[0]);
+      Serial.print("\t");
+      Serial.println(cmd.values.control[1]);
+      Serial.print("intensity: ");
+      Serial.print(cmd.values.intensity[0]);
+      Serial.print("\t");
+      Serial.println(cmd.values.intensity[1]);
+      Serial.print("temperature: ");
+      Serial.print(cmd.values.temperature[0]);
+      Serial.print("\t");
+      Serial.print(cmd.values.temperature[1]);
+      Serial.print("\t");
+      Serial.println(cmd.values.temperature[2]);
+    }else{
+      Serial.println("crc mismatch");
+    }
 
     res.values.control[0] = cmd.values.control[0];
     res.values.control[1] = cmd.values.control[1];
@@ -116,10 +122,9 @@ void loop() {
     res.values.temperature[0] = random(20, 30); 
     res.values.temperature[1] = random(20, 30); 
     res.values.temperature[2] = random(20, 30); 
+    res.values.crc = crc32.calc((uint8_t const *)&res.data[0], 16);
     
     pos = 0;
     REG_SPI0_TDR = res.data[0];
   }
-  
-  
 }
