@@ -4,7 +4,9 @@ Arduino_CRC32 crc32;
 #include "seeed_line_chart.h" //include the library
 
 TFT_eSPI tft;
-TFT_eSprite spr = TFT_eSprite(&tft); // Sprite
+TFT_eSprite spr0 = TFT_eSprite(&tft); // Sprite
+TFT_eSprite spr1 = TFT_eSprite(&tft); // Sprite
+TFT_eSprite spr2 = TFT_eSprite(&tft); // Sprite
 
 #define MAX_SIZE 30 // maximum size of data
 doubles temp[3];       // Initilising a doubles type to store data
@@ -29,6 +31,10 @@ SPI_FRAME cmd, res;
 // Initialize the buffer
 uint8_t buff [BUFFER_SIZE];
 
+unsigned long t0, t1;
+
+float temp_min[3] = {1000,1000,1000};
+
 void setup() {
   pinMode(CS, OUTPUT);
   digitalWrite(CS, HIGH);
@@ -41,8 +47,13 @@ void setup() {
   Serial.begin(115200);
   tft.begin();
   tft.setRotation(3);
-  spr.createSprite(TFT_HEIGHT, TFT_WIDTH);
-  spr.setRotation(3);
+  spr0.createSprite(TFT_HEIGHT-5, TFT_WIDTH/3-15);
+  spr0.setRotation(3);
+  spr1.createSprite(TFT_HEIGHT-5, TFT_WIDTH/3-15);
+  spr1.setRotation(3);
+  spr2.createSprite(TFT_HEIGHT-5, TFT_WIDTH/3-15);
+  spr2.setRotation(3);
+  t0 = millis();
 }
 
 void loop() {
@@ -90,41 +101,108 @@ void loop() {
 //    Serial.print(res.values.temperature[1]);
 //    Serial.print("\t");
 //    Serial.println(res.values.temperature[2]);
-    spr.fillSprite(TFT_WHITE);
-    if (temp[0].size() > MAX_SIZE)
-    {
-        temp[0].pop(); 
-        temp[1].pop();
-        temp[2].pop();
+    t1 = millis();
+    if(t1-t0>1000){
+      t0 = t1;
+      spr0.fillSprite(TFT_WHITE);
+      spr1.fillSprite(TFT_WHITE);
+      spr2.fillSprite(TFT_WHITE);
+      if (temp[0].size() > MAX_SIZE)
+      {
+          temp[0].pop(); 
+          temp[1].pop();
+          temp[2].pop();
+      }
+      temp[0].push(res.values.temperature[0]);
+      temp[1].push(res.values.temperature[1]);
+      temp[2].push(res.values.temperature[2]);
+
+      if(res.values.temperature[0]<temp_min[0]){
+        temp_min[0] = res.values.temperature[0];
+      }
+      if(res.values.temperature[1]<temp_min[1]){
+        temp_min[1] = res.values.temperature[1];
+      }
+      if(res.values.temperature[2]<temp_min[2]){
+        temp_min[2] = res.values.temperature[2];
+      }
+
+      // Settings for the line graph title
+      auto header0 = text(0, 0)
+                        .value("LED0 temperature")
+                        .align(center)
+                        .valign(vcenter)
+                        .width(tft.width())
+                        .thickness(2);
+  
+      header0.height(header0.font_height(&tft));
+      header0.draw(&tft); // Header height is the twice the height of the font
+      
+      // Settings for the line graph temp0
+      auto content0 = line_chart(0, 0); //(x,y) where the line graph begins
+      content0
+          .height(spr0.height()) // actual height of the line chart
+          .width(spr0.width())         // actual width of the line chart
+          .based_on(temp_min[0])                                // Starting point of y-axis, must be a float
+          .show_circle(true)                           // drawing a cirle at each point, default is on.
+          .value(temp[0])                                  // passing through the data to line graph
+          .max_size(MAX_SIZE)
+          .color(TFT_RED)                               // Setting the color for the line
+          .backgroud(TFT_WHITE)
+          .draw(&spr0);
+
+      // Settings for the line graph title
+      auto header1 = text(0, spr0.height()+header0.height())
+                        .value("LED1 temperature")
+                        .align(center)
+                        .valign(vcenter)
+                        .width(tft.width())
+                        .thickness(2);
+  
+      header1.height(header1.font_height(&tft));
+      header1.draw(&tft); // Header height is the twice the height of the font
+  
+      // Settings for the line graph temp0
+      auto content1 = line_chart(0, 0); //(x,y) where the line graph begins
+      content1
+          .height(spr1.height()) // actual height of the line chart
+          .width(spr1.width())         // actual width of the line chart
+          .based_on(temp_min[1])                                // Starting point of y-axis, must be a float
+          .show_circle(true)                           // drawing a cirle at each point, default is on.
+          .value(temp[1])                                  // passing through the data to line graph
+          .max_size(MAX_SIZE)
+          .color(TFT_RED)                               // Setting the color for the line
+          .backgroud(TFT_WHITE)
+          .draw(&spr1);
+
+      // Settings for the line graph title
+      auto header2 = text(0, spr0.height()*2+header0.height()*2)
+                        .value("CHAMBER temperature")
+                        .align(center)
+                        .valign(vcenter)
+                        .width(tft.width())
+                        .thickness(2);
+  
+      header2.height(header2.font_height(&tft));
+      header2.draw(&tft); // Header height is the twice the height of the font
+          
+      // Settings for the line graph temp0
+      auto content2 = line_chart(0, 0); //(x,y) where the line graph begins
+      content2
+          .height(spr2.height()) // actual height of the line chart
+          .width(spr2.width())         // actual width of the line chart
+          .based_on(temp_min[2])                                // Starting point of y-axis, must be a float
+          .show_circle(true)                           // drawing a cirle at each point, default is on.
+          .value(temp[2])                                  // passing through the data to line graph
+          .max_size(MAX_SIZE)
+          .color(TFT_RED)                               // Setting the color for the line
+          .backgroud(TFT_WHITE)
+          .draw(&spr2);
+  
+      spr0.pushSprite(5, header0.height());
+      spr1.pushSprite(5, spr0.height()+header0.height()*2);
+      spr2.pushSprite(5, spr0.height()*2+header0.height()*3);
     }
-    temp[0].push(res.values.temperature[0]);
-    temp[1].push(res.values.temperature[1]);
-    temp[2].push(res.values.temperature[2]);
-    // Settings for the line graph title
-    auto header = text(0, 0)
-                      .value("Light Sensor Readings")
-                      .align(center)
-                      .valign(vcenter)
-                      .width(spr.width())
-                      .thickness(2);
-
-    header.height(header.font_height(&spr) * 2);
-    header.draw(&spr); // Header height is the twice the height of the font
-
-    // Settings for the line graph
-    auto content = line_chart(20, header.height()); //(x,y) where the line graph begins
-    content
-        .height(spr.height() - header.height() * 1.5) // actual height of the line chart
-        .width(spr.width() - content.x() * 2)         // actual width of the line chart
-        .based_on(0.0)                                // Starting point of y-axis, must be a float
-        .show_circle(false)                           // drawing a cirle at each point, default is on.
-        .value(temp[0])                                  // passing through the data to line graph
-        .max_size(MAX_SIZE)
-        .color(TFT_RED)                               // Setting the color for the line
-        .backgroud(TFT_WHITE)
-        .draw(&spr);
-
-    spr.pushSprite(0, 0);
   }else{
     Serial.println("crc mismatch");
   }
