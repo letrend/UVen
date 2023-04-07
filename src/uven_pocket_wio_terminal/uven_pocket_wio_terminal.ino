@@ -7,6 +7,7 @@ TFT_eSPI tft;
 TFT_eSprite spr0 = TFT_eSprite(&tft); // Sprite
 TFT_eSprite spr1 = TFT_eSprite(&tft); // Sprite
 TFT_eSprite spr2 = TFT_eSprite(&tft); // Sprite
+#include"Free_Fonts.h" //include the header file
 
 #define MAX_SIZE 30 // maximum size of data
 doubles temp[3];       // Initilising a doubles type to store data
@@ -54,6 +55,7 @@ void setup() {
   spr2.createSprite(TFT_HEIGHT-5, TFT_WIDTH/3-15);
   spr2.setRotation(3);
   t0 = millis();
+  tft.fillScreen(TFT_WHITE); 
 }
 
 void loop() {
@@ -129,8 +131,8 @@ void loop() {
 
       // Settings for the line graph title
       auto header0 = text(0, 0)
-                        .value("LED0 temperature")
-                        .align(center)
+                        .value("LED0")
+                        .align(left)
                         .valign(vcenter)
                         .width(tft.width())
                         .thickness(2);
@@ -153,8 +155,8 @@ void loop() {
 
       // Settings for the line graph title
       auto header1 = text(0, spr0.height()+header0.height())
-                        .value("LED1 temperature")
-                        .align(center)
+                        .value("LED1")
+                        .align(left)
                         .valign(vcenter)
                         .width(tft.width())
                         .thickness(2);
@@ -177,8 +179,8 @@ void loop() {
 
       // Settings for the line graph title
       auto header2 = text(0, spr0.height()*2+header0.height()*2)
-                        .value("CHAMBER temperature")
-                        .align(center)
+                        .value("CHAMBER")
+                        .align(left)
                         .valign(vcenter)
                         .width(tft.width())
                         .thickness(2);
@@ -205,6 +207,10 @@ void loop() {
     }
   }else{
     Serial.println("crc mismatch");
+    tft.fillScreen(TFT_WHITE); 
+    tft.setTextColor(TFT_RED,TFT_WHITE);
+    tft.setFreeFont(FF20); //select Free, Mono, Oblique, 12pt.
+    tft.drawString("crc mismatch",20,100);//prints string at (70,80)
   }
 
 //  delay(100); // Wait
