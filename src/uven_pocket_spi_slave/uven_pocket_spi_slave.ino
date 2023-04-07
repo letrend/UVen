@@ -16,10 +16,21 @@
 #define SPI0_INTERRUPT_NUMBER (IRQn_Type)24
 
 // Buffer sized as needed
-#define BUFFER_SIZE 10
+#define BUFFER_SIZE 16
 
 // Default chip select pin, not tested with any other pins
-#define SS 10
+#define CS 10
+
+union SPI_FRAME{
+  struct{
+    uint8_t control[2];
+    uint8_t intensity[2];
+    float temperature[3];
+  }values;
+  byte data[BUFFER_SIZE];
+};
+
+static volatile SPI_FRAME cmd, res;
 
 // Initialize the buffer
 uint8_t buff [BUFFER_SIZE];
@@ -58,32 +69,18 @@ void SPI0_Handler( void )
     
     // save to buffer
     buff[pos] = d & 0xFF;
-    REG_SPI0_TDR = buff[pos];
     pos++;
+    REG_SPI0_TDR = res.data[pos];
 }
-
-// Debug printing of the register
-#define PRREG(x) Serial.print(#x" 0x"); Serial.println(x,HEX)
-
-// Print the main SPI registers.
-// NOTE: Not worth trying to print the SPI Interrupt Enable/Disable registers, they are write only.
-void prregs() {
-  PRREG(REG_SPI0_MR);
-  PRREG(REG_SPI0_CSR);
-  PRREG(REG_SPI0_SR);
-}
-
 
 void setup() {
   // Setup Serial
   Serial.begin(115200);
-  
-  prregs();  // debug
-
+  pinMode(CS,INPUT);
+  while(digitalRead(CS)==0);
   // Setup the SPI as Slave
-  slaveBegin(SS);
+  slaveBegin(CS);
   
-  prregs();  // debug
 }
 
 void loop() {
@@ -91,12 +88,37 @@ void loop() {
   if ( pos == BUFFER_SIZE )
   {
     for(int i=0;i<BUFFER_SIZE;i++){
-      Serial.print(buff[i]);
+      Serial.print(buff[i],HEX);
       Serial.print("\t");
+      cmd.data[i] = buff[i];
     }
+    
     Serial.println();
+    Serial.print("control_field: ");
+    Serial.print(cmd.values.control[0]);
+    Serial.print("\t");
+    Serial.println(cmd.values.control[1]);
+    Serial.print("intensity: ");
+    Serial.print(cmd.values.intensity[0]);
+    Serial.print("\t");
+    Serial.println(cmd.values.intensity[1]);
+    Serial.print("temperature: ");
+    Serial.print(cmd.values.temperature[0]);
+    Serial.print("\t");
+    Serial.print(cmd.values.temperature[1]);
+    Serial.print("\t");
+    Serial.println(cmd.values.temperature[2]);
+
+    res.values.control[0] = cmd.values.control[0];
+    res.values.control[1] = cmd.values.control[1];
+    res.values.intensity[0] = cmd.values.intensity[0];
+    res.values.intensity[1] = cmd.values.intensity[1];
+    res.values.temperature[0] = random(20, 30); 
+    res.values.temperature[1] = random(20, 30); 
+    res.values.temperature[2] = random(20, 30); 
     
     pos = 0;
+    REG_SPI0_TDR = res.data[0];
   }
   
   
