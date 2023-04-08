@@ -12,7 +12,7 @@ TFT_eSprite spr2 = TFT_eSprite(&tft); // Sprite
 #include"Free_Fonts.h" //include the header file
 
 #define LOOP_PERIOD 35 // Display updates every 35 ms
-#define MAX_SIZE 30 // maximum size of data
+#define MAX_SIZE 50 // maximum size of data
 doubles temp[3];       // Initilising a doubles type to store data
 doubles inten[2];
 
@@ -38,6 +38,8 @@ SPI_FRAME cmd, res;
 uint8_t buff [BUFFER_SIZE];
 
 unsigned long t0, t1;
+
+uint32_t sampling_time_ms = 1000;
 
 float temp_min[3] = {1000,1000,1000};
 
@@ -174,7 +176,26 @@ void loop() {
     
     switch(menu){
       case TEMPERATURE:
-        if(t1-t0>1000){
+        if(digitalRead(WIO_5S_UP)==0){
+          char str[10];
+          sprintf(str,"sampling time ms: %d",sampling_time_ms);
+          tft.setTextColor(TFT_WHITE, TFT_WHITE);
+          tft.drawCentreString(str, 160, 140, 2);
+          tft.setTextColor(TFT_BLACK, TFT_WHITE);
+          sampling_time_ms+=1000;
+          sprintf(str,"sampling time ms: %d",sampling_time_ms);
+          tft.drawCentreString(str, 140, 100, 2);
+        }else if(digitalRead(WIO_5S_DOWN)==0){
+          char str[10];
+          sprintf(str,"sampling time ms: %d",sampling_time_ms);
+          tft.setTextColor(TFT_WHITE, TFT_WHITE);
+          tft.drawCentreString(str, 160, 140, 2);
+          tft.setTextColor(TFT_BLACK, TFT_WHITE);
+          sampling_time_ms-=1000;
+          sprintf(str,"sampling time ms: %d",sampling_time_ms);
+          tft.drawCentreString(str, 140, 100, 2);
+        }
+        if(t1-t0>sampling_time_ms){
           t0 = t1;
           spr0.fillSprite(TFT_WHITE);
           spr1.fillSprite(TFT_WHITE);
@@ -191,7 +212,7 @@ void loop() {
           }
     
           // Settings for the line graph title
-          auto header0 = text(0, 0)
+          auto header0 = text(60, 0)
                             .value("LED0")
                             .align(left)
                             .valign(vcenter)
@@ -215,7 +236,7 @@ void loop() {
               .draw(&spr0);
     
           // Settings for the line graph title
-          auto header1 = text(0, spr0.height()+header0.height())
+          auto header1 = text(60, spr0.height()+header0.height())
                             .value("LED1")
                             .align(left)
                             .valign(vcenter)
@@ -239,7 +260,7 @@ void loop() {
               .draw(&spr1);
     
           // Settings for the line graph title
-          auto header2 = text(0, spr0.height()*2+header0.height()*2)
+          auto header2 = text(60, spr0.height()*2+header0.height()*2)
                             .value("CHAMBER")
                             .align(left)
                             .valign(vcenter)
@@ -269,7 +290,7 @@ void loop() {
         break;
       case SETPOINT_TEMP_0:{
         // Settings for the line graph title
-          auto header0 = text(0, 0)
+          auto header0 = text(5,5)
                             .value("LED0 TEMPERATURE")
                             .align(left)
                             .valign(vcenter)
@@ -315,7 +336,7 @@ void loop() {
       }
      case SETPOINT_TEMP_1:{
       // Settings for the line graph title
-          auto header0 = text(0, 0)
+          auto header0 = text(5,5)
                             .value("LED1 TEMPERATURE")
                             .align(left)
                             .valign(vcenter)
@@ -360,7 +381,7 @@ void loop() {
        }
        case SETPOINT_TEMP_2:{
         // Settings for the line graph title
-          auto header0 = text(0, 0)
+          auto header0 = text(5,5)
                             .value("CHAMBER TEMPERATURE")
                             .align(left)
                             .valign(vcenter)
@@ -406,7 +427,7 @@ void loop() {
        }
        case SETPOINT_LED_0:{
         // Settings for the line graph title
-          auto header0 = text(0, 0)
+          auto header0 = text(5,5)
                             .value("LED0 INTENSITY")
                             .align(left)
                             .valign(vcenter)
@@ -459,7 +480,7 @@ void loop() {
       }
      case SETPOINT_LED_1:{
         // Settings for the line graph title
-          auto header0 = text(0, 0)
+          auto header0 = text(5,5)
                             .value("LED1 INTENSITY")
                             .align(left)
                             .valign(vcenter)
