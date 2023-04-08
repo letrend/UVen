@@ -521,6 +521,8 @@ void loop() {
     digitalWrite(RESET_COMS,1);
     delay(100);
     digitalWrite(RESET_COMS,0);
+    delay(3000);
+    tft.fillScreen(TFT_WHITE);
   }
 
 //  delay(100); // Wait

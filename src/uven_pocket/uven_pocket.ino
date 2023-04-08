@@ -3,6 +3,13 @@
 #include <Arduino_CRC32.h>
 Arduino_CRC32 crc32;
 #include "Wire.h"
+//Defines so the device can do a self reset
+#define SYSRESETREQ    (1<<2)
+#define VECTKEY        (0x05fa0000UL)
+#define VECTKEY_MASK   (0x0000ffffUL)
+#define AIRCR          (*(uint32_t*)0xe000ed0cUL) // fixed arch-defined address
+#define REQUEST_EXTERNAL_RESET (AIRCR=(AIRCR&VECTKEY_MASK)|VECTKEY|SYSRESETREQ)
+
 
 #define BUTTON_0 41
 #define BUTTON_1 40
@@ -87,6 +94,9 @@ void slaveBegin(uint8_t _pin) {
   REG_SPI0_CR = SPI_CR_SPIEN;     // enable SPI
   REG_SPI0_MR = SPI_MR_MODFDIS;     // slave and no modefault
   REG_SPI0_CSR = SPI_MODE0;    // DLYBCT=0, DLYBS=0, SCBR=0, 8 bit transfer
+  pos = 0;
+  REG_SPI0_TDR = res.data[pos];
+  res.values.crc = crc32.calc((uint8_t const *)&res.data[0], 20);
 }
 
 
@@ -103,8 +113,7 @@ void SPI0_Handler( void )
 }
 
 void resetComs(){
-  pos = 0;
-  REG_SPI0_TDR = res.data[0];
+  REQUEST_EXTERNAL_RESET;
 }
 
 void setup() {
@@ -114,6 +123,8 @@ void setup() {
   
   digitalWrite(LED_0_DISABLE,true);
   digitalWrite(LED_1_DISABLE,true);
+
+  Serial.println("setting up");
 
   cmd.values.control[0] = 0;
   cmd.values.control[1] = 0;
@@ -169,6 +180,7 @@ void loop() {
 //      Serial.print("\t");
       tmp_cmd.data[i] = buff[i];
     }
+//    Serial.println("\n");
 
     if(crc32.calc((uint8_t const *)&tmp_cmd.data[0], 20)==tmp_cmd.values.crc){
       for(int i=0;i<BUFFER_SIZE;i++){
@@ -192,6 +204,14 @@ void loop() {
     }else{
       Serial.println("crc mismatch");
     }
+
+    Wire.beginTransmission(pot_address);
+    Wire.write(cmd.values.intensity[0]); // 
+    Wire.endTransmission();
+  
+    Wire1.beginTransmission(pot_address);
+    Wire1.write(cmd.values.intensity[1]); // 
+    Wire1.endTransmission();
     
     tmp_res.values.control[0] = cmd.values.control[0];
     tmp_res.values.control[1] = 
