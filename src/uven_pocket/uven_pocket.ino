@@ -19,6 +19,7 @@ Arduino_CRC32 crc32;
 #define TEC_LED1_STATUS 6
 
 #define KILL 28
+#define RESET_COMS 35
 
 bool led_fire = false;
  
@@ -101,6 +102,10 @@ void SPI0_Handler( void )
     REG_SPI0_TDR = res.data[pos];
 }
 
+void resetComs(){
+  pos = 0;
+  REG_SPI0_TDR = res.data[0];
+}
 
 void setup() {
   Serial.begin(115200);
@@ -147,7 +152,8 @@ void setup() {
     delay(250);
   }
   pinMode(CS,INPUT);
-  while(digitalRead(CS)==0);
+  pinMode(RESET_COMS,INPUT);
+  attachInterrupt(digitalPinToInterrupt(RESET_COMS), resetComs, RISING);
   // Setup the SPI as Slave
   slaveBegin(CS);
   t1 = millis();
