@@ -54,6 +54,7 @@ enum {
 };
 
 int8_t menu = TEMPERATURE, menu_prev = TEMPERATURE;
+int faulty_frames = 0;
 
 void setup() {
   pinMode(CS, OUTPUT);
@@ -534,16 +535,20 @@ void loop() {
     
     
   }else{
+//    faulty_frames++;
+//    if(faulty_frames>10){
     Serial.println("crc mismatch");
     tft.fillScreen(TFT_WHITE); 
     tft.setTextColor(TFT_RED,TFT_WHITE);
     tft.setFreeFont(FF20); //select Free, Mono, Oblique, 12pt.
     tft.drawString("crc mismatch",20,100);//prints string at (70,80)
     digitalWrite(RESET_COMS,1);
-    delay(100);
+    delay(1000);
     digitalWrite(RESET_COMS,0);
-    delay(3000);
+    delay(100);
     tft.fillScreen(TFT_WHITE);
+//      faulty_frames = 0;
+//    }
   }
 
 //  delay(100); // Wait

@@ -18,8 +18,8 @@ Arduino_CRC32 crc32;
 #define LED_0_DISABLE 14
 #define LED_1_DISABLE 15
 
-#define TEC_LED0 8
-#define TEC_LED1 9
+#define TEC_LED0 42
+#define TEC_LED1 43
 #define TEC_LED0_IN 4
 #define TEC_LED0_STATUS 7
 #define TEC_LED1_IN 3
@@ -113,7 +113,9 @@ void SPI0_Handler( void )
 }
 
 void resetComs(){
-  REQUEST_EXTERNAL_RESET;
+//  REQUEST_EXTERNAL_RESET;
+  pos = 0;
+  REG_SPI0_TDR = res.data[0];
 }
 
 void setup() {
