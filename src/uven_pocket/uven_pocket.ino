@@ -32,7 +32,7 @@ bool led_fire = false;
  
 #define pot_address 0x2F // each I2C object has a unique bus address, the MCP4018 is 0x2F or 0101111 in binary
 
-unsigned long t0,t1,t2,fire_start_time,last_pressed;
+unsigned long t0,t1,t2,fire_start_time,last_pressed,tec_led0_t0,tec_led1_t0;
 float poly[3][3] = { {8.57991735e-05, -2.05112717e-01,  1.05402649e+02},
                      {1.29957085e-04, -2.37834294e-01,  1.09390237e+02},
                      {1.30629020e-04, -2.35951069e-01,  1.08283965e+02} };
@@ -242,14 +242,20 @@ void loop() {
     }
   
     if(tmp_res.values.temperature[0]>cmd.values.temperature[0]){
+      tec_led0_t0 = millis();
       digitalWrite(TEC_LED0,true);
     }else{
-      digitalWrite(TEC_LED0,false);
+      if((millis()-tec_led0_t0)>5000){
+        digitalWrite(TEC_LED0,false);
+      }
     }
     if(tmp_res.values.temperature[1]>cmd.values.temperature[1]){
+      tec_led1_t0 = millis();
       digitalWrite(TEC_LED1,true);
     }else{
-      digitalWrite(TEC_LED1,false);
+      if((millis()-tec_led1_t0)>5000){
+        digitalWrite(TEC_LED1,false);
+      }
     }
     if(tmp_res.values.temperature[2]>cmd.values.temperature[2]){
       digitalWrite(TEC_LED0_IN,true);
