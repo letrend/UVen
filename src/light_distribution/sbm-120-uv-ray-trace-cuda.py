@@ -32,46 +32,88 @@ print(poly(0))
 mod = SourceModule("""
 __constant__ float coeffs[7];
 
-__global__ void shoot_ray(float3 *rays, float *z, float *pitch, float *roll, float *x, float *y, size_t n)
+// Quaternion helper class describing rotations
+// this allows for a nice description and execution of rotations in 3D space.
+typedef struct _Quaternion
+{
+    // rotation around a given axis (given sine and cosine of HALF the rotation angle)
+    static __device__ __forceinline__ struct _Quaternion describe_rotation(const float3 v, const float sina_2, const float cosa_2)
+    {
+        struct _Quaternion result;
+        result.q = make_float4(cosa_2, sina_2*v.x, sina_2*v.y, sina_2*v.z);
+        return result;
+    }
+
+    // rotation around a given axis (angle without range restriction)
+    static __device__ __forceinline__ struct _Quaternion describe_rotation(const float3 v, const float angle)
+    {
+        float sina_2 = sinf(angle/2);
+        float cosa_2 = cosf(angle/2);
+        struct _Quaternion result;
+        result.q = make_float4(cosa_2, sina_2*v.x, sina_2*v.y, sina_2*v.z);
+        return result;
+    }
+
+    // rotate a point v in 3D space around the origin using this quaternion
+    // see EN Wikipedia on Quaternions and spatial rotation
+    __device__ __forceinline__ float3 rotate(const float3 v) const
+    {
+        float t2 =   q.x*q.y;
+        float t3 =   q.x*q.z;
+        float t4 =   q.x*q.w;
+        float t5 =  -q.y*q.y;
+        float t6 =   q.y*q.z;
+        float t7 =   q.y*q.w;
+        float t8 =  -q.z*q.z;
+        float t9 =   q.z*q.w;
+        float t10 = -q.w*q.w;
+        return make_float3(
+            2.0f*( (t8 + t10)*v.x + (t6 -  t4)*v.y + (t3 + t7)*v.z ) + v.x,
+            2.0f*( (t4 +  t6)*v.x + (t5 + t10)*v.y + (t9 - t2)*v.z ) + v.y,
+            2.0f*( (t7 -  t3)*v.x + (t2 +  t9)*v.y + (t5 + t8)*v.z ) + v.z
+        );
+    }
+
+    // rotate a point v in 3D space around a given point p using this quaternion
+    __device__ __forceinline__ float3 rotate_around_p(const float3 v, const float3 p)
+    {
+        float3 tmp;
+        tmp.x = v.x-p.x;
+        tmp.y = v.y-p.y;
+        tmp.z = v.z-p.z;
+        float3 tmp2 = rotate(tmp);
+        tmp2.x += p.x;
+        tmp2.z += p.y;
+        tmp2.z += p.z;
+        return tmp2;
+    }
+
+    // 1,i,j,k
+    float4 q;
+} Quaternion;
+
+__global__ void shoot_ray(float3 *rays, float *z, float3 *v, float* angle, float *x, float *y, size_t n)
 {
   const int idx = threadIdx.x + blockIdx.x * blockDim.x;
   if(idx<n){
-      float angle = sqrtf(pitch[idx]*pitch[idx]+roll[idx]*roll[idx]);
-      if(abs(angle)<1.3962634015955){
-          float intensity = 0;
-          for(int i=0;i<7;i++){
-            intensity += coeffs[6-i]*pow(angle,i);
-          }
-          float rot[3][3];
-          rot[0][0] = cosf(pitch[idx])*cosf(roll[idx]);
-          rot[1][0] = cosf(pitch[idx])*sinf(roll[idx]);
-          rot[2][0] = -sin(pitch[idx]);
-          rot[0][1] = -sinf(roll[idx]);
-          rot[1][1] = cosf(roll[idx]);
-          rot[2][1] = 0;
-          rot[0][2] = sinf(pitch[idx])*cosf(roll[idx]);
-          rot[1][2] = sinf(pitch[idx])*sinf(roll[idx]);
-          rot[2][2] = cosf(pitch[idx]);
-          float dir[3], dir_new[3];
-          dir[0] = 0; dir[1] = 0; dir[2] = 1;
-          dir_new[0] = 0; dir_new[1] = 0; dir_new[2] = 0;
-          
-          for(int i=0; i<3; i++){
-            for(int j=0; j<3; j++){
-                dir_new[i]+=rot[i][j]*dir[j];
-            }
-          }
-          
-          float distance_scale = z[idx] / dir_new[2];
-          
-          rays[idx].x = dir_new[0]*distance_scale+x[idx];
-          rays[idx].y = dir_new[1]*distance_scale+y[idx];
-          rays[idx].z = intensity;
-      }else{
-          rays[idx].x = 0;
-          rays[idx].y = 0;
-          rays[idx].z = 0; 
+      Quaternion q(v[idx],angle[idx];  
+      float intensity = 0;
+      for(int i=0;i<7;i++){
+        intensity += coeffs[6-i]*powf(angle,i);
       }
+      
+      float3 dir_new;
+      dir_new.x = 0;
+      dir_new.y = 0;
+      dir_new.z = 1;
+      
+      dir_new = q.rotate(dir_new);
+      
+      float distance_scale = z[idx] / dir_new[2];
+      
+      rays[idx].x = dir_new[0]*distance_scale+x[idx];
+      rays[idx].y = dir_new[1]*distance_scale+y[idx];
+      rays[idx].z = intensity;
   }
 }
 """)
@@ -80,8 +122,8 @@ shoot_ray = mod.get_function("shoot_ray")
 coeffs_cuda = mod.get_global("coeffs")
 drv.memcpy_htod(coeffs_cuda[0],coeffs)
 
-step_length = 0.1
-z_distance = 1
+step_length = 0.5
+z_distance = 20
 roll = []
 pitch = []
 x = []
@@ -98,12 +140,13 @@ for offset in center_offset:
         led_positions.append([led_positions[0][0]+p[0], led_positions[0][1]+p[1]])
 
 for pos in led_positions:
-    for i in np.arange(-80*np.pi/180,80*np.pi/180,step_length*np.pi/180):
-        for j in np.arange(-80*np.pi/180,80*np.pi/180,step_length*np.pi/180):
-            roll.append(i)
-            pitch.append(j)
-            x.append(pos[0])
-            y.append(pos[1])
+    i = 0
+    # for i in np.arange(-80*np.pi/180,80*np.pi/180,step_length*np.pi/180):
+    for j in np.arange(-80*np.pi/180,80*np.pi/180,step_length*np.pi/180):
+        roll.append(i)
+        pitch.append(j)
+        x.append(pos[0])
+        y.append(pos[1])
 
 roll = np.array(roll,dtype=np.float32)
 pitch = np.array(pitch,dtype=np.float32)
