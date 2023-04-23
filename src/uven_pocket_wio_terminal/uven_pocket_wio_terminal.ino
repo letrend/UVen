@@ -54,6 +54,30 @@ enum {
 };
 
 int8_t menu = TEMPERATURE, menu_prev = TEMPERATURE;
+int faulty_frames = 0;
+
+bool sendCommand(){
+  digitalWrite(CS, LOW);
+
+  cmd.values.crc = crc32.calc((uint8_t const *)&cmd.data[0], 20);
+
+  for(int i=0;i<BUFFER_SIZE;i++){
+    buff[i] = SPI.transfer(cmd.data[i]);
+    delay(10);
+//    Serial.print(cmd.data[i],HEX);Serial.print("\t");
+  }
+//  Serial.println();
+
+  digitalWrite(CS, HIGH);
+
+  for(int i=0;i<BUFFER_SIZE;i++){
+//    Serial.print(res.data[i], HEX);
+//    Serial.print("\t");
+    res.data[i] = buff[i];
+  }
+
+  return crc32.calc((uint8_t const *)&res.data[0], 20)==res.values.crc;
+}
 
 void setup() {
   pinMode(CS, OUTPUT);
@@ -101,27 +125,9 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(CS, LOW);
-  delay(10);
+  
 
-  cmd.values.crc = crc32.calc((uint8_t const *)&cmd.data[0], 20);
-
-  for(int i=0;i<BUFFER_SIZE;i++){
-    buff[i] = SPI.transfer(cmd.data[i]);
-    delay(10);
-//    Serial.print(cmd.data[i],HEX);Serial.print("\t");
-  }
-//  Serial.println();
-
-  digitalWrite(CS, HIGH);
-
-  for(int i=0;i<BUFFER_SIZE;i++){
-//    Serial.print(res.data[i], HEX);
-//    Serial.print("\t");
-    res.data[i] = buff[i];
-  }
-
-  if(crc32.calc((uint8_t const *)&res.data[0], 20)==res.values.crc){
+  if(sendCommand()){
 //    Serial.println();
 //    Serial.print("control_field: ");
 //    Serial.print(res.values.control[0]);
@@ -534,16 +540,21 @@ void loop() {
     
     
   }else{
-    Serial.println("crc mismatch");
-    tft.fillScreen(TFT_WHITE); 
-    tft.setTextColor(TFT_RED,TFT_WHITE);
-    tft.setFreeFont(FF20); //select Free, Mono, Oblique, 12pt.
-    tft.drawString("crc mismatch",20,100);//prints string at (70,80)
-    digitalWrite(RESET_COMS,1);
-    delay(100);
-    digitalWrite(RESET_COMS,0);
-    delay(3000);
-    tft.fillScreen(TFT_WHITE);
+    faulty_frames++;
+    if(faulty_frames>10){
+      Serial.println("reconnecting");
+      tft.fillScreen(TFT_WHITE); 
+      tft.setTextColor(TFT_RED,TFT_WHITE);
+      tft.setFreeFont(FF20); //select Free, Mono, Oblique, 12pt.
+      tft.drawString("crc mismatch",20,100);//prints string at (70,80)
+      while(!sendCommand()){
+        digitalWrite(RESET_COMS,1);
+        delay(10);
+        digitalWrite(RESET_COMS,0);
+      }
+      tft.fillScreen(TFT_WHITE);
+      faulty_frames = 0;
+    }
   }
 
 //  delay(100); // Wait
