@@ -52,7 +52,7 @@ class SBM_120_UV:
 
 z_start = 1
 z_stop = 50
-step_length = 1
+step_length = 10
 total_number_of_iteration = z_stop-z_start
 
 start_time = time.time()
