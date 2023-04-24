@@ -124,22 +124,25 @@ drv.memcpy_htod(coeffs_cuda[0],coeffs)
 
 angular_range_roll = 70
 angular_range_pitch = 70
-step_length = 0.5
-z_distance = 5
+step_length = 0.25
+z_start = 1
+z_stop = 50
 roll = []
 pitch = []
 x = []
 y = []
 
-led_positions = [[95,95]]
-center_offset = [30,60]
-angular_offset = [0,30]
-angular_spacing = [60,30]
+led_positions = [[70,70]]
+center_offset = [28,56,50]
+angular_offset = [0,0,36]
+angular_spacing = [72,72,72]
 j = 0
+
 for offset in center_offset:
     for i in range(0+angular_offset[j], 360+angular_offset[j], angular_spacing[j]):
-        p = [offset*math.cos(i/180*math.pi), offset*math.sin(i/180*math.pi)]
+        p = [offset*math.cos(i/180.0*math.pi), offset*math.sin(i/180.0*math.pi)]
         led_positions.append([led_positions[0][0]+p[0], led_positions[0][1]+p[1]])
+    j = j+1
 
 print("generating rays")
 tmp_rot_axis = []
@@ -187,7 +190,7 @@ first_iteration = True
 min_val = 0
 max_val = 0
 
-for z_distance in range(5,50):
+for z_distance in range(z_start,z_stop):
     z = np.ones(number_of_rays).astype(np.float32)*z_distance
 
     rays = np.array([np.zeros_like(z),np.zeros_like(z),np.zeros_like(z)],dtype=np.float32)
@@ -200,8 +203,8 @@ for z_distance in range(5,50):
     # print(rays)
     print(len(rays))
 
-    img_height = 1900
-    img_width = 1900
+    img_height = 1400
+    img_width = 1400
     img = np.zeros((img_height, img_width, 1), np.float32)
     invalid_rays = 0
     for ray in rays:
