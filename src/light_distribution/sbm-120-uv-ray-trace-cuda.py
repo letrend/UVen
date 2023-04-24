@@ -124,8 +124,8 @@ drv.memcpy_htod(coeffs_cuda[0],coeffs)
 
 angular_range_roll = 70
 angular_range_pitch = 70
-step_length = 0.25
-z_start = 1
+step_length = 0.1
+z_start = 5
 z_stop = 50
 roll = []
 pitch = []
@@ -203,13 +203,13 @@ for z_distance in range(z_start,z_stop):
     # print(rays)
     print(len(rays))
 
-    img_height = 1400
-    img_width = 1400
+    img_height = 2000
+    img_width = 2000
     img = np.zeros((img_height, img_width, 1), np.float32)
     invalid_rays = 0
     for ray in rays:
         if ray[2]>0:
-            px = [int(ray[0]*10), int(ray[1]*10)]
+            px = [int(ray[0]*10+300), int(ray[1]*10+300)]
             if px[0] >= 0 and px[0] < img_height and px[1] >= 0 and px[1] < img_width:
                 img[px[0], px[1], 0] = img[px[0], px[1], 0] + ray[2]
         else:
@@ -220,14 +220,14 @@ for z_distance in range(z_start,z_stop):
     img_scaled = img#cv2.resize(img, (1000, 1000), interpolation=cv2.INTER_CUBIC)
     if first_iteration:
         min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(img_scaled)
-        first_iteration = False
+        # first_iteration = False
     img_scaled = (img_scaled-min_val)/(max_val-min_val)*255
     # for i in range(0, img_height):
     #     for j in range(0, img_width):
     #         img[i, j] = (img[i, j] - min_val) / (max_val - min_val)
     # img = img * 255
     img_scaled = img_scaled.astype(np.uint8)
-    cv2.circle(img_scaled, (int(img_scaled.shape[0]/2),int(img_scaled.shape[1]/2)), int(img_scaled.shape[0]/2), (255, 255, 255), 3)
+    cv2.circle(img_scaled, (int(img_scaled.shape[0]/2),int(img_scaled.shape[1]/2)), 700, (255, 255, 255), 3)
     cv2.putText(img_scaled, 'z=%d' % z_distance, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 2,
                 cv2.LINE_AA)
 
