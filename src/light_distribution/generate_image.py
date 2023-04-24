@@ -4,7 +4,7 @@ import numpy as np
 import time
 from multiprocessing import Pool
 
-z_start = 6
+z_start = 5
 z_stop = 50
 
 def generate_image_func(z_distance):
@@ -49,7 +49,7 @@ def generate_image_func(z_distance):
         cv2.imwrite('sweep/%d.png' % z_distance, img_scaled)
         return img_scaled
 
-with Pool(processes=64) as pool:
+with Pool(processes=8) as pool:
     args = []
     for z_distance in range(z_start,z_stop):
         args.append([z_distance])

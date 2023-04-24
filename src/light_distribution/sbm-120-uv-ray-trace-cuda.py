@@ -126,7 +126,7 @@ drv.memcpy_htod(coeffs_cuda[0],coeffs)
 
 angular_range_roll = 70
 angular_range_pitch = 70
-step_length = 0.1
+step_length = 0.05
 z_start = 5
 z_stop = 50
 roll = []
