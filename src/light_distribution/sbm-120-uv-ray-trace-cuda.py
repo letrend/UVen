@@ -92,14 +92,14 @@ typedef struct _Quaternion
     float4 q;
 } Quaternion;
 
-__global__ void shoot_ray(float3 *rays, float *z, float3 *v, float* angle, float *x, float *y, size_t n)
+__global__ void shoot_ray(float3 *rays, float *z, float3 *v, float* angle, float *x, float *y, float *angle_abs, size_t n)
 {
   const int idx = threadIdx.x + blockIdx.x * blockDim.x;
   if(idx<n){
       Quaternion q = Quaternion::describe_rotation(v[idx],angle[idx]);  
       float intensity = 0;
       for(int i=0;i<7;i++){
-        intensity += coeffs[6-i]*powf(angle[idx],i);
+        intensity += coeffs[6-i]*powf(angle_abs[idx],i);
       }
       
       float3 dir_new;
@@ -122,9 +122,9 @@ shoot_ray = mod.get_function("shoot_ray")
 coeffs_cuda = mod.get_global("coeffs")
 drv.memcpy_htod(coeffs_cuda[0],coeffs)
 
-angular_range_roll = 80
-angular_range_pitch = 80
-step_length = 0.5
+angular_range_roll = 70
+angular_range_pitch = 70
+step_length = 0.1
 z_distance = 5
 roll = []
 pitch = []
@@ -132,29 +132,37 @@ x = []
 y = []
 
 led_positions = [[95,95]]
-# center_offset = [30,60]
-# angular_offset = [0,30]
-# angular_spacing = [60,30]
-# j = 0
-# for offset in center_offset:
-#     for i in range(0+angular_offset[j], 360+angular_offset[j], angular_spacing[j]):
-#         p = [offset*math.cos(i/180*math.pi), offset*math.sin(i/180*math.pi)]
-#         led_positions.append([led_positions[0][0]+p[0], led_positions[0][1]+p[1]])
+center_offset = [30,60]
+angular_offset = [0,30]
+angular_spacing = [60,30]
+j = 0
+for offset in center_offset:
+    for i in range(0+angular_offset[j], 360+angular_offset[j], angular_spacing[j]):
+        p = [offset*math.cos(i/180*math.pi), offset*math.sin(i/180*math.pi)]
+        led_positions.append([led_positions[0][0]+p[0], led_positions[0][1]+p[1]])
 
 print("generating rays")
 tmp_rot_axis = []
 tmp_rot_angle = []
+tmp_angle_abs = []
+iterations = int((2*angular_range_pitch+step_length)/step_length)
+iter = 0
 for i in np.arange(-angular_range_roll,angular_range_roll+step_length,step_length):
+    print("%d/%d"%(iter,iterations))
     for j in np.arange(-angular_range_pitch,angular_range_pitch+step_length,step_length):
+        angle = np.sqrt(i ** 2 + j ** 2)
         q = Quaternion(matrix=Rotation.from_euler('zyx', [0, i, j], degrees=True).as_matrix())
-        if abs(q.angle)<1.3962634015955:
+        if angle<80:
             tmp_rot_axis.append(q.axis)
             tmp_rot_angle.append(q.angle)
+            tmp_angle_abs.append(angle)
             # roll.append(i)
             # pitch.append(j)
+    iter = iter+1
 
 rot_axis = []
 rot_angle = []
+angle_abs = []
 for pos in led_positions:
     tmp_x = np.ones(len(tmp_rot_angle)) * pos[0]
     tmp_y = np.ones(len(tmp_rot_angle)) * pos[1]
@@ -162,23 +170,29 @@ for pos in led_positions:
     y.extend(tmp_y)
     rot_axis.extend(tmp_rot_axis)
     rot_angle.extend(tmp_rot_angle)
+    angle_abs.extend(tmp_angle_abs)
 
+number_of_rays = len(rot_axis)
 # roll = np.array(roll,dtype=np.float32)
 # pitch = np.array(pitch,dtype=np.float32)
 rot_axis = np.array(rot_axis,dtype=np.float32)
+rot_axis = rot_axis.reshape((3,number_of_rays))
 rot_angle = np.array(rot_angle,dtype=np.float32)
+angle_abs = np.array(angle_abs,dtype=np.float32)
 x = np.array(x,dtype=np.float32)
 y = np.array(y,dtype=np.float32)
 print("running ray tracing")
 
-for z_distance in range(5,50):
-    z = np.ones(len(rot_axis)).astype(np.float32)*z_distance
+first_iteration = True
+min_val = 0
+max_val = 0
 
-    number_of_rays = len(rot_axis)
+for z_distance in range(5,50):
+    z = np.ones(number_of_rays).astype(np.float32)*z_distance
 
     rays = np.array([np.zeros_like(z),np.zeros_like(z),np.zeros_like(z)],dtype=np.float32)
     shoot_ray(
-            drv.Out(rays), drv.In(z), drv.In(rot_axis), drv.In(rot_angle), drv.In(x), drv.In(y), drv.In(np.array(number_of_rays,dtype=int)),
+            drv.Out(rays), drv.In(z), drv.In(rot_axis), drv.In(rot_angle), drv.In(x), drv.In(y), drv.In(angle_abs), drv.In(np.array(number_of_rays,dtype=int)),
             block=(16,1,1), grid=(int(number_of_rays/16),1))
     # A = np.array([z,roll,pitch],dtype=np.float32).transpose()
     rays = rays.reshape((number_of_rays,3))
@@ -201,7 +215,9 @@ for z_distance in range(5,50):
     print("%d invalid rays"%invalid_rays)
 
     img_scaled = img#cv2.resize(img, (1000, 1000), interpolation=cv2.INTER_CUBIC)
-    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(img_scaled)
+    if first_iteration:
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(img_scaled)
+        first_iteration = False
     img_scaled = (img_scaled-min_val)/(max_val-min_val)*255
     # for i in range(0, img_height):
     #     for j in range(0, img_width):
