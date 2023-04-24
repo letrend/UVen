@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import cv2
 import numpy as np
 import math
+import time
 from scipy.spatial.transform import Rotation
 import pycuda.driver as cuda
 import pycuda.autoinit
@@ -151,7 +152,8 @@ tmp_angle_abs = []
 iterations = int((2*angular_range_pitch+step_length)/step_length)
 iter = 0
 for i in np.arange(-angular_range_roll,angular_range_roll+step_length,step_length):
-    print("%d/%d"%(iter,iterations))
+    if iter%10==0:
+        print("%d/%d"%(iter,iterations))
     for j in np.arange(-angular_range_pitch,angular_range_pitch+step_length,step_length):
         angle = np.sqrt(i ** 2 + j ** 2)
         q = Quaternion(matrix=Rotation.from_euler('zyx', [0, i, j], degrees=True).as_matrix())
@@ -163,10 +165,13 @@ for i in np.arange(-angular_range_roll,angular_range_roll+step_length,step_lengt
             # pitch.append(j)
     iter = iter+1
 
+print("generating leds")
 rot_axis = []
 rot_angle = []
 angle_abs = []
+j = 0
 for pos in led_positions:
+    print("%d/%d"%(j,len(led_positions)))
     tmp_x = np.ones(len(tmp_rot_angle)) * pos[0]
     tmp_y = np.ones(len(tmp_rot_angle)) * pos[1]
     x.extend(tmp_x)
@@ -174,6 +179,7 @@ for pos in led_positions:
     rot_axis.extend(tmp_rot_axis)
     rot_angle.extend(tmp_rot_angle)
     angle_abs.extend(tmp_angle_abs)
+    j = j+1
 
 number_of_rays = len(rot_axis)
 # roll = np.array(roll,dtype=np.float32)
@@ -189,11 +195,12 @@ print("running ray tracing")
 first_iteration = True
 min_val = 0
 max_val = 0
-
+start_time = time.time()
 for z_distance in range(z_start,z_stop):
     z = np.ones(number_of_rays).astype(np.float32)*z_distance
 
     rays = np.array([np.zeros_like(z),np.zeros_like(z),np.zeros_like(z)],dtype=np.float32)
+    t0_ray_trace = time.time()
     shoot_ray(
             drv.Out(rays), drv.In(z), drv.In(rot_axis), drv.In(rot_angle), drv.In(x), drv.In(y), drv.In(angle_abs), drv.In(np.array(number_of_rays,dtype=int)),
             block=(16,1,1), grid=(int(number_of_rays/16),1))
@@ -201,19 +208,24 @@ for z_distance in range(z_start,z_stop):
     rays = rays.reshape((number_of_rays,3))
     # print(rays==A)
     # print(rays)
-    print(len(rays))
+    print("ray tracing took %ds for %d rays"%(time.time()-t0_ray_trace,len(rays)))
 
+    generate_image_t0 = time.time()
     img_height = 2000
     img_width = 2000
     img = np.zeros((img_height, img_width, 1), np.float32)
     invalid_rays = 0
+    px = (np.array(rays[:, 0] * 10 + 300, dtype=int), np.array(rays[:, 1] * 10 + 300, dtype=int))
+    j = 0
     for ray in rays:
         if ray[2]>0:
-            px = [int(ray[0]*10+300), int(ray[1]*10+300)]
-            if px[0] >= 0 and px[0] < img_height and px[1] >= 0 and px[1] < img_width:
-                img[px[0], px[1], 0] = img[px[0], px[1], 0] + ray[2]
+            if 0 <= px[0][j] < img_height and 0 <= px[1][j] < img_width:
+                img[px[0][j], px[1][j], 0] = img[px[0][j], px[1][j], 0] + ray[2]
         else:
             invalid_rays = invalid_rays+1
+        j = j+1
+
+
 
     print("%d invalid rays"%invalid_rays)
 
@@ -230,7 +242,7 @@ for z_distance in range(z_start,z_stop):
     cv2.circle(img_scaled, (int(img_scaled.shape[0]/2),int(img_scaled.shape[1]/2)), 700, (255, 255, 255), 3)
     cv2.putText(img_scaled, 'z=%d' % z_distance, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 2,
                 cv2.LINE_AA)
-
+    print("image generation took %ds"%(time.time()-generate_image_t0))
     cv2.imshow("ray trace", img_scaled)
     cv2.waitKey(100)
     cv2.imwrite('sweep/%d.png' % z_distance, img_scaled)
