@@ -7,7 +7,7 @@ import pycuda.driver as cuda
 import pycuda.autoinit
 from pycuda.compiler import SourceModule
 from pycuda import gpuarray, tools
-
+from pyquaternion import Quaternion
 import pycuda.autoinit
 import pycuda.driver as drv
 import numpy as np
@@ -96,10 +96,10 @@ __global__ void shoot_ray(float3 *rays, float *z, float3 *v, float* angle, float
 {
   const int idx = threadIdx.x + blockIdx.x * blockDim.x;
   if(idx<n){
-      Quaternion q(v[idx],angle[idx];  
+      Quaternion q = Quaternion::describe_rotation(v[idx],angle[idx]);  
       float intensity = 0;
       for(int i=0;i<7;i++){
-        intensity += coeffs[6-i]*powf(angle,i);
+        intensity += coeffs[6-i]*powf(angle[idx],i);
       }
       
       float3 dir_new;
@@ -109,10 +109,10 @@ __global__ void shoot_ray(float3 *rays, float *z, float3 *v, float* angle, float
       
       dir_new = q.rotate(dir_new);
       
-      float distance_scale = z[idx] / dir_new[2];
+      float distance_scale = z[idx] / dir_new.z;
       
-      rays[idx].x = dir_new[0]*distance_scale+x[idx];
-      rays[idx].y = dir_new[1]*distance_scale+y[idx];
+      rays[idx].x = dir_new.x*distance_scale+x[idx];
+      rays[idx].y = dir_new.y*distance_scale+y[idx];
       rays[idx].z = intensity;
   }
 }
@@ -122,76 +122,99 @@ shoot_ray = mod.get_function("shoot_ray")
 coeffs_cuda = mod.get_global("coeffs")
 drv.memcpy_htod(coeffs_cuda[0],coeffs)
 
+angular_range_roll = 80
+angular_range_pitch = 80
 step_length = 0.5
-z_distance = 20
+z_distance = 5
 roll = []
 pitch = []
 x = []
 y = []
 
 led_positions = [[95,95]]
-center_offset = [30,60]
-angular_offset = [0,30]
-angular_spacing = [60,30]
-j = 0
-for offset in center_offset:
-    for i in range(0+angular_offset[j], 360+angular_offset[j], angular_spacing[j]):
-        p = [offset*math.cos(i/180*math.pi), offset*math.sin(i/180*math.pi)]
-        led_positions.append([led_positions[0][0]+p[0], led_positions[0][1]+p[1]])
+# center_offset = [30,60]
+# angular_offset = [0,30]
+# angular_spacing = [60,30]
+# j = 0
+# for offset in center_offset:
+#     for i in range(0+angular_offset[j], 360+angular_offset[j], angular_spacing[j]):
+#         p = [offset*math.cos(i/180*math.pi), offset*math.sin(i/180*math.pi)]
+#         led_positions.append([led_positions[0][0]+p[0], led_positions[0][1]+p[1]])
 
+print("generating rays")
+tmp_rot_axis = []
+tmp_rot_angle = []
+for i in np.arange(-angular_range_roll,angular_range_roll+step_length,step_length):
+    for j in np.arange(-angular_range_pitch,angular_range_pitch+step_length,step_length):
+        q = Quaternion(matrix=Rotation.from_euler('zyx', [0, i, j], degrees=True).as_matrix())
+        if abs(q.angle)<1.3962634015955:
+            tmp_rot_axis.append(q.axis)
+            tmp_rot_angle.append(q.angle)
+            # roll.append(i)
+            # pitch.append(j)
+
+rot_axis = []
+rot_angle = []
 for pos in led_positions:
-    i = 0
-    # for i in np.arange(-80*np.pi/180,80*np.pi/180,step_length*np.pi/180):
-    for j in np.arange(-80*np.pi/180,80*np.pi/180,step_length*np.pi/180):
-        roll.append(i)
-        pitch.append(j)
-        x.append(pos[0])
-        y.append(pos[1])
+    tmp_x = np.ones(len(tmp_rot_angle)) * pos[0]
+    tmp_y = np.ones(len(tmp_rot_angle)) * pos[1]
+    x.extend(tmp_x)
+    y.extend(tmp_y)
+    rot_axis.extend(tmp_rot_axis)
+    rot_angle.extend(tmp_rot_angle)
 
-roll = np.array(roll,dtype=np.float32)
-pitch = np.array(pitch,dtype=np.float32)
+# roll = np.array(roll,dtype=np.float32)
+# pitch = np.array(pitch,dtype=np.float32)
+rot_axis = np.array(rot_axis,dtype=np.float32)
+rot_angle = np.array(rot_angle,dtype=np.float32)
 x = np.array(x,dtype=np.float32)
 y = np.array(y,dtype=np.float32)
-z = np.ones(len(roll)).astype(np.float32)*z_distance
+print("running ray tracing")
 
-number_of_rays = len(roll)
+for z_distance in range(5,50):
+    z = np.ones(len(rot_axis)).astype(np.float32)*z_distance
 
-rays = np.array([np.zeros_like(z),np.zeros_like(z),np.zeros_like(z)],dtype=np.float32)
-shoot_ray(
-        drv.Out(rays), drv.In(z), drv.In(roll), drv.In(pitch), drv.In(x), drv.In(y), drv.In(np.array(number_of_rays,dtype=int)),
-        block=(16,1,1), grid=(int(number_of_rays/16),1))
-A = np.array([z,roll,pitch],dtype=np.float32).transpose()
-rays = rays.reshape((len(roll),3))
-print(rays==A)
-print(rays)
-print(len(rays))
+    number_of_rays = len(rot_axis)
 
-img_height = 190
-img_width = 190
-img = np.zeros((img_height, img_width, 1), np.float32)
-invalid_rays = 0
-for ray in rays:
-    if ray[2]>0:
-        px = [int(ray[0]), int(ray[1])]
-        if px[0] >= 0 and px[0] < img_height and px[1] >= 0 and px[1] < img_width:
-            img[px[0], px[1], 0] = img[px[0], px[1], 0] + ray[2]
-    else:
-        invalid_rays = invalid_rays+1
-print("%d invalid rays"%invalid_rays)
-min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(img)
-for i in range(0, img_height):
-    for j in range(0, img_width):
-        img[i, j] = (img[i, j] - min_val) / (max_val - min_val)
-img = img * 255
-img = img.astype(np.uint8)
-img_upscaled = cv2.resize(img, (1000, 1000), interpolation=cv2.INTER_CUBIC)
-# img_upscaled = cv2.blur(img_upscaled,(9,9))
-cv2.circle(img_upscaled, (500, 500), 500, (255, 255, 255), 3)
-cv2.putText(img_upscaled, 'z=%d' % z_distance, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 2,
-            cv2.LINE_AA)
-cv2.imshow("ray trace", img_upscaled)
-cv2.waitKey(0)
-# cv2.imwrite('sweep/%d.png' % z_distance, img_upscaled)
+    rays = np.array([np.zeros_like(z),np.zeros_like(z),np.zeros_like(z)],dtype=np.float32)
+    shoot_ray(
+            drv.Out(rays), drv.In(z), drv.In(rot_axis), drv.In(rot_angle), drv.In(x), drv.In(y), drv.In(np.array(number_of_rays,dtype=int)),
+            block=(16,1,1), grid=(int(number_of_rays/16),1))
+    # A = np.array([z,roll,pitch],dtype=np.float32).transpose()
+    rays = rays.reshape((number_of_rays,3))
+    # print(rays==A)
+    # print(rays)
+    print(len(rays))
+
+    img_height = 1900
+    img_width = 1900
+    img = np.zeros((img_height, img_width, 1), np.float32)
+    invalid_rays = 0
+    for ray in rays:
+        if ray[2]>0:
+            px = [int(ray[0]*10), int(ray[1]*10)]
+            if px[0] >= 0 and px[0] < img_height and px[1] >= 0 and px[1] < img_width:
+                img[px[0], px[1], 0] = img[px[0], px[1], 0] + ray[2]
+        else:
+            invalid_rays = invalid_rays+1
+
+    print("%d invalid rays"%invalid_rays)
+
+    img_scaled = img#cv2.resize(img, (1000, 1000), interpolation=cv2.INTER_CUBIC)
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(img_scaled)
+    img_scaled = (img_scaled-min_val)/(max_val-min_val)*255
+    # for i in range(0, img_height):
+    #     for j in range(0, img_width):
+    #         img[i, j] = (img[i, j] - min_val) / (max_val - min_val)
+    # img = img * 255
+    img_scaled = img_scaled.astype(np.uint8)
+    cv2.circle(img_scaled, (int(img_scaled.shape[0]/2),int(img_scaled.shape[1]/2)), int(img_scaled.shape[0]/2), (255, 255, 255), 3)
+    cv2.putText(img_scaled, 'z=%d' % z_distance, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 2,
+                cv2.LINE_AA)
+
+    cv2.imshow("ray trace", img_scaled)
+    cv2.waitKey(100)
+    cv2.imwrite('sweep/%d.png' % z_distance, img_scaled)
 # iteration = iteration + 1
 # print("%d/%d \ttime per iteration: %ds" % (
 # iteration, total_number_of_iteration, (time.time() - start_time) / iteration))
