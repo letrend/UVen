@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import math
 import time
+import pickle
 from scipy.spatial.transform import Rotation
 import pycuda.driver as cuda
 import pycuda.autoinit
@@ -210,121 +211,7 @@ for z_distance in range(z_start,z_stop):
     # print(rays)
     print("ray tracing took %ds for %d rays"%(time.time()-t0_ray_trace,len(rays)))
 
-    generate_image_t0 = time.time()
-    img_height = 2000
-    img_width = 2000
-    img = np.zeros((img_height, img_width, 1), np.float32)
-    invalid_rays = 0
-    px = (np.array(rays[:, 0] * 10 + 300, dtype=int), np.array(rays[:, 1] * 10 + 300, dtype=int))
-    j = 0
-    for ray in rays:
-        if ray[2]>0:
-            if 0 <= px[0][j] < img_height and 0 <= px[1][j] < img_width:
-                img[px[0][j], px[1][j], 0] = img[px[0][j], px[1][j], 0] + ray[2]
-        else:
-            invalid_rays = invalid_rays+1
-        j = j+1
+    with open('/media/letrend/EE885F16885EDD21/sweep/%d.pickle'%z_distance, 'wb') as f:
+        pickle.dump(rays, f)
 
 
-
-    print("%d invalid rays"%invalid_rays)
-
-    img_scaled = img#cv2.resize(img, (1000, 1000), interpolation=cv2.INTER_CUBIC)
-    if first_iteration:
-        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(img_scaled)
-        # first_iteration = False
-    img_scaled = (img_scaled-min_val)/(max_val-min_val)*255
-    # for i in range(0, img_height):
-    #     for j in range(0, img_width):
-    #         img[i, j] = (img[i, j] - min_val) / (max_val - min_val)
-    # img = img * 255
-    img_scaled = img_scaled.astype(np.uint8)
-    cv2.circle(img_scaled, (int(img_scaled.shape[0]/2),int(img_scaled.shape[1]/2)), 700, (255, 255, 255), 3)
-    cv2.putText(img_scaled, 'z=%d' % z_distance, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 2,
-                cv2.LINE_AA)
-    print("image generation took %ds"%(time.time()-generate_image_t0))
-    cv2.imshow("ray trace", img_scaled)
-    cv2.waitKey(100)
-    cv2.imwrite('sweep/%d.png' % z_distance, img_scaled)
-# iteration = iteration + 1
-# print("%d/%d \ttime per iteration: %ds" % (
-# iteration, total_number_of_iteration, (time.time() - start_time) / iteration))
-
-
-#
-# # task function executed in a child worker process
-# def shoot_ray(roll, pitch, z, position):
-#     angle_abs = math.sqrt(roll * roll + pitch * pitch)
-#     ray = [0, 0, 0]import numpy
-#     if angle_abs < 80:
-#         intensity = poly(angle_abs)
-#         ray = np.array([0, 0, 1])
-#         rot = Rotation.from_euler('xyz', [roll, pitch, 0], degrees=True)
-#         ray = rot.apply(ray)
-#         distance_scale = z / ray[2]
-#         ray = ray * distance_scale
-#         ray[0] = ray[0] + position[0]
-#         ray[1] = ray[1] + position[1]
-#         ray[2] = intensity
-#         return [ray, True]
-#     return [ray, False]
-#
-# step_length = 0.25
-# z_distance = 39
-#
-# generate_image = True
-# if generate_image:
-#     img_height = 190
-#     img_width = 190
-#     img = np.zeros((img_height, img_width, 1), np.float32)
-#
-# led_positions = [[95,95]]
-# center_offset = [30,60]
-# angular_offset = [0,30]
-# angular_spacing = [60,30]
-# j = 0
-# for offset in center_offset:
-#     for i in range(0+angular_offset[j], 360+angular_offset[j], angular_spacing[j]):
-#         p = [offset*math.cos(i/180*math.pi), offset*math.sin(i/180*math.pi)]
-#         led_positions.append([led_positions[0][0]+p[0], led_positions[0][1]+p[1]])
-#
-# # protect the entry point
-# if __name__ == '__main__':
-#     # create the process pool
-#     with Pool(processes=256) as pool:
-#         # issue multiple tasks each with multiple arguments
-#         roll = []
-#         pitch = []
-#         args = []
-#         for pos in led_positions:
-#             for i in np.arange(-70, 70, step_length):
-#                 for j in np.arange(-70, 70, step_length):
-#                     args.append([i,j,z_distance,pos])
-#         async_results = [pool.apply_async(shoot_ray, args=arg) for arg in args]
-#         # retrieve the return value results
-#         results = [ar.get() for ar in async_results]
-#         print("%d rays"%len(results))
-#         if generate_image:
-#             if generate_image:
-#                 for ray in results:
-#                     if ray[1]:
-#                         px = [int(ray[0][0]), int(ray[0][1])]
-#                         if px[0] >= 0 and px[0] < img_height and px[1] >= 0 and px[1] < img_width:
-#                             img[px[0], px[1], 0] = img[px[0], px[1], 0] + ray[0][2]
-#             min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(img)
-#             for i in range(0, img_height):
-#                 for j in range(0, img_width):
-#                     img[i, j] = (img[i, j] - min_val) / (max_val - min_val)
-#             img = img * 255
-#             img = img.astype(np.uint8)
-#             img_upscaled = cv2.resize(img, (1000, 1000), interpolation=cv2.INTER_CUBIC)
-#             # img_upscaled = cv2.blur(img_upscaled,(9,9))
-#             cv2.circle(img_upscaled, (500, 500), 500, (255, 255, 255), 3)
-#             cv2.putText(img_upscaled, 'z=%d' % z_distance, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255), 2,
-#                         cv2.LINE_AA)
-#             cv2.imshow("ray trace", img_upscaled)
-#             cv2.waitKey(0)
-#             # cv2.imwrite('sweep/%d.png' % z_distance, img_upscaled)
-#             # iteration = iteration + 1
-#             # print("%d/%d \ttime per iteration: %ds" % (
-#             # iteration, total_number_of_iteration, (time.time() - start_time) / iteration))
