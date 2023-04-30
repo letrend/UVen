@@ -2,4 +2,5 @@
   (lib (name "custom")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/custom.kicad_sym")(options "")(descr ""))
   (lib (name "MCP48FEB28T-20E_ST")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/MCP48FEB28T-20E_ST.kicad_sym")(options "")(descr ""))
   (lib (name "DEV-16771")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/DEV-16771.kicad_sym")(options "")(descr ""))
+  (lib (name "TPS2HB50BQPWPRQ1")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/TPS2HB50BQPWPRQ1.kicad_sym")(options "")(descr ""))
 )
