@@ -79,6 +79,24 @@ bool sendCommand(){
   return crc32.calc((uint8_t const *)&res.data[0], 20)==res.values.crc;
 }
 
+void keyAPressed(){
+  static unsigned long t0 = millis();
+  unsigned long t1 = millis();
+  if((t1-t0)>100){
+    menu--;
+    t0 = t1;
+  }
+}
+
+void keyCPressed(){
+  static unsigned long t0 = millis();
+  unsigned long t1 = millis();
+  if((t1-t0)>100){
+    menu++;
+    t0 = t1;
+  }
+}
+
 void setup() {
   pinMode(CS, OUTPUT);
   pinMode(RESET_COMS, OUTPUT);
@@ -116,12 +134,15 @@ void setup() {
 
   cmd.values.control[0] = 0;
   cmd.values.control[1] = 0;
-  cmd.values.intensity[0] = 8;
-  cmd.values.intensity[1] = 8;
+  cmd.values.intensity[0] = 10;
+  cmd.values.intensity[1] = 10;
   cmd.values.time = 0;
   cmd.values.temperature[0] = 24;
   cmd.values.temperature[1] = 24;
   cmd.values.temperature[2] = 24;
+
+  attachInterrupt(digitalPinToInterrupt(WIO_KEY_A), keyAPressed, FALLING);
+  attachInterrupt(digitalPinToInterrupt(WIO_KEY_C), keyCPressed, FALLING);
 }
 
 void loop() {
@@ -144,12 +165,12 @@ void loop() {
 //    Serial.print("\t");
 //    Serial.println(res.values.temperature[2]);
     t1 = millis();
-    if(digitalRead(WIO_KEY_A)==0){
-      menu--;
-    }
-    if(digitalRead(WIO_KEY_C)==0){
-      menu++;
-    }
+//    if(digitalRead(WIO_KEY_A)==0){
+//      menu--;
+//    }
+//    if(digitalRead(WIO_KEY_C)==0){
+//      menu++;
+//    }
 
     if(menu>5){
       menu = TEMPERATURE;
@@ -198,6 +219,9 @@ void loop() {
           tft.drawCentreString(str, 160, 140, 2);
           tft.setTextColor(TFT_BLACK, TFT_WHITE);
           sampling_time_ms-=1000;
+          if(sampling_time_ms<0){
+            sampling_time_ms = 0;
+          }
           sprintf(str,"sampling time ms: %d",sampling_time_ms);
           tft.drawCentreString(str, 140, 100, 2);
         }
@@ -326,12 +350,12 @@ void loop() {
             tft.setTextColor(TFT_WHITE, TFT_WHITE);
             tft.drawCentreString(str, 160, 140, 2);
             tft.setTextColor(TFT_BLACK, TFT_WHITE);
-            cmd.values.temperature[0]+=0.5;
+            cmd.values.temperature[0]+=1;
           }else if(digitalRead(WIO_5S_DOWN)==0){
             tft.setTextColor(TFT_WHITE, TFT_WHITE);
             tft.drawCentreString(str, 160, 140, 2);
             tft.setTextColor(TFT_BLACK, TFT_WHITE);
-            cmd.values.temperature[0]-=0.5;
+            cmd.values.temperature[0]-=1;
           }
       
           if (updateTime <= millis()) {
@@ -371,12 +395,12 @@ void loop() {
             tft.setTextColor(TFT_WHITE, TFT_WHITE);
             tft.drawCentreString(str, 160, 140, 2);
             tft.setTextColor(TFT_BLACK, TFT_WHITE);
-            cmd.values.temperature[1]+=0.5;
+            cmd.values.temperature[1]+=1;
           }else if(digitalRead(WIO_5S_DOWN)==0){
             tft.setTextColor(TFT_WHITE, TFT_WHITE);
             tft.drawCentreString(str, 160, 140, 2);
             tft.setTextColor(TFT_BLACK, TFT_WHITE);
-            cmd.values.temperature[1]-=0.5;
+            cmd.values.temperature[1]-=1;
           }
           
           if (updateTime <= millis()) {
@@ -417,12 +441,12 @@ void loop() {
             tft.setTextColor(TFT_WHITE, TFT_WHITE);
             tft.drawCentreString(str, 160, 140, 2);
             tft.setTextColor(TFT_BLACK, TFT_WHITE);
-            cmd.values.temperature[2]+=0.5;
+            cmd.values.temperature[2]+=1;
           }else if(digitalRead(WIO_5S_DOWN)==0){
             tft.setTextColor(TFT_WHITE, TFT_WHITE);
             tft.drawCentreString(str, 160, 140, 2);
             tft.setTextColor(TFT_BLACK, TFT_WHITE);
-            cmd.values.temperature[2]-=0.5;
+            cmd.values.temperature[2]-=1;
           }
       
           if (updateTime <= millis()) {
@@ -545,12 +569,15 @@ void loop() {
       Serial.println("reconnecting");
       tft.fillScreen(TFT_WHITE); 
       tft.setTextColor(TFT_RED,TFT_WHITE);
-      tft.setFreeFont(FF20); //select Free, Mono, Oblique, 12pt.
-      tft.drawString("crc mismatch",20,100);//prints string at (70,80)
-      while(!sendCommand()){
+      int j = 0;
+      char str[30];
+      while(!sendCommand() && j<100){
         digitalWrite(RESET_COMS,1);
-        delay(10);
+        delay(100);
         digitalWrite(RESET_COMS,0);
+        delay(900);
+        sprintf(str,"reconnecting %d",j++);
+        tft.drawCentreString(str, 160, 140, 3);
       }
       tft.fillScreen(TFT_WHITE);
       faulty_frames = 0;

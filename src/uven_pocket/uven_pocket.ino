@@ -43,8 +43,8 @@ float calcTemp(int val, float *p){
   return p[0]*val*val+p[1]*val+p[2];
 }
 
+bool cool_down = false;
 bool ran_once = false;
-uint32_t time_setpoint = 0;
 
 // SPI 0 interrupt for the SAM3XA chip:
 #define SPI0_INTERRUPT_NUMBER (IRQn_Type)24
@@ -114,6 +114,21 @@ void SPI0_Handler( void )
 
 void resetComs(){
 //  REQUEST_EXTERNAL_RESET;
+  tmp_res.values.control[0] = cmd.values.control[0];
+  tmp_res.values.control[1] = 
+    cool_down<<5|
+    ran_once<<4|
+    (tmp_res.values.temperature[2]>cmd.values.temperature[2])<<3|
+    (tmp_res.values.temperature[1]>cmd.values.temperature[1])<<2|
+    (tmp_res.values.temperature[0]>cmd.values.temperature[0])<<1|
+    led_fire;
+  tmp_res.values.time = (led_fire?(millis()-fire_start_time):0);
+  tmp_res.values.intensity[0] = cmd.values.intensity[0];
+  tmp_res.values.intensity[1] = cmd.values.intensity[1];
+  tmp_res.values.crc = crc32.calc((uint8_t const *)&tmp_res.data[0], 20);
+  for(int i=0;i<BUFFER_SIZE;i++){
+    res.data[i] = tmp_res.data[i];
+  }
   pos = 0;
   REG_SPI0_TDR = res.data[0];
 }
@@ -164,8 +179,8 @@ void setup() {
     digitalWrite(TEC_LED1,true);
     delay(250);
   }
-  pinMode(CS,INPUT);
-  pinMode(RESET_COMS,INPUT);
+  pinMode(CS,INPUT_PULLUP);
+  pinMode(RESET_COMS,INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(RESET_COMS), resetComs, RISING);
   // Setup the SPI as Slave
   slaveBegin(CS);
@@ -217,6 +232,7 @@ void loop() {
     
     tmp_res.values.control[0] = cmd.values.control[0];
     tmp_res.values.control[1] = 
+      cool_down<<5|
       ran_once<<4|
       (tmp_res.values.temperature[2]>cmd.values.temperature[2])<<3|
       (tmp_res.values.temperature[1]>cmd.values.temperature[1])<<2|
@@ -266,12 +282,12 @@ void loop() {
     }
     
     if(digitalRead(BUTTON_0)==0){
-      if(time_setpoint>0 ){
+      if(cmd.values.time>0 ){
         if(!ran_once){
           if(!led_fire){
             fire_start_time = millis();
           }
-          if((millis()-fire_start_time)<time_setpoint){
+          if((millis()-fire_start_time)<cmd.values.time){
             led_fire = true;
           }else{
             led_fire = false;
@@ -285,8 +301,12 @@ void loop() {
       ran_once = false;
       led_fire = false;
     }
+
+    if(tmp_res.values.temperature[0]>70 || tmp_res.values.temperature[1]>70){
+      cool_down = true;
+    }
     
-    if(led_fire){
+    if(led_fire && !cool_down){
       digitalWrite(LED_0_DISABLE,false);
       digitalWrite(LED_1_DISABLE,false);
     }else{
