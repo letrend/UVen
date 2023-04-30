@@ -1,4 +1,4 @@
-21041563069998385
+21043245950546548
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -87548,6 +87548,13 @@ CM81
 0
 81
 81
+custom_lib
+CONN_713-1436&slash_037-000_WAG
+
+713-1436/037-000 
+0
+32
+32
 custom_lib
 DIL6-SMD
 <b>DIL 6 SMD</b><p>Source: http://www.fairchildsemi.com/pf/4N/4N35-M.html
