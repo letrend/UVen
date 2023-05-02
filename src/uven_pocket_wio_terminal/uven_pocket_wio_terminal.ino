@@ -57,18 +57,21 @@ int8_t menu = TEMPERATURE, menu_prev = TEMPERATURE;
 int faulty_frames = 0;
 
 bool sendCommand(){
-  digitalWrite(CS, LOW);
+  
 
   cmd.values.crc = crc32.calc((uint8_t const *)&cmd.data[0], 20);
 
   for(int i=0;i<BUFFER_SIZE;i++){
+    digitalWrite(CS, LOW);
+    delay(5);
     buff[i] = SPI.transfer(cmd.data[i]);
-    delay(20);
+    digitalWrite(CS, HIGH);
+    delay(5);
 //    Serial.print(cmd.data[i],HEX);Serial.print("\t");
   }
 //  Serial.println();
 
-  digitalWrite(CS, HIGH);
+  
 
   for(int i=0;i<BUFFER_SIZE;i++){
 //    Serial.print(res.data[i], HEX);
@@ -572,11 +575,11 @@ void loop() {
     while(!sendCommand() && j<100){
       tft.fillScreen(TFT_WHITE);
       digitalWrite(RESET_COMS,1);
-      delay(100);
+      delay(200);
       digitalWrite(RESET_COMS,0);
       sprintf(str,"reconnecting %d",j++);
-      tft.drawCentreString(str, 160, 140, 3);
-      delay(900);
+      tft.drawCentreString(str, 160, 140, 2);
+      delay(2000);
     }
     tft.fillScreen(TFT_WHITE);
   }
