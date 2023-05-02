@@ -39,7 +39,7 @@ uint8_t buff [BUFFER_SIZE];
 
 unsigned long t0, t1;
 
-uint32_t sampling_time_ms = 1000;
+uint32_t sampling_time_ms = 0;
 
 float temp_min[3] = {1000,1000,1000};
 
@@ -63,7 +63,7 @@ bool sendCommand(){
 
   for(int i=0;i<BUFFER_SIZE;i++){
     buff[i] = SPI.transfer(cmd.data[i]);
-    delay(10);
+    delay(20);
 //    Serial.print(cmd.data[i],HEX);Serial.print("\t");
   }
 //  Serial.println();
@@ -497,7 +497,7 @@ void loop() {
             tft.setTextColor(TFT_BLACK, TFT_WHITE);
             cmd.values.intensity[0]-=5;
             if(cmd.values.intensity[0]<5){
-              cmd.values.intensity[0]=5;
+              cmd.values.intensity[0]=0;
             }
           }
 
@@ -550,7 +550,7 @@ void loop() {
             tft.setTextColor(TFT_BLACK, TFT_WHITE);
             cmd.values.intensity[1]-=5;
             if(cmd.values.intensity[1]<5){
-              cmd.values.intensity[1]=5;
+              cmd.values.intensity[1]=0;
             }
           }
           if (updateTime <= millis()) {
@@ -564,24 +564,21 @@ void loop() {
     
     
   }else{
-    faulty_frames++;
-    if(faulty_frames>10){
-      Serial.println("reconnecting");
-      tft.fillScreen(TFT_WHITE); 
-      tft.setTextColor(TFT_RED,TFT_WHITE);
-      int j = 0;
-      char str[30];
-      while(!sendCommand() && j<100){
-        digitalWrite(RESET_COMS,1);
-        delay(100);
-        digitalWrite(RESET_COMS,0);
-        delay(900);
-        sprintf(str,"reconnecting %d",j++);
-        tft.drawCentreString(str, 160, 140, 3);
-      }
+    Serial.println("reconnecting");
+    tft.fillScreen(TFT_RED); 
+    tft.setTextColor(TFT_RED,TFT_WHITE);
+    int j = 0;
+    char str[30];
+    while(!sendCommand() && j<100){
       tft.fillScreen(TFT_WHITE);
-      faulty_frames = 0;
+      digitalWrite(RESET_COMS,1);
+      delay(100);
+      digitalWrite(RESET_COMS,0);
+      sprintf(str,"reconnecting %d",j++);
+      tft.drawCentreString(str, 160, 140, 3);
+      delay(900);
     }
+    tft.fillScreen(TFT_WHITE);
   }
 
 //  delay(100); // Wait

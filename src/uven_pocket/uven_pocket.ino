@@ -223,11 +223,19 @@ void loop() {
     }
 
     Wire.beginTransmission(pot_address);
-    Wire.write(cmd.values.intensity[0]); // 
+    if(cmd.values.intensity[0]>=5 && cmd.values.intensity[0]<=100){
+      Wire.write(cmd.values.intensity[0]); // 
+    }else{
+      Wire.write(5);
+    }
     Wire.endTransmission();
   
     Wire1.beginTransmission(pot_address);
-    Wire1.write(cmd.values.intensity[1]); // 
+    if(cmd.values.intensity[1]>=5 && cmd.values.intensity[1]<=100){
+      Wire1.write(cmd.values.intensity[1]); // 
+    }else{
+      Wire1.write(5);
+    }
     Wire1.endTransmission();
     
     tmp_res.values.control[0] = cmd.values.control[0];
@@ -302,13 +310,19 @@ void loop() {
       led_fire = false;
     }
 
-    if(tmp_res.values.temperature[0]>70 || tmp_res.values.temperature[1]>70){
+    if(tmp_res.values.temperature[0]>60 || tmp_res.values.temperature[1]>60){
       cool_down = true;
+    }else{
+      cool_down = false;
     }
     
     if(led_fire && !cool_down){
-      digitalWrite(LED_0_DISABLE,false);
-      digitalWrite(LED_1_DISABLE,false);
+      if(cmd.values.intensity[0]>=5){
+        digitalWrite(LED_0_DISABLE,false);
+      }
+      if(cmd.values.intensity[1]>=5){
+        digitalWrite(LED_1_DISABLE,false);
+      }
     }else{
       digitalWrite(LED_0_DISABLE,true);
       digitalWrite(LED_1_DISABLE,true);
