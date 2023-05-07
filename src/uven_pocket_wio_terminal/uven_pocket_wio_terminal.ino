@@ -29,7 +29,7 @@ union SPI_FRAME{
     float temperature[3];
     uint32_t crc;
   }values;
-  uint8_t data[BUFFER_SIZE];
+  volatile uint8_t data[BUFFER_SIZE];
 };
 
 SPI_FRAME cmd, res;
