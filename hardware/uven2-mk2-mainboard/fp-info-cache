@@ -1,4 +1,4 @@
-21043245950546548
+21044929598891231
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -87737,6 +87737,13 @@ PowerPAIR-6x5F-8
 0
 10
 10
+custom_lib
+PowerPAK SO-8DC
+
+
+0
+9
+5
 custom_lib
 QFN-16-1EP_3x3mm_Pitch0.5mm
 16-Lead Plastic Quad Flat, No Lead Package (NG) - 3x3x0.9 mm Body [QFN]; (see Microchip Packaging Specification 00000049BS.pdf)

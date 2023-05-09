@@ -5394,54 +5394,6 @@
     (path "/7580a72b-10c0-4670-a975-8896d18c735a"
       (reference "JP1") (unit 1) (value "Vref_select") (footprint "Jumper:SolderJumper-3_P1.3mm_Open_RoundedPad1.0x1.5mm_NumberLabels")
     )
-    (path "/a7e255f0-d76a-49be-b444-c0f82fcd87b1/3812dc20-4fd0-43e7-a7c1-8cc7b5cd3922"
-      (reference "Q1") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/a7e255f0-d76a-49be-b444-c0f82fcd87b1/437256b2-f244-465c-87df-cc8c4deb0827"
-      (reference "Q2") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/753997c7-ff2e-4539-bef1-b12aeb61e35f/3812dc20-4fd0-43e7-a7c1-8cc7b5cd3922"
-      (reference "Q3") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/753997c7-ff2e-4539-bef1-b12aeb61e35f/437256b2-f244-465c-87df-cc8c4deb0827"
-      (reference "Q4") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/5bdc14cf-7527-44b2-a9c7-1237a1a4a627/3812dc20-4fd0-43e7-a7c1-8cc7b5cd3922"
-      (reference "Q5") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/5bdc14cf-7527-44b2-a9c7-1237a1a4a627/437256b2-f244-465c-87df-cc8c4deb0827"
-      (reference "Q6") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/39794f3b-5477-46e6-ad35-3a74c3e04a0d/3812dc20-4fd0-43e7-a7c1-8cc7b5cd3922"
-      (reference "Q7") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/39794f3b-5477-46e6-ad35-3a74c3e04a0d/437256b2-f244-465c-87df-cc8c4deb0827"
-      (reference "Q8") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/efd9b712-8c50-41a5-89d3-35d0a8235c56/3812dc20-4fd0-43e7-a7c1-8cc7b5cd3922"
-      (reference "Q9") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/efd9b712-8c50-41a5-89d3-35d0a8235c56/437256b2-f244-465c-87df-cc8c4deb0827"
-      (reference "Q10") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/a1a1df60-4fc8-46ac-8a19-e12c07334899/3812dc20-4fd0-43e7-a7c1-8cc7b5cd3922"
-      (reference "Q11") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/a1a1df60-4fc8-46ac-8a19-e12c07334899/437256b2-f244-465c-87df-cc8c4deb0827"
-      (reference "Q12") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/78e52365-8ba3-45ef-8bad-ab8df9810a7f/3812dc20-4fd0-43e7-a7c1-8cc7b5cd3922"
-      (reference "Q13") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/78e52365-8ba3-45ef-8bad-ab8df9810a7f/437256b2-f244-465c-87df-cc8c4deb0827"
-      (reference "Q14") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/9611444e-9c0e-4320-bbf6-e437be644e27/3812dc20-4fd0-43e7-a7c1-8cc7b5cd3922"
-      (reference "Q15") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
-    (path "/9611444e-9c0e-4320-bbf6-e437be644e27/437256b2-f244-465c-87df-cc8c4deb0827"
-      (reference "Q16") (unit 1) (value "QM6006D") (footprint "Package_TO_SOT_SMD:TO-252-2")
-    )
     (path "/a7e255f0-d76a-49be-b444-c0f82fcd87b1/d216fb34-6d90-4436-b410-3b6608307c28"
       (reference "R1") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder")
     )
@@ -5621,6 +5573,54 @@
     )
     (path "/9611444e-9c0e-4320-bbf6-e437be644e27/a9056a43-039f-493c-9b8d-bb98d04cb68b"
       (reference "U11") (unit 1) (value "TPS2HB50BQPWPRQ1") (footprint "custom_lib:SOP65P640X120-17N")
+    )
+    (path "/a7e255f0-d76a-49be-b444-c0f82fcd87b1/38a59bc8-8f35-4d8d-972d-398a432f421d"
+      (reference "U12") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/a7e255f0-d76a-49be-b444-c0f82fcd87b1/7bb4539b-3dfe-4e1f-a44d-407922dda11d"
+      (reference "U13") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/753997c7-ff2e-4539-bef1-b12aeb61e35f/38a59bc8-8f35-4d8d-972d-398a432f421d"
+      (reference "U14") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/753997c7-ff2e-4539-bef1-b12aeb61e35f/7bb4539b-3dfe-4e1f-a44d-407922dda11d"
+      (reference "U15") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/5bdc14cf-7527-44b2-a9c7-1237a1a4a627/38a59bc8-8f35-4d8d-972d-398a432f421d"
+      (reference "U16") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/5bdc14cf-7527-44b2-a9c7-1237a1a4a627/7bb4539b-3dfe-4e1f-a44d-407922dda11d"
+      (reference "U17") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/39794f3b-5477-46e6-ad35-3a74c3e04a0d/38a59bc8-8f35-4d8d-972d-398a432f421d"
+      (reference "U18") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/39794f3b-5477-46e6-ad35-3a74c3e04a0d/7bb4539b-3dfe-4e1f-a44d-407922dda11d"
+      (reference "U19") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/efd9b712-8c50-41a5-89d3-35d0a8235c56/38a59bc8-8f35-4d8d-972d-398a432f421d"
+      (reference "U20") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/efd9b712-8c50-41a5-89d3-35d0a8235c56/7bb4539b-3dfe-4e1f-a44d-407922dda11d"
+      (reference "U21") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/a1a1df60-4fc8-46ac-8a19-e12c07334899/38a59bc8-8f35-4d8d-972d-398a432f421d"
+      (reference "U22") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/a1a1df60-4fc8-46ac-8a19-e12c07334899/7bb4539b-3dfe-4e1f-a44d-407922dda11d"
+      (reference "U23") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/78e52365-8ba3-45ef-8bad-ab8df9810a7f/38a59bc8-8f35-4d8d-972d-398a432f421d"
+      (reference "U24") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/78e52365-8ba3-45ef-8bad-ab8df9810a7f/7bb4539b-3dfe-4e1f-a44d-407922dda11d"
+      (reference "U25") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/9611444e-9c0e-4320-bbf6-e437be644e27/38a59bc8-8f35-4d8d-972d-398a432f421d"
+      (reference "U26") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
+    )
+    (path "/9611444e-9c0e-4320-bbf6-e437be644e27/7bb4539b-3dfe-4e1f-a44d-407922dda11d"
+      (reference "U27") (unit 1) (value "SIDR392DP-T1-GE3") (footprint "custom_lib:PowerPAK SO-8DC")
     )
   )
 )
