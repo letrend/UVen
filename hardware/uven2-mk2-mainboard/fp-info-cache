@@ -1,4 +1,4 @@
-21044929598891231
+21055032580371979
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -87521,6 +87521,13 @@ custom_lib
 12
 12
 custom_lib
+7466205R
+
+
+0
+1
+1
+custom_lib
 22862113
 2286211-3-2
 Connector
@@ -87619,6 +87626,13 @@ FPC_0.5mmx10
 10
 10
 custom_lib
+G3VM31DRTR05
+G3VM-31DR(TR05)-2
+Relay or Contactor
+0
+4
+4
+custom_lib
 GCT_USB4105-GF-A
 
 
@@ -87640,12 +87654,26 @@ IM69D130_Simic_uPhone
 5
 5
 custom_lib
+J1B1211CCD
+<b>J1B1211CCD</b><br>
+
+0
+14
+14
+custom_lib
 JST_S10B-PHDSS_2x05x2.00mm_Angled
 JST PHD series connector, dual row side entry, through hole, Datasheet:http://www.jst-mfg.com/product/pdf/eng/ePHD.pdf
 connector jst phd S10B-PHDSS
 0
 10
 10
+custom_lib
+KEYSTONE_7767
+
+
+0
+4
+4
 custom_lib
 LED_Dual_0603_AACC
 LED SMD 0603 (1608 Metric), square (rectangular) end terminal, IPC_7351 nominal, (Body size source: http://www.tortai-tech.com/upload/download/2011102023233369053.pdf), generated with kicad-footprint-generator
@@ -87997,6 +88025,13 @@ connector, TE-Connectivity, female
 20
 20
 custom_lib
+TE_1-282834-0
+
+
+0
+10
+10
+custom_lib
 TLE493d
 
 
@@ -88038,6 +88073,13 @@ TMC6100-LA
 0
 38
 38
+custom_lib
+TP420X150
+
+
+0
+1
+1
 custom_lib
 TSL1401CL
 
