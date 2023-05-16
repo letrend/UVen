@@ -806,7 +806,7 @@
   (symbol (lib_id "Mechanical:MountingHole") (at 259.08 107.315 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 1be9032b-da63-43b5-b4d8-9b92c8dcb60c)
-    (property "Reference" "H?" (id 0) (at 261.62 106.4803 0)
+    (property "Reference" "H18" (id 0) (at 261.62 106.4803 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "MountingHole" (id 1) (at 261.62 109.0172 0)
@@ -1685,7 +1685,7 @@
   (symbol (lib_id "Mechanical:MountingHole") (at 259.08 97.155 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid 741716d0-a841-4c1f-b24a-95f2ab48fc46)
-    (property "Reference" "H?" (id 0) (at 261.62 96.3203 0)
+    (property "Reference" "H16" (id 0) (at 261.62 96.3203 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "MountingHole" (id 1) (at 261.62 98.8572 0)
@@ -2258,7 +2258,7 @@
   (symbol (lib_id "Mechanical:MountingHole") (at 259.08 112.395 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid b7174d26-5625-4574-8691-f3e906654bf4)
-    (property "Reference" "H?" (id 0) (at 261.62 111.5603 0)
+    (property "Reference" "H19" (id 0) (at 261.62 111.5603 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "MountingHole" (id 1) (at 261.62 114.0972 0)
@@ -2457,7 +2457,7 @@
   (symbol (lib_id "Mechanical:MountingHole") (at 259.08 117.475 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid cb7777f4-fc3c-4122-b581-d4c76e342d52)
-    (property "Reference" "H?" (id 0) (at 261.62 116.6403 0)
+    (property "Reference" "H20" (id 0) (at 261.62 116.6403 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "MountingHole" (id 1) (at 261.62 119.1772 0)
@@ -2874,7 +2874,7 @@
   (symbol (lib_id "Mechanical:MountingHole") (at 259.08 102.235 0) (unit 1)
     (in_bom yes) (on_board yes) (fields_autoplaced)
     (uuid f5f59cc5-295d-452f-b22c-723c92bfdb2b)
-    (property "Reference" "H?" (id 0) (at 261.62 101.4003 0)
+    (property "Reference" "H17" (id 0) (at 261.62 101.4003 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Value" "MountingHole" (id 1) (at 261.62 103.9372 0)
@@ -3139,20 +3139,20 @@
     (path "/0d2686f8-8d34-493a-8a4f-3bd8bf6ef14b"
       (reference "H15") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3")
     )
-    (path "/1be9032b-da63-43b5-b4d8-9b92c8dcb60c"
-      (reference "H?") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3")
-    )
     (path "/741716d0-a841-4c1f-b24a-95f2ab48fc46"
-      (reference "H?") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3")
-    )
-    (path "/b7174d26-5625-4574-8691-f3e906654bf4"
-      (reference "H?") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3")
-    )
-    (path "/cb7777f4-fc3c-4122-b581-d4c76e342d52"
-      (reference "H?") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3")
+      (reference "H16") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3")
     )
     (path "/f5f59cc5-295d-452f-b22c-723c92bfdb2b"
-      (reference "H?") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3")
+      (reference "H17") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3")
+    )
+    (path "/1be9032b-da63-43b5-b4d8-9b92c8dcb60c"
+      (reference "H18") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3")
+    )
+    (path "/b7174d26-5625-4574-8691-f3e906654bf4"
+      (reference "H19") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3")
+    )
+    (path "/cb7777f4-fc3c-4122-b581-d4c76e342d52"
+      (reference "H20") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3")
     )
     (path "/babefa49-307d-4cb6-8ca1-f2ed9a23079d"
       (reference "J1") (unit 1) (value "LED0+") (footprint "TestPoint:TestPoint_Pad_3.0x3.0mm")
