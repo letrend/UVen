@@ -1,4 +1,4 @@
-21056717161592464
+21060086324110782
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -87654,6 +87654,13 @@ IM69D130_Simic_uPhone
 5
 5
 custom_lib
+INDPM5552X300N
+2020 (5252 metric)
+Inductor
+0
+2
+2
+custom_lib
 J1B1211CCD
 <b>J1B1211CCD</b><br>
 
@@ -87807,6 +87814,13 @@ QFN40P650X1050X90-77N
 0
 77
 77
+custom_lib
+QFN50P300X300X100-17N-D
+QFN16_1
+Integrated Circuit
+0
+17
+17
 custom_lib
 QFN50P700X700X100-49N
 QFN48-1
