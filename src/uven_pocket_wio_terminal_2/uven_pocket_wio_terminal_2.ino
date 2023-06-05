@@ -11,8 +11,6 @@ TFT_eSprite spr1 = TFT_eSprite(&tft); // Sprite
 TFT_eSprite spr2 = TFT_eSprite(&tft); // Sprite
 #include"Free_Fonts.h" //include the header file
 
-volatile uint16_t dac_val = 0;
-
 void keyAPressed(){
   static unsigned long t0 = millis();
   unsigned long t1 = millis();
@@ -51,6 +49,15 @@ void setup() {
   pinMode(WIO_5S_RIGHT, INPUT_PULLUP);
   pinMode(WIO_5S_PRESS, INPUT_PULLUP);
 
+  pinMode(LED_ENABLE, OUTPUT);
+  pinMode(LED_DIAG_ENABLE, OUTPUT);
+  pinMode(TEC0_DIAG_ENABLE, OUTPUT);
+  pinMode(TEC1_DIAG_ENABLE, OUTPUT);
+  digitalWrite(LED_ENABLE, true);
+  digitalWrite(LED_DIAG_ENABLE, true);
+  digitalWrite(TEC0_DIAG_ENABLE, false);
+  digitalWrite(TEC1_DIAG_ENABLE, false);
+
   attachInterrupt(digitalPinToInterrupt(WIO_KEY_A), keyAPressed, FALLING);
   attachInterrupt(digitalPinToInterrupt(WIO_KEY_C), keyCPressed, FALLING);
 
@@ -58,18 +65,33 @@ void setup() {
   dac->init();
 }
 
+volatile uint16_t dac_val = 0;
+int32_t target=0;
+
 void loop() {
+  Serial.print(target);
+  Serial.print("\t\t");
   Serial.print(dac_val);
   Serial.print("\t\t");
-  Serial.println(analogRead(LED_SENS));
+  int32_t val = analogRead(LED_SENS);
+  Serial.println(val);
   if(!digitalRead(WIO_5S_UP)){
-    dac_val++;
-    if(dac_val>4095){
-      dac_val = 4095;
+    target+=1;
+    if(target>4000){
+      target = 4000;
     }
   }else if(!digitalRead(WIO_5S_DOWN)){
-    if(dac_val>0){
-      dac_val--;
+    if(target>0){
+      target-=1;
+    }
+  }
+  if(dac_val>=0 && dac_val<2500){
+    if(val<target){
+      dac_val++;
+    }else{
+      if(dac_val>0){
+        dac_val--;  
+      }
     }
   }
   dac->write(0,dac_val);
