@@ -65,36 +65,38 @@ void setup() {
   dac->init();
 }
 
-volatile uint16_t dac_val = 0;
+volatile uint16_t dac_val = 2000;
 int32_t target=0;
 
 void loop() {
-  Serial.print(target);
-  Serial.print("\t\t");
-  Serial.print(dac_val);
-  Serial.print("\t\t");
-  int32_t val = analogRead(LED_SENS);
+  int32_t val = analogRead(TEMP_LED0);
   Serial.println(val);
-  if(!digitalRead(WIO_5S_UP)){
-    target+=1;
-    if(target>4000){
-      target = 4000;
-    }
-  }else if(!digitalRead(WIO_5S_DOWN)){
-    if(target>0){
-      target-=1;
-    }
-  }
-  if(dac_val>=0 && dac_val<2500){
-    if(val<target){
-      dac_val++;
-    }else{
-      if(dac_val>0){
-        dac_val--;  
-      }
-    }
-  }
-  dac->write(0,dac_val);
+//  Serial.print(target);
+//  Serial.print("\t\t");
+//  Serial.print(dac_val);
+//  Serial.print("\t\t");
+//  int32_t val = analogRead(LED_SENS);
+//  Serial.println(val);
+//  if(!digitalRead(WIO_5S_UP)){
+//    target+=1;
+//    if(target>4000){
+//      target = 4000;
+//    }
+//  }else if(!digitalRead(WIO_5S_DOWN)){
+//    if(target>0){
+//      target-=1;
+//    }
+//  }
+//  if(dac_val>=0 && dac_val<4095){
+//    if(val<target){
+//      dac_val++;
+//    }else{
+//      if(dac_val>0){
+//        dac_val--;  
+//      }
+//    }
+//  }
+//  dac->write(0,dac_val);
   
   delay(100);
 }

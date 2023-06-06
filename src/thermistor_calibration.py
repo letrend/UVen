@@ -1,10 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
+import sys
 
 analogValues = []
 temp = []
-with open("thermistor_calibration.csv") as csvfile:
+print("reading " + sys.argv[1])
+with open(sys.argv[1]) as csvfile:
     has_header = csv.Sniffer().has_header(csvfile.read(1024))
     csvfile.seek(0)  # Rewind.
     reader = csv.reader(csvfile)
@@ -22,6 +24,8 @@ xnew = np.linspace(0, 1023, 100)
 y = []
 for x in xnew:
     y.append(z[0]*x**3+z[1]*x**2+z[2]*x+z[3])
+plt.xlabel("ADC[raw]")
+plt.ylabel("Temp[C]")
 plt.plot(xnew, y, 'g')
 
 print("third order polynomial fit: ")
