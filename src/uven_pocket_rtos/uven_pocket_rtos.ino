@@ -67,6 +67,9 @@ static void currentControlThread(void* pvParameters) {
     // Initialise the xLastWakeTime variable with the current time.
     xLastWakeTime = xTaskGetTickCount();
 
+
+    pinMode(LED_LATCH, OUTPUT);
+    digitalWrite(LED_LATCH, true);
     pinMode(LED_DIAG_ENABLE, OUTPUT);
     pinMode(TEC0_DIAG_ENABLE, OUTPUT);
     pinMode(TEC1_DIAG_ENABLE, OUTPUT);
@@ -96,7 +99,7 @@ static void currentControlThread(void* pvParameters) {
       myDelayUs(1000);
       current_raw[CURRENT_LED0] = analogRead(LED_SENS);
       digitalWrite(SEL1, true);
-      myDelayUs(1000);
+      myDelayUs(2000);
       current_raw[CURRENT_LED1] = analogRead(LED_SENS);
       
       // read LED TEC currents
@@ -123,7 +126,7 @@ static void currentControlThread(void* pvParameters) {
 
       if(iter++%100==0){
         SERIAL.print("target "); SERIAL.print(target); SERIAL.print("\t");
-        SERIAL.print("current "); SERIAL.print(current_raw[CURRENT_LED0]); SERIAL.print("\t");
+        SERIAL.print("current "); SERIAL.print(current_raw[CURRENT_LED_TEC_1]); SERIAL.print("\t");
         SERIAL.print("gate "); SERIAL.print(dac_val); SERIAL.println();
       }
 //      SERIAL.print(current_raw[CURRENT_LED0]);
@@ -139,26 +142,32 @@ static void currentControlThread(void* pvParameters) {
 //      SERIAL.print(current_raw[CURRENT_CHAMBER_TEC_1]);
 //      SERIAL.println();
 
+//      if(!digitalRead(WIO_5S_UP)){
+//        dac->write(3,4095);
+//      }else{
+//        dac->write(3,0);
+//      }
+//
       if(!digitalRead(WIO_5S_UP)){
-        target+=1;
+        target+=10;
         if(target>4000){
           target = 4000;
         }
       }else if(!digitalRead(WIO_5S_DOWN)){
         if(target>0){
-          target-=1;
+          target-=10;
         }
       }
-      if(dac_val>=0 && dac_val<4095){
-        if(current_raw[CURRENT_LED0]<target){
-          dac_val++;
-        }else{
-          if(dac_val>0){
-            dac_val--;  
-          }
+      if(current_raw[CURRENT_LED_TEC_1]<target){
+        if(dac_val<4080){
+          dac_val+=5;
+        }
+      }else{
+        if(dac_val>10){
+          dac_val-=5;  
         }
       }
-      dac->write(0,dac_val);
+      dac->write(3,dac_val);
       
       myDelayMsUntil(&xLastWakeTime,10);
     }
