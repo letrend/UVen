@@ -32,6 +32,8 @@ enum TEMP{
 }temperature;
 float temp[7];
 
+bool over_temp[7] = {false,false,false,false,false,false,false};
+
 enum{
   CURRENT_LED0,
   CURRENT_LED1,
@@ -41,7 +43,7 @@ enum{
   CURRENT_CHAMBER_TEC_1
 }current;
 int32_t current_raw[6];
-
+bool emergency_off = false;
 int32_t target_current[6] = {0,0,0,0,0,0};
 int32_t gate_sp[6] = {0,0,0,0,0,0};
 
@@ -67,9 +69,16 @@ static void currentControlThread(void* pvParameters) {
     // Initialise the xLastWakeTime variable with the current time.
     xLastWakeTime = xTaskGetTickCount();
 
+    pinMode(LED_ENABLE, INPUT_PULLUP);
 
     pinMode(LED_LATCH, OUTPUT);
+    pinMode(TEC_LED_LATCH, OUTPUT);
+    pinMode(TEC_CHAMBER_LATCH, OUTPUT);
+    
     digitalWrite(LED_LATCH, true);
+    digitalWrite(TEC_LED_LATCH, false);
+    digitalWrite(TEC_CHAMBER_LATCH, false);
+    
     pinMode(LED_DIAG_ENABLE, OUTPUT);
     pinMode(TEC0_DIAG_ENABLE, OUTPUT);
     pinMode(TEC1_DIAG_ENABLE, OUTPUT);
@@ -99,7 +108,7 @@ static void currentControlThread(void* pvParameters) {
       myDelayUs(1000);
       current_raw[CURRENT_LED0] = analogRead(LED_SENS);
       digitalWrite(SEL1, true);
-      myDelayUs(2000);
+      myDelayUs(1000);
       current_raw[CURRENT_LED1] = analogRead(LED_SENS);
       
       // read LED TEC currents
@@ -124,50 +133,76 @@ static void currentControlThread(void* pvParameters) {
       myDelayUs(1000);
       current_raw[CURRENT_CHAMBER_TEC_1] = analogRead(LED_SENS);
 
-      if(iter++%100==0){
-        SERIAL.print("target "); SERIAL.print(target); SERIAL.print("\t");
-        SERIAL.print("current "); SERIAL.print(current_raw[CURRENT_LED_TEC_1]); SERIAL.print("\t");
-        SERIAL.print("gate "); SERIAL.print(dac_val); SERIAL.println();
+      // EMERGENCY OFF 
+      for(int i=0;i<7;i++){
+        if(over_temp[i]){ 
+          emergency_off = true;
+          break;
+        }
       }
-//      SERIAL.print(current_raw[CURRENT_LED0]);
-//      SERIAL.print("\t");
-//      SERIAL.print(current_raw[CURRENT_LED1]);
-//      SERIAL.print("\t");
-//      SERIAL.print(current_raw[CURRENT_LED_TEC_0]);
-//      SERIAL.print("\t");
-//      SERIAL.print(current_raw[CURRENT_LED_TEC_1]);
-//      SERIAL.print("\t");
-//      SERIAL.print(current_raw[CURRENT_CHAMBER_TEC_0]);
-//      SERIAL.print("\t");
-//      SERIAL.print(current_raw[CURRENT_CHAMBER_TEC_1]);
-//      SERIAL.println();
+
+      if(emergency_off){ // turn everything off
+        // disable switches
+        pinMode(LED_ENABLE, OUTPUT);
+        digitalWrite(LED_ENABLE, false);
+        // zero mosfet gates
+        for(int i=0;i<6;i++){
+          dac->write(0,0);
+          gate_sp[i] = 0;
+        }
+      }else{
+        if(!digitalRead(WIO_5S_UP)){
+          for(int i=2;i<6;i++){ // TECs
+            if(gate_sp[i]<2000){
+              gate_sp[i] = 2000;
+            }else if(gate_sp[i]<3000){
+              gate_sp[i] += 10;
+            }else if(gate_sp[i]<4091){
+              gate_sp[i] += 4;
+            }else{
+              gate_sp[i] = 4095;
+            }
+          }
+        }else{
+          for(int i=2;i<6;i++){ // TECs
+            gate_sp[i] = 0;
+          }
+        }
+
+        for(int i=0;i<6;i++){
+          dac->write(i,gate_sp[i]);
+        }
+      }
+
+      
 
 //      if(!digitalRead(WIO_5S_UP)){
 //        dac->write(3,4095);
 //      }else{
 //        dac->write(3,0);
 //      }
-//
-      if(!digitalRead(WIO_5S_UP)){
-        target+=10;
-        if(target>4000){
-          target = 4000;
-        }
-      }else if(!digitalRead(WIO_5S_DOWN)){
-        if(target>0){
-          target-=10;
-        }
-      }
-      if(current_raw[CURRENT_LED_TEC_1]<target){
-        if(dac_val<4080){
-          dac_val+=5;
-        }
-      }else{
-        if(dac_val>10){
-          dac_val-=5;  
-        }
-      }
-      dac->write(3,dac_val);
+
+      
+//      if(!digitalRead(WIO_5S_UP)){
+//        target+=10;
+//        if(target>4000){
+//          target = 4000;
+//        }
+//      }else if(!digitalRead(WIO_5S_DOWN)){
+//        if(target>0){
+//          target-=10;
+//        }
+//      }
+//      if(current_raw[CURRENT_LED_TEC_1]<target){
+//        if(dac_val<4080){
+//          dac_val+=5;
+//        }
+//      }else{
+//        if(dac_val>10){
+//          dac_val-=5;  
+//        }
+//      }
+//      dac->write(3,dac_val);
       
       myDelayMsUntil(&xLastWakeTime,10);
     }
@@ -202,9 +237,8 @@ static void temperatureThread(void* pvParameters) {
     temp_raw[5] = analogRead(TEMP_DRIVER_TEC_LED);
     temp_raw[6] = analogRead(TEMP_DRIVER_TEC_CHAMBER);
     for(int j=0;j<7;j++){
-      for(int i=0;i<3;i++){
-        temp[j] = calcTemp(temp_raw[j],temp_poly);
-      }
+      temp[j] = calcTemp(temp_raw[j],temp_poly);
+      over_temp[j] = temp[j]>50;
       SERIAL.print(temp[j]);
       SERIAL.print("\t");
     }
@@ -219,11 +253,33 @@ static void temperatureThread(void* pvParameters) {
 // renders all information on the display
 //*****************************************************************
 static void displayThread(void* pvParameters) {
-    SERIAL.println("Thread B: Started");
+    SERIAL.println("Display Thread: Started");
+
+    TickType_t xLastWakeTime;
+    // Initialise the xLastWakeTime variable with the current time.
+    xLastWakeTime = xTaskGetTickCount();
 
     while (1) {
-        SERIAL.println("B");
-        delay(2000);
+        SERIAL.println("currents:");
+        SERIAL.print(current_raw[CURRENT_LED0]);
+        SERIAL.print("\t");
+        SERIAL.print(current_raw[CURRENT_LED1]);
+        SERIAL.print("\t");
+        SERIAL.print(current_raw[CURRENT_LED_TEC_0]);
+        SERIAL.print("\t");
+        SERIAL.print(current_raw[CURRENT_LED_TEC_1]);
+        SERIAL.print("\t");
+        SERIAL.print(current_raw[CURRENT_CHAMBER_TEC_0]);
+        SERIAL.print("\t");
+        SERIAL.print(current_raw[CURRENT_CHAMBER_TEC_1]);
+        SERIAL.println();
+        SERIAL.println("gates:");
+        for(int i=0;i<6;i++){
+          SERIAL.print(gate_sp[i]);
+          SERIAL.print("\t");
+        }
+        SERIAL.println();
+        myDelayMsUntil(&xLastWakeTime,1000);
     }
 
 }
@@ -303,7 +359,7 @@ void setup() {
     // Also initializes a handler pointer to each task, which are important to communicate with and retrieve info from tasks
     xTaskCreate(currentControlThread,     "Task Current Control",       256, NULL, tskIDLE_PRIORITY + 4, &Handle_currentControlTask);
     xTaskCreate(temperatureThread,     "Task Temperature",              256, NULL, tskIDLE_PRIORITY + 3, &Handle_temperatureTask);
-//    xTaskCreate(displayThread,     "Task Display",                      256, NULL, tskIDLE_PRIORITY + 2, &Handle_displayTask);
+    xTaskCreate(displayThread,     "Task Display",                      256, NULL, tskIDLE_PRIORITY + 2, &Handle_displayTask);
     xTaskCreate(taskMonitor, "Task Monitor",                            256, NULL, tskIDLE_PRIORITY + 1, &Handle_monitorTask);
 
     pinMode(WIO_5S_UP, INPUT_PULLUP);
