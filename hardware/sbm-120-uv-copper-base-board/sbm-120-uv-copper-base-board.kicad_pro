@@ -381,7 +381,7 @@
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "sbm-120-uv-copper-base-board.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""
