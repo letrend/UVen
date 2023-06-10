@@ -151,63 +151,66 @@ static void currentControlThread(void* pvParameters) {
           gate_sp[i] = 0;
         }
       }else{
-//        if((temp[0]>20 || target_current[0]>500) && temp[5]<40){
-//          for(int i=2;i<6;i++){ // TECs
-//            if(gate_sp[i]<2000){
-//              gate_sp[i] = 2000;
-//            }else if(gate_sp[i]<3000){
-//              gate_sp[i] += 10;
-//            }else if(gate_sp[i]<4095){
-//              gate_sp[i] += 1;
-//            }else{
-//              gate_sp[i] = 4095;
-//            }
-//          }
-//          if(current_raw[CURRENT_LED_TEC_1]==514){
-//            gate_sp[3]=0;
-//          }
-//        }else{
-//          for(int i=2;i<6;i++){ // TECs
-//            gate_sp[i] = 0;
-//          }
-//        }
+        if((temp[0]>20 || target_current[0]>0) ){
+          for(int i=2;i<6;i++){ // TECs
+            if(gate_sp[i]<2000){
+              gate_sp[i] = 2000;
+            }else if(gate_sp[i]<3000){
+              gate_sp[i] += 2;
+            }else if(gate_sp[i]<4095){
+              gate_sp[i] += 1;
+            }else{
+              gate_sp[i] = 4095;
+            }
+          }
+          if(current_raw[CURRENT_LED_TEC_1]==514){
+            gate_sp[3]=0;
+          }
+          if(current_raw[CURRENT_LED_TEC_0]==514){
+            gate_sp[2]=0;
+          }
+        }else{
+          for(int i=2;i<6;i++){ // TECs
+            gate_sp[i] = 0;
+          }
+        }
 
         if(!digitalRead(WIO_5S_UP)){
           target_current[0]+=1;
-          target_current[2]+=1;
+          target_current[1]+=1;
           if(target_current[0]>827){
             target_current[0] = 827;
           }
-          if(target_current[2]>827){
-            target_current[2] = 827;
+          if(target_current[1]>827){
+            target_current[1] = 827;
           }
         }else if(!digitalRead(WIO_5S_DOWN)){
           if(target_current[0]>0){
             target_current[0]-=1;
           }
-          if(target_current[2]>0){
-            target_current[2]-=1;
+          if(target_current[1]>0){
+            target_current[1]-=1;
           }
         }
-        if(current_raw[0]<target_current[0]){
-          if(gate_sp[0]<4095){
-            gate_sp[0]+=1;
-          }
-        }else{
-          if(gate_sp[0]>0){
-            gate_sp[0]-=1;  
-          }
-        }
-
-        if(current_raw[2]<target_current[2]){
-          if(gate_sp[2]<4095){
-            gate_sp[2]+=1;
-          }
-        }else{
-          if(gate_sp[2]>0){
-            gate_sp[2]-=1;  
-          }
-        }
+//        if(current_raw[0]<target_current[0]){
+//          if(gate_sp[0]<4095){
+//            gate_sp[0]+=1;
+//          }
+//        }else{
+//          if(gate_sp[0]>0){
+//            gate_sp[0]-=1;  
+//          }
+//        }
+//
+//        if(current_raw[1]<target_current[1]){
+//          if(gate_sp[1]<4095){
+//            gate_sp[1]+=1;
+//          }
+//        }else{
+//          if(gate_sp[1]>0){
+//            gate_sp[1]-=1;  
+//          }
+//        }
         if(target_current[0]==0){
           digitalWrite(LED_LATCH, false);
         }else{
