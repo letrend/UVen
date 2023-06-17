@@ -32,6 +32,8 @@ enum TEMP{
 }temperature;
 float temp[7];
 
+float temp_sp[3] = {20,20,20};
+
 bool over_temp[7] = {false,false,false,false,false,false,false};
 
 enum{
@@ -73,11 +75,9 @@ static void currentControlThread(void* pvParameters) {
 
     pinMode(LED_LATCH, OUTPUT);
     pinMode(TEC_LED_LATCH, OUTPUT);
-    pinMode(TEC_CHAMBER_LATCH, OUTPUT);
     
     digitalWrite(LED_LATCH, true);
     digitalWrite(TEC_LED_LATCH, false);
-    digitalWrite(TEC_CHAMBER_LATCH, false);
     
     pinMode(LED_DIAG_ENABLE, OUTPUT);
     pinMode(TEC0_DIAG_ENABLE, OUTPUT);
@@ -151,30 +151,6 @@ static void currentControlThread(void* pvParameters) {
           gate_sp[i] = 0;
         }
       }else{
-        if((temp[0]>20 || target_current[0]>0) ){
-          for(int i=2;i<6;i++){ // TECs
-            if(gate_sp[i]<2000){
-              gate_sp[i] = 2000;
-            }else if(gate_sp[i]<3000){
-              gate_sp[i] += 2;
-            }else if(gate_sp[i]<4095){
-              gate_sp[i] += 1;
-            }else{
-              gate_sp[i] = 4095;
-            }
-          }
-          if(current_raw[CURRENT_LED_TEC_1]==514){
-            gate_sp[3]=0;
-          }
-          if(current_raw[CURRENT_LED_TEC_0]==514){
-            gate_sp[2]=0;
-          }
-        }else{
-          for(int i=2;i<6;i++){ // TECs
-            gate_sp[i] = 0;
-          }
-        }
-
         if(!digitalRead(WIO_5S_UP)){
           target_current[0]+=1;
           target_current[1]+=1;
@@ -192,32 +168,45 @@ static void currentControlThread(void* pvParameters) {
             target_current[1]-=1;
           }
         }
-//        if(current_raw[0]<target_current[0]){
-//          if(gate_sp[0]<4095){
-//            gate_sp[0]+=1;
-//          }
-//        }else{
-//          if(gate_sp[0]>0){
-//            gate_sp[0]-=1;  
-//          }
-//        }
-//
-//        if(current_raw[1]<target_current[1]){
-//          if(gate_sp[1]<4095){
-//            gate_sp[1]+=1;
-//          }
-//        }else{
-//          if(gate_sp[1]>0){
-//            gate_sp[1]-=1;  
-//          }
-//        }
         if(target_current[0]==0){
+          gate_sp[0] = 0;
           digitalWrite(LED_LATCH, false);
         }else{
           digitalWrite(LED_LATCH, true);
         }
 
-        for(int i=0;i<6;i++){
+        if(target_current[1]==0){
+          gate_sp[1] = 0;
+        }
+
+        if(target_current[0]>0 && gate_sp[0]==0){
+          gate_sp[0] = 2500;
+        }
+        if(target_current[1]>0 && gate_sp[1]==0){
+          gate_sp[1] = 2500;
+        }
+
+        if(current_raw[0]<target_current[0]){
+          if(gate_sp[0]<4095){
+            gate_sp[0]+=1;
+          }
+        }else{
+          if(gate_sp[0]>0){
+            gate_sp[0]-=1;  
+          }
+        }
+
+        if(current_raw[1]<target_current[1]){
+          if(gate_sp[1]<4095){
+            gate_sp[1]+=1;
+          }
+        }else{
+          if(gate_sp[1]>0){
+            gate_sp[1]-=1;  
+          }
+        }
+
+        for(int i=0;i<2;i++){
           dac->write(i,gate_sp[i]);
         }
       }
@@ -244,6 +233,13 @@ static void temperatureThread(void* pvParameters) {
 
   float temp_poly[4] = {-1.06548079e-06, 1.17278707e-03, -5.32683331e-01, 1.31479023e+02};
   int32_t temp_raw[7];
+
+  pinMode(TEC_CHAMBER_ENABLE, OUTPUT);
+  pinMode(TEC_LED0_ENABLE, OUTPUT);
+  pinMode(TEC_LED1_ENABLE, OUTPUT);
+  digitalWrite(TEC_CHAMBER_ENABLE, false);
+  digitalWrite(TEC_LED0_ENABLE, false);
+  digitalWrite(TEC_LED1_ENABLE, false);
   
   while(1){
     // read all temperatures
@@ -259,11 +255,30 @@ static void temperatureThread(void* pvParameters) {
     temp_raw[6] = analogRead(TEMP_DRIVER_TEC_CHAMBER);
     for(int j=0;j<7;j++){
       temp[j] = calcTemp(temp_raw[j],temp_poly);
-      over_temp[j] = temp[j]>80;
+      over_temp[j] = temp[j]>70;
       SERIAL.print(temp[j]);
       SERIAL.print("\t");
     }
     SERIAL.println();
+    
+    if(temp[0]>temp_sp[0]){
+      digitalWrite(TEC_LED0_ENABLE, true);
+    }else{
+      digitalWrite(TEC_LED0_ENABLE, false);
+    }
+
+    if(temp[1]>temp_sp[1]){
+      digitalWrite(TEC_LED1_ENABLE, true);
+    }else{
+      digitalWrite(TEC_LED1_ENABLE, false);
+    }
+
+    if(temp[2]>temp_sp[2]){
+      digitalWrite(TEC_CHAMBER_ENABLE, true);
+    }else{
+      digitalWrite(TEC_CHAMBER_ENABLE, false);
+    }
+    
     myDelayMsUntil(&xLastWakeTime,1000);
   }
 
@@ -365,7 +380,7 @@ void setup() {
     SERIAL.begin(2000000);
 
     vNopDelayMS(1000); // prevents usb driver crash on startup, do not omit this
-    while (!SERIAL) ;  // Wait for serial terminal to open port before starting program
+//    while (!SERIAL) ;  // Wait for serial terminal to open port before starting program
 
     SERIAL.println("");
     SERIAL.println("******************************");
