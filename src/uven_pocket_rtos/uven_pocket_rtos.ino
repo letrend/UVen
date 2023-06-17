@@ -3,6 +3,7 @@
 #include"Free_Fonts.h"
 #include "seeed_line_chart.h"
 TFT_eSPI tft;
+#define TFT_GREY 0x5AEB
 
 //**************************************************************************
 // Type Defines and Constants
@@ -136,13 +137,13 @@ static void currentControlThread(void* pvParameters) {
       myDelayUs(1000);
       current_raw[CURRENT_CHAMBER_TEC_1] = analogRead(LED_SENS);
 
-//      // EMERGENCY OFF 
-//      for(int i=0;i<7;i++){
-//        if(over_temp[i]){ 
-//          emergency_off = true;
-//          break;
-//        }
-//      }
+      // EMERGENCY OFF 
+      for(int i=0;i<7;i++){
+        if(over_temp[i]){ 
+          emergency_off = true;
+          break;
+        }
+      }
 
       if(emergency_off){ // turn everything off
         // disable switches
@@ -152,6 +153,9 @@ static void currentControlThread(void* pvParameters) {
         for(int i=0;i<6;i++){
           dac->write(i,0);
           gate_sp[i] = 0;
+        }
+        if(!digitalRead(WIO_KEY_B)){ // release emergency 
+          emergency_off = false;
         }
       }else{
         if(!digitalRead(WIO_5S_UP)){
@@ -423,6 +427,27 @@ static void displayThread(void* pvParameters) {
         }
         sprintf(chamber_temp_sp_str,"%.1f", temp_sp[2]);
         tft.drawString(chamber_temp_sp_str, 220, 210);
+
+        if(emergency_off){
+          tft.fillRect(0,0,100,30,TFT_RED);
+        }else{
+          tft.fillRect(0,0,100,30,TFT_GREEN);
+        }
+        if(temp[0]>temp_sp[0]){
+          tft.fillRect(100,210,30,30,TFT_BLUE);
+        }else{
+          tft.fillRect(100,210,30,30,TFT_GREY);
+        }
+        if(temp[1]>temp_sp[1]){
+          tft.fillRect(135,210,30,30,TFT_BLUE);
+        }else{
+          tft.fillRect(135,210,30,30,TFT_GREY);
+        }
+        if(temp[2]>temp_sp[2]){
+          tft.fillRect(170,210,30,30,TFT_BLUE);
+        }else{
+          tft.fillRect(170,210,30,30,TFT_GREY);
+        }
         
         
         myDelayMsUntil(&xLastWakeTime,200);
