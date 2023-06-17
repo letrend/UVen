@@ -145,6 +145,10 @@ static void currentControlThread(void* pvParameters) {
         }
       }
 
+      if(!digitalRead(WIO_KEY_B)){
+        emergency_off = true;
+      }
+
       if(emergency_off){ // turn everything off
         // disable switches
         pinMode(LED_ENABLE, OUTPUT);
@@ -154,7 +158,7 @@ static void currentControlThread(void* pvParameters) {
           dac->write(i,0);
           gate_sp[i] = 0;
         }
-        if(!digitalRead(WIO_KEY_B)){ // release emergency 
+        if(!digitalRead(WIO_5S_PRESS)){ // release emergency 
           emergency_off = false;
         }
       }else{
@@ -448,7 +452,6 @@ static void displayThread(void* pvParameters) {
         }else{
           tft.fillRect(170,210,30,30,TFT_GREY);
         }
-        
         
         myDelayMsUntil(&xLastWakeTime,200);
     }
