@@ -1,5 +1,8 @@
 #include <Seeed_Arduino_FreeRTOS.h>
 #include "MCP48FEB28.h"
+#include"Free_Fonts.h"
+#include "seeed_line_chart.h"
+TFT_eSPI tft;
 
 //**************************************************************************
 // Type Defines and Constants
@@ -133,13 +136,13 @@ static void currentControlThread(void* pvParameters) {
       myDelayUs(1000);
       current_raw[CURRENT_CHAMBER_TEC_1] = analogRead(LED_SENS);
 
-      // EMERGENCY OFF 
-      for(int i=0;i<7;i++){
-        if(over_temp[i]){ 
-          emergency_off = true;
-          break;
-        }
-      }
+//      // EMERGENCY OFF 
+//      for(int i=0;i<7;i++){
+//        if(over_temp[i]){ 
+//          emergency_off = true;
+//          break;
+//        }
+//      }
 
       if(emergency_off){ // turn everything off
         // disable switches
@@ -152,8 +155,8 @@ static void currentControlThread(void* pvParameters) {
         }
       }else{
         if(!digitalRead(WIO_5S_UP)){
-          target_current[0]+=1;
-          target_current[1]+=1;
+          target_current[0]+=5;
+          target_current[1]+=5;
           if(target_current[0]>827){
             target_current[0] = 827;
           }
@@ -161,11 +164,15 @@ static void currentControlThread(void* pvParameters) {
             target_current[1] = 827;
           }
         }else if(!digitalRead(WIO_5S_DOWN)){
-          if(target_current[0]>0){
-            target_current[0]-=1;
+          if(target_current[0]>5){
+            target_current[0]-=5;
+          }else{
+            target_current[0]=0;
           }
-          if(target_current[1]>0){
-            target_current[1]-=1;
+          if(target_current[1]>5){
+            target_current[1]-=5;
+          }else{
+            target_current[1]=0;
           }
         }
         if(target_current[0]==0){
@@ -291,38 +298,134 @@ static void temperatureThread(void* pvParameters) {
 static void displayThread(void* pvParameters) {
     SERIAL.println("Display Thread: Started");
 
+    tft.begin();
+    tft.setRotation(3);
+    tft.setTextColor(TFT_BLACK);
+    tft.setTextSize(2);
+    tft.fillScreen(TFT_WHITE);
+    tft.setFreeFont(FM9);
+
     TickType_t xLastWakeTime;
     // Initialise the xLastWakeTime variable with the current time.
     xLastWakeTime = xTaskGetTickCount();
 
+    char led_current_str0[20];
+    char led_current_str1[20];
+    char led_temp_str0[20];
+    char led_temp_str1[20];
+    char led_gate_str0[20];
+    char led_gate_str1[20];
+    char led_sp_str0[20];
+    char led_sp_str1[20];
+    char drv_temp_str[20];
+    char chamber_temp_str[20];
+    char chamber_temp_sp_str[20];
+
+    tft.drawString("led0", 100, 0);
+    tft.drawString("led1", 220, 0);
+    tft.drawString("[mA]", 0, 30);
+    tft.drawString("[C]", 0, 60);
+    tft.drawString("[V]", 0, 90);
+    tft.drawString("[mA]", 0, 120);
+    tft.drawString("drv", 100, 150);
+    tft.drawString("cham", 220, 150);
+    tft.drawString("[C]", 0, 180);
+    tft.drawString("[C]", 0, 210);
+
+    int target_current_prev[2] = {0,0};
+    int edit_mode = 0;
+
     while (1) {
-        SERIAL.println("------------------------");
-        SERIAL.println("currents:");
-        SERIAL.print(current_raw[CURRENT_LED0]);
-        SERIAL.print("\t");
-        SERIAL.print(current_raw[CURRENT_LED1]);
-        SERIAL.print("\t");
-        SERIAL.print(current_raw[CURRENT_LED_TEC_0]);
-        SERIAL.print("\t");
-        SERIAL.print(current_raw[CURRENT_LED_TEC_1]);
-        SERIAL.print("\t");
-        SERIAL.print(current_raw[CURRENT_CHAMBER_TEC_0]);
-        SERIAL.print("\t");
-        SERIAL.print(current_raw[CURRENT_CHAMBER_TEC_1]);
-        SERIAL.println();
-        SERIAL.println("gates:");
-        for(int i=0;i<6;i++){
-          SERIAL.print(gate_sp[i]);
-          SERIAL.print("\t");
+//        if(SERIAL){
+//          SERIAL.println("------------------------");
+//          SERIAL.println("currents:");
+//          SERIAL.print(current_raw[CURRENT_LED0]);
+//          SERIAL.print("\t");
+//          SERIAL.print(current_raw[CURRENT_LED1]);
+//          SERIAL.print("\t");
+//          SERIAL.print(current_raw[CURRENT_LED_TEC_0]);
+//          SERIAL.print("\t");
+//          SERIAL.print(current_raw[CURRENT_LED_TEC_1]);
+//          SERIAL.print("\t");
+//          SERIAL.print(current_raw[CURRENT_CHAMBER_TEC_0]);
+//          SERIAL.print("\t");
+//          SERIAL.print(current_raw[CURRENT_CHAMBER_TEC_1]);
+//          SERIAL.println();
+//          SERIAL.println("gates:");
+//          for(int i=0;i<6;i++){
+//            SERIAL.print(gate_sp[i]);
+//            SERIAL.print("\t");
+//          }
+//          SERIAL.println();
+//          SERIAL.println("target current:");
+//          for(int i=0;i<6;i++){
+//            SERIAL.print(target_current[i]);
+//            SERIAL.print("\t");
+//          }
+//          SERIAL.println();
+//        }
+
+        tft.setTextColor(TFT_WHITE);
+        tft.drawString(led_current_str0, 100, 30);
+        tft.drawString(led_current_str1, 220, 30);
+        tft.drawString(led_temp_str0, 100, 60);
+        tft.drawString(led_temp_str1, 220, 60);
+        tft.drawString(led_gate_str0, 100, 90);
+        tft.drawString(led_gate_str1, 220, 90);
+        tft.drawString(drv_temp_str, 100, 180);
+        tft.drawString(chamber_temp_str, 220, 180);
+        tft.drawString(chamber_temp_sp_str, 220, 210);
+        
+        tft.setTextColor(TFT_BLACK);
+        // current
+        sprintf(led_current_str0,"%d", (current_raw[CURRENT_LED0]>10?int(current_raw[CURRENT_LED0]*4.831):0));
+        sprintf(led_current_str1,"%d", (current_raw[CURRENT_LED1]>10?int(current_raw[CURRENT_LED1]*4.831):0));
+        tft.drawString(led_current_str0, 100, 30);
+        tft.drawString(led_current_str1, 220, 30);
+        // temp
+        sprintf(led_temp_str0,"%.1f", temp[0]);
+        sprintf(led_temp_str1,"%.1f", temp[1]);
+        if(temp[0]<30){ tft.setTextColor(TFT_BLUE); }else if(temp[0]>30 && temp[0]<50){ tft.setTextColor(TFT_ORANGE); }else{ tft.setTextColor(TFT_RED);}
+        tft.drawString(led_temp_str0, 100, 60);
+        if(temp[1]<30){ tft.setTextColor(TFT_BLUE); }else if(temp[1]>30 && temp[1]<50){ tft.setTextColor(TFT_ORANGE); }else{ tft.setTextColor(TFT_RED);}
+        tft.drawString(led_temp_str1, 220, 60);
+        // gate
+        tft.setTextColor(TFT_BLACK);
+        sprintf(led_gate_str0,"%.1f", gate_sp[0]*3.3/4095);
+        sprintf(led_gate_str1,"%.1f", gate_sp[1]*3.3/4095);
+        tft.drawString(led_gate_str0, 100, 90);
+        tft.drawString(led_gate_str1, 220, 90);
+        // led setpoint
+        if(target_current[0]!=target_current_prev[0] || target_current[1]!=target_current_prev[1]){
+          tft.fillRect(100,120,230,30,TFT_WHITE);
+          target_current_prev[0] = target_current[0];
+          target_current_prev[1] = target_current[1];
         }
-        SERIAL.println();
-        SERIAL.println("target current:");
-        for(int i=0;i<6;i++){
-          SERIAL.print(target_current[i]);
-          SERIAL.print("\t");
+        sprintf(led_sp_str0,"%d", int(target_current[0]*4.838));
+        sprintf(led_sp_str1,"%d", int(target_current[1]*4.838));
+        tft.drawString(led_sp_str0, 100, 120);
+        tft.drawString(led_sp_str1, 220, 120);
+        // driver+chamber
+        sprintf(drv_temp_str,"%.1f", temp[5]);
+        sprintf(chamber_temp_str,"%.1f", temp[2]);
+        if(temp[5]<30){ tft.setTextColor(TFT_BLUE); }else if(temp[5]>30 && temp[5]<50){ tft.setTextColor(TFT_ORANGE); }else{ tft.setTextColor(TFT_RED);}
+        tft.drawString(drv_temp_str, 100, 180);
+        if(temp[2]<30){ tft.setTextColor(TFT_BLUE); }else if(temp[2]>30 && temp[2]<50){ tft.setTextColor(TFT_ORANGE); }else{ tft.setTextColor(TFT_RED);}
+        tft.drawString(chamber_temp_str, 220, 180);
+        // chamber setpoint
+        tft.setTextColor(TFT_BLACK);
+        if(!digitalRead(WIO_KEY_C)){
+          tft.fillRect(220,210,100,30,TFT_WHITE);
+          temp_sp[2]--;
+        }else if(!digitalRead(WIO_KEY_A)){
+          tft.fillRect(220,210,100,30,TFT_WHITE);
+          temp_sp[2]++;
         }
-        SERIAL.println();
-        myDelayMsUntil(&xLastWakeTime,1000);
+        sprintf(chamber_temp_sp_str,"%.1f", temp_sp[2]);
+        tft.drawString(chamber_temp_sp_str, 220, 210);
+        
+        
+        myDelayMsUntil(&xLastWakeTime,200);
     }
 
 }
@@ -337,8 +440,7 @@ void taskMonitor(void* pvParameters) {
 
     SERIAL.println("Task Monitor: Started");
 
-    // run this task afew times before exiting forever
-    for (x = 0; x < 10; ++x) {
+    while (1) {
 
         SERIAL.println("");
         SERIAL.println("******************************");
@@ -364,12 +466,6 @@ void taskMonitor(void* pvParameters) {
 
         delay(10000); // print every 10 seconds
     }
-
-    // delete ourselves.
-    // Have to call this or the system crashes when you reach the end bracket and then get scheduled.
-    SERIAL.println("Task Monitor: Deleting");
-    vTaskDelete(NULL);
-
 }
 
 
@@ -400,13 +496,17 @@ void setup() {
     // Create the threads that will be managed by the rtos
     // Sets the stack size and priority of each task
     // Also initializes a handler pointer to each task, which are important to communicate with and retrieve info from tasks
-    xTaskCreate(currentControlThread,     "Task Current Control",       256, NULL, tskIDLE_PRIORITY + 4, &Handle_currentControlTask);
-    xTaskCreate(temperatureThread,     "Task Temperature",              256, NULL, tskIDLE_PRIORITY + 3, &Handle_temperatureTask);
-    xTaskCreate(displayThread,     "Task Display",                      256, NULL, tskIDLE_PRIORITY + 2, &Handle_displayTask);
-//    xTaskCreate(taskMonitor, "Task Monitor",                            256, NULL, tskIDLE_PRIORITY + 1, &Handle_monitorTask);
+    xTaskCreate(currentControlThread,     "Task Current Control",       512, NULL, tskIDLE_PRIORITY + 4, &Handle_currentControlTask);
+    xTaskCreate(temperatureThread,     "Task Temperature",              512, NULL, tskIDLE_PRIORITY + 3, &Handle_temperatureTask);
+    xTaskCreate(displayThread,     "Task Display",                      10000, NULL, tskIDLE_PRIORITY + 2, &Handle_displayTask);
+    xTaskCreate(taskMonitor, "Task Monitor",                            256, NULL, tskIDLE_PRIORITY + 1, &Handle_monitorTask);
 
     pinMode(WIO_5S_UP, INPUT_PULLUP);
     pinMode(WIO_5S_DOWN, INPUT_PULLUP);
+    pinMode(WIO_5S_PRESS, INPUT_PULLUP);
+    pinMode(WIO_KEY_A, INPUT_PULLUP);
+    pinMode(WIO_KEY_B, INPUT_PULLUP);
+    pinMode(WIO_KEY_C, INPUT_PULLUP);
 
     // Start the RTOS, this function will never return and will schedule the tasks.
     vTaskStartScheduler();
