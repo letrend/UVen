@@ -39,7 +39,7 @@ void setup() {
   digitalWrite(LED_SEL0, false);
   digitalWrite(LED_SEL1, false);
 
-  Serial.begin(2000000);
+  Serial.begin(115200);
 }
 
 bool emergency_off = false;
@@ -174,6 +174,7 @@ void loop() {
   }
 
   if(Serial.available()){
+    Serial.println("new setpoint");
     target_current[0] = Serial.parseInt();
   }
 

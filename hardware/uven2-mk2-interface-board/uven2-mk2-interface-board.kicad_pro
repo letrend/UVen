@@ -381,7 +381,7 @@
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "uven2-mk2-interface-board.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""

@@ -399,7 +399,7 @@
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "uven2-mk2-mainboard.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""
