@@ -1,16 +1,45 @@
 #include "pinConfig.h"
 #include "MCP48FEB28.h"
+#include <Arduino_CRC32.h>
+Arduino_CRC32 crc32;
+#include <USBHost_t36.h>
+
+USBHost myusb;
+USBSerial userial(myusb);
+
+#define BUFFER_SIZE 176
+
+union SERIAL_FRAME{
+  struct{
+    uint32_t time;
+    float temperature[17];
+    uint16_t led_fan;
+    uint16_t chamber_fan;
+    uint16_t target_current[16];
+    uint16_t current[16];
+    uint16_t gate[16];
+    uint32_t crc;
+  }values;
+  volatile uint8_t data[BUFFER_SIZE];
+};
+
+SERIAL_FRAME rx, tx;
+
 MCP48FEB28 *dac_0;
 MCP48FEB28 *dac_1;
 void setup() {
+  // initialize digital pin led as an output.
+  myusb.begin();
+  userial.begin(4000000);
+
   dac_0 = new MCP48FEB28(CS0,LATCH0);
   dac_1 = new MCP48FEB28(CS1,LATCH1);
   dac_0->init();
   dac_1->init();
   pinMode(LED_FAN,OUTPUT);
   pinMode(CHAMBER_FAN,OUTPUT);
-  analogWrite(LED_FAN,100);
-  analogWrite(CHAMBER_FAN,200);
+  // analogWrite(LED_FAN,100);
+  // analogWrite(CHAMBER_FAN,200);
 
   pinMode(LED_SEL0,OUTPUT);
   pinMode(LED_SEL1,OUTPUT);
@@ -38,8 +67,6 @@ void setup() {
   pinMode(LED_SEL1, OUTPUT);
   digitalWrite(LED_SEL0, false);
   digitalWrite(LED_SEL1, false);
-
-  Serial.begin(115200);
 }
 
 bool emergency_off = false;
@@ -62,13 +89,7 @@ float calcTemp(int val, const float *p){
 }
 
 void loop() {
-  // t+=0.01;
-  // int val = (sin(t)+1)/2.0*3800;
-  // for(int i=0;i<8;i++){
-  //   mcp48_0->write(i, val);
-  //   mcp48_1->write(i, val);
-  // }
-
+  unsigned long t0 = millis();
   // read LED currents
   digitalWrite(LED_DIAG_ENABLE_A,  true);
   digitalWrite(LED_SEL1, false);
@@ -142,29 +163,23 @@ void loop() {
   current_raw[15] = analogRead(LED_SENS);
   digitalWrite(LED_DIAG_ENABLE_H,  false);
 
-  for(int i=0;i<17;i++){
-    temp_raw[i] = analogRead(temp_pins[i]);
-    temp[i] = calcTemp(temp_raw[i],temp_poly);
-  }
-
-  if(target_current[0]==0){
-    gate_sp[0] = 0;
-    digitalWrite(LED_LATCH, false);
-  }else{
-    digitalWrite(LED_LATCH, true);
-  }
-
-  if(target_current[0]>0 && gate_sp[0]==0){
-    gate_sp[0] = 2500;
-  }
-
-  if(current_raw[0]<target_current[0]){
-    if(gate_sp[0]<4095){
-      gate_sp[0]+=1;
+  for(int i=0;i<16;i++){
+    if(target_current[i]==0){
+      gate_sp[i] = 0;
     }
-  }else{
-    if(gate_sp[0]>0){
-      gate_sp[0]-=1;  
+
+    if(target_current[i]>0 && gate_sp[i]==0){
+      gate_sp[i] = 2500;
+    }
+
+    if(current_raw[i]<target_current[i]){
+      if(gate_sp[i]<4095){
+        gate_sp[i]+=1;
+      }
+    }else{
+      if(gate_sp[i]>0){
+        gate_sp[i]-=1;  
+      }
     }
   }
 
@@ -173,34 +188,40 @@ void loop() {
     dac_1->write(i,gate_sp[i+8]);
   }
 
-  if(Serial.available()){
-    Serial.println("new setpoint");
-    target_current[0] = Serial.parseInt();
-  }
+  // unsigned long t1 = millis();
 
-  if((iteration++%50)==0){
-    Serial.println("LED currents:");
-    for(int i=0;i<16;i++){
-      Serial.printf("%d\t",current_raw[i]);
+  if(iteration++%10==0){
+    for(int i=0;i<17;i++){
+      temp_raw[i] = analogRead(temp_pins[i]);
+      temp[i] = calcTemp(temp_raw[i],temp_poly);
     }
-    Serial.println();
-    Serial.println("gate setpoints:");
+
     for(int i=0;i<16;i++){
-      Serial.printf("%d\t",gate_sp[i]);
+      tx.values.target_current[i] = target_current[i];
+      tx.values.current[i] = current_raw[i];
+      tx.values.gate[i] = gate_sp[i];
+      tx.values.temperature[i] = temp[i];
     }
-    Serial.println();
-    Serial.println("target currents:");
-    for(int i=0;i<16;i++){
-      Serial.printf("%d\t",target_current[i]);
+    tx.values.temperature[16] = temp[16];
+    tx.values.time = millis()-t0;
+
+    tx.values.crc = crc32.calc((uint8_t const *)&tx.data[0], BUFFER_SIZE-4);
+    userial.write((char*)tx.data,BUFFER_SIZE);
+    userial.readBytes((char*)&rx.data[0], BUFFER_SIZE);
+    uint32_t crc = crc32.calc((uint8_t const *)&rx.data[0], BUFFER_SIZE-4);
+    if(crc==rx.values.crc){
+      for(int i=0;i<16;i++){
+        target_current[i] = (rx.values.target_current[i]>=0 && rx.values.target_current[i]<100)?rx.values.target_current[i]:0;
+      }
+      if(rx.values.chamber_fan!=tx.values.chamber_fan){
+        analogWrite(CHAMBER_FAN,rx.values.chamber_fan);
+        tx.values.chamber_fan = rx.values.chamber_fan;
+      }
+      if(rx.values.led_fan!=tx.values.led_fan){
+        analogWrite(LED_FAN,rx.values.led_fan);
+        tx.values.led_fan = rx.values.led_fan;
+      }
     }
-    Serial.println();
-    // Serial.println("LED temps:");
-    // for(int i=0;i<16;i++){
-    //   Serial.printf("%.1f\t",temp[i]);
-    // }
-    // Serial.println();
-    // Serial.printf("DRIVER temp: %.1f",temp[16]);
-    // Serial.println();
   }
-  
+  // tx.values.time = millis()-t1;
 }
