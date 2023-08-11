@@ -62,6 +62,9 @@ add_library(uven_control_center_gui src/uven_control_center_gui.cpp
         qcustomplot/qcustomplot.cpp )
 target_link_libraries(uven_control_center_gui ${VISP_LIBRARIES} ${catkin_LIBRARIES} ${yaml-cpp_LIBRARIES} ${QWT_LIBRARIES} -ldl)
 
+add_executable( test_tcp src/test_tcp.cpp)
+target_link_libraries(test_tcp ${catkin_LIBRARIES} -ldl -lboost_thread -lpthread)
+
 if ("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
     target_link_libraries(uven_control_center_gui Qt5::Widgets)
 else ()
