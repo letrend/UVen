@@ -6,346 +6,290 @@ UVEN_CONTROL_CENTER_GUI::UVEN_CONTROL_CENTER_GUI()
 }
 
 void UVEN_CONTROL_CENTER_GUI::initPlugin(qt_gui_cpp::PluginContext &context) {
-        // access standalone command line arguments
-        QStringList argv = context.argv();
-        // create QWidget
-        widget_ = new QWidget();
-        // extend the widget with all attributes and children from UI file
-        ui.setupUi(widget_);
-        // add widget to the user interface
-        context.addWidget(widget_);
+    // access standalone command line arguments
+    QStringList argv = context.argv();
+    // create QWidget
+    widget_ = new QWidget();
+    // extend the widget with all attributes and children from UI file
+    ui.setupUi(widget_);
+    // add widget to the user interface
+    context.addWidget(widget_);
 
-        nh = ros::NodeHandlePtr(new ros::NodeHandle);
-        if (!ros::isInitialized()) {
-                int argc = 0;
-                char **argv = NULL;
-                ros::init(argc, argv, "UVEN_CONTROL_CENTER_GUI");
+    nh = ros::NodeHandlePtr(new ros::NodeHandle);
+    if (!ros::isInitialized()) {
+            int argc = 0;
+            char **argv = NULL;
+            ros::init(argc, argv, "UVEN_CONTROL_CENTER_GUI");
+    }
+    temp_plot.push_back(ui.temp_0); temp_plot.push_back(ui.temp_1); temp_plot.push_back(ui.temp_2); temp_plot.push_back(ui.temp_3);
+    temp_plot.push_back(ui.temp_4); temp_plot.push_back(ui.temp_5); temp_plot.push_back(ui.temp_6); temp_plot.push_back(ui.temp_7);
+    temp_plot.push_back(ui.temp_8); temp_plot.push_back(ui.temp_9); temp_plot.push_back(ui.temp_10); temp_plot.push_back(ui.temp_11);
+    temp_plot.push_back(ui.temp_12); temp_plot.push_back(ui.temp_13); temp_plot.push_back(ui.temp_14); temp_plot.push_back(ui.temp_15);
+    
+    for(auto p:temp_plot){
+        p->addGraph();
+        p->graph(0)->setPen(QColor(Qt::green));
+        p->xAxis->setAutoTickStep(false);
+        p->xAxis->setTickStep(5);
+    }
+    
+    current_plot.push_back(ui.current_0); current_plot.push_back(ui.current_1); current_plot.push_back(ui.current_2); current_plot.push_back(ui.current_3);
+    current_plot.push_back(ui.current_4); current_plot.push_back(ui.current_5); current_plot.push_back(ui.current_6); current_plot.push_back(ui.current_7);
+    current_plot.push_back(ui.current_8); current_plot.push_back(ui.current_9); current_plot.push_back(ui.current_10); current_plot.push_back(ui.current_11);
+    current_plot.push_back(ui.current_12); current_plot.push_back(ui.current_13); current_plot.push_back(ui.current_14); current_plot.push_back(ui.current_15);
+    
+    for(auto p:current_plot){
+        p->addGraph();
+        p->graph(0)->setPen(QColor(Qt::green));
+        p->xAxis->setAutoTickStep(false);
+        p->xAxis->setTickStep(5);
+    }
+
+    gate_plot.push_back(ui.gate_0); gate_plot.push_back(ui.gate_1); gate_plot.push_back(ui.gate_2); gate_plot.push_back(ui.gate_3);
+    gate_plot.push_back(ui.gate_4); gate_plot.push_back(ui.gate_5); gate_plot.push_back(ui.gate_6); gate_plot.push_back(ui.gate_7);
+    gate_plot.push_back(ui.gate_8); gate_plot.push_back(ui.gate_9); gate_plot.push_back(ui.gate_10); gate_plot.push_back(ui.gate_11);
+    gate_plot.push_back(ui.gate_12); gate_plot.push_back(ui.gate_13); gate_plot.push_back(ui.gate_14); gate_plot.push_back(ui.gate_15);
+    
+    for(auto p:gate_plot){
+        p->addGraph();
+        p->graph(0)->setPen(QColor(Qt::green));
+        p->xAxis->setAutoTickStep(false);
+        p->xAxis->setTickStep(5);
+    }
+
+    target_current_plot.push_back(ui.target_current_0); target_current_plot.push_back(ui.target_current_1); target_current_plot.push_back(ui.target_current_2); target_current_plot.push_back(ui.target_current_3);
+    target_current_plot.push_back(ui.target_current_4); target_current_plot.push_back(ui.target_current_5); target_current_plot.push_back(ui.target_current_6); target_current_plot.push_back(ui.target_current_7);
+    target_current_plot.push_back(ui.target_current_8); target_current_plot.push_back(ui.target_current_9); target_current_plot.push_back(ui.target_current_10); target_current_plot.push_back(ui.target_current_11);
+    target_current_plot.push_back(ui.target_current_12); target_current_plot.push_back(ui.target_current_13); target_current_plot.push_back(ui.target_current_14); target_current_plot.push_back(ui.target_current_15);
+    
+    for(auto p:target_current_plot){
+        p->addGraph();
+        p->graph(0)->setPen(QColor(Qt::green));
+        p->xAxis->setAutoTickStep(false);
+        p->xAxis->setTickStep(5);
+    }
+    
+    temp_dial.push_back(ui.temp_dial_0); temp_dial.push_back(ui.temp_dial_1); temp_dial.push_back(ui.temp_dial_2); temp_dial.push_back(ui.temp_dial_3);
+    temp_dial.push_back(ui.temp_dial_4); temp_dial.push_back(ui.temp_dial_5); temp_dial.push_back(ui.temp_dial_6); temp_dial.push_back(ui.temp_dial_7);
+    temp_dial.push_back(ui.temp_dial_8); temp_dial.push_back(ui.temp_dial_9); temp_dial.push_back(ui.temp_dial_10); temp_dial.push_back(ui.temp_dial_11);
+    temp_dial.push_back(ui.temp_dial_12); temp_dial.push_back(ui.temp_dial_13); temp_dial.push_back(ui.temp_dial_14); temp_dial.push_back(ui.temp_dial_15);
+
+    current_dial.push_back(ui.current_dial_0); current_dial.push_back(ui.current_dial_1); current_dial.push_back(ui.current_dial_2); current_dial.push_back(ui.current_dial_3);
+    current_dial.push_back(ui.current_dial_4); current_dial.push_back(ui.current_dial_5); current_dial.push_back(ui.current_dial_6); current_dial.push_back(ui.current_dial_7);
+    current_dial.push_back(ui.current_dial_8); current_dial.push_back(ui.current_dial_9); current_dial.push_back(ui.current_dial_10); current_dial.push_back(ui.current_dial_11);
+    current_dial.push_back(ui.current_dial_12); current_dial.push_back(ui.current_dial_13); current_dial.push_back(ui.current_dial_14); current_dial.push_back(ui.current_dial_15);
+
+    gate_dial.push_back(ui.gate_dial_0); gate_dial.push_back(ui.gate_dial_1); gate_dial.push_back(ui.gate_dial_2); gate_dial.push_back(ui.gate_dial_3);
+    gate_dial.push_back(ui.gate_dial_4); gate_dial.push_back(ui.gate_dial_5); gate_dial.push_back(ui.gate_dial_6); gate_dial.push_back(ui.gate_dial_7);
+    gate_dial.push_back(ui.gate_dial_8); gate_dial.push_back(ui.gate_dial_9); gate_dial.push_back(ui.gate_dial_10); gate_dial.push_back(ui.gate_dial_11);
+    gate_dial.push_back(ui.gate_dial_12); gate_dial.push_back(ui.gate_dial_13); gate_dial.push_back(ui.gate_dial_14); gate_dial.push_back(ui.gate_dial_15);
+
+    target_current_dial.push_back(ui.target_current_dial_0); target_current_dial.push_back(ui.target_current_dial_1); target_current_dial.push_back(ui.target_current_dial_2); target_current_dial.push_back(ui.target_current_dial_3);
+    target_current_dial.push_back(ui.target_current_dial_4); target_current_dial.push_back(ui.target_current_dial_5); target_current_dial.push_back(ui.target_current_dial_6); target_current_dial.push_back(ui.target_current_dial_7);
+    target_current_dial.push_back(ui.target_current_dial_8); target_current_dial.push_back(ui.target_current_dial_9); target_current_dial.push_back(ui.target_current_dial_10); target_current_dial.push_back(ui.target_current_dial_11);
+    target_current_dial.push_back(ui.target_current_dial_12); target_current_dial.push_back(ui.target_current_dial_13); target_current_dial.push_back(ui.target_current_dial_14); target_current_dial.push_back(ui.target_current_dial_15);
+
+    QwtDialSimpleNeedle *needle = new QwtDialSimpleNeedle(QwtDialSimpleNeedle::QwtDialSimpleNeedle::Arrow, true, Qt::red, Qt::red);
+    for(auto dial:temp_dial){
+        dial->setNeedle(needle);
+    }
+    for(auto dial:current_dial){
+        dial->setNeedle(needle);
+    }
+    for(auto dial:gate_dial){
+        dial->setNeedle(needle);
+    }
+    for(auto dial:target_current_dial){
+        dial->setNeedle(needle);
+    }
+
+    ui.chamber_fan_dial->setNeedle(needle);
+    ui.led_fan_dial->setNeedle(needle);
+
+    current.resize(16);
+    current_time.resize(16);
+    temperature.resize(16);
+    temperature_time.resize(16);
+    gate.resize(16);
+    gate_time.resize(16);
+    target_current.resize(16);
+    target_current_time.resize(16);
+
+    QObject::connect(this, SIGNAL(plotSignal()), this, SLOT(plotData()));
+    QObject::connect(ui.chamber_fan_slider, SIGNAL(valueChanged(double)), this, SLOT(chamber_fan_changed(double)));
+    QObject::connect(ui.led_fan_slider, SIGNAL(valueChanged(double)), this, SLOT(led_fan_changed(double)));
+    QObject::connect(ui.target_current_slider, SIGNAL(valueChanged(double)), this, SLOT(target_current_changed(double)));
+    QObject::connect(ui.emergency_off, SIGNAL(clicked()), this, SLOT(emergency_off()));
+
+    if(nh->hasParam("lamp_ip") && nh->hasParam("lamp_port")){
+        nh->getParam("lamp_ip",lamp_ip);
+        nh->getParam("lamp_port",lamp_port);
+        lamp_coms_thread.reset(new std::thread(&UVEN_CONTROL_CENTER_GUI::lamp_coms, this));
+        lamp_coms_thread->detach();
+    }
+
+    ROS_INFO("uven gui initialized");
+}
+
+void UVEN_CONTROL_CENTER_GUI::led_fan_changed(double value){
+    // ROS_INFO("led fan changed to %d", (int)value);
+    tx.values.led_fan = (int)value;
+}
+
+void UVEN_CONTROL_CENTER_GUI::chamber_fan_changed(double value){
+    // ROS_INFO("chamber fan changed to %d", (int)value);
+    tx.values.chamber_fan = (int)value;
+}
+
+void UVEN_CONTROL_CENTER_GUI::target_current_changed(double value){
+    // ROS_INFO("target current changed to %d", (int)value);
+    if(!emergency_off_flag){
+        for(int i=0;i<16;i++){
+            tx.values.target_current[i] = (int)(value*1000);
         }
+    }
+}
 
-        ui.temp_0->addGraph();
-        ui.temp_0->graph(0)->setPen(QColor(Qt::green));
-        ui.temp_1->addGraph();
-        ui.temp_1->graph(0)->setPen(QColor(Qt::green));
-        ui.temp_2->addGraph();
-        ui.temp_2->graph(0)->setPen(QColor(Qt::green));
-        ui.temp_3->addGraph();
-        ui.temp_3->graph(0)->setPen(QColor(Qt::green));
-        ui.temp_4->addGraph();
-        ui.temp_4->graph(0)->setPen(QColor(Qt::green));
+void UVEN_CONTROL_CENTER_GUI::emergency_off(){
+    if(ui.emergency_off->isChecked()){
+        emergency_off_flag = true;
+        for(int i=0;i<16;i++){
+            tx.values.target_current[i] = 0;
+        }
+        ui.emergency_off->setStyleSheet("background: red");
+        ui.target_current_slider->setEnabled(false);
+    }else{
+        emergency_off_flag = false;
+        ui.emergency_off->setStyleSheet("background: lightgrey");
+        ui.target_current_slider->setEnabled(true);
+    }
+}
 
-        ui.current_0->addGraph();
-        ui.current_0->graph(0)->setPen(QColor(Qt::green));
-        ui.current_1->addGraph();
-        ui.current_1->graph(0)->setPen(QColor(Qt::green));
-        ui.current_2->addGraph();
-        ui.current_2->graph(0)->setPen(QColor(Qt::green));
-        ui.current_3->addGraph();
-        ui.current_3->graph(0)->setPen(QColor(Qt::green));
-        ui.current_4->addGraph();
-        ui.current_4->graph(0)->setPen(QColor(Qt::green));
-
-        QwtDialSimpleNeedle *needle = new QwtDialSimpleNeedle(QwtDialSimpleNeedle::QwtDialSimpleNeedle::Arrow, true, Qt::red, Qt::red);
-        ui.temp_dial_0->setNeedle(needle);
-        ui.temp_dial_1->setNeedle(needle);
-        ui.temp_dial_2->setNeedle(needle);
-        ui.temp_dial_3->setNeedle(needle);
-        ui.temp_dial_4->setNeedle(needle);
-
-        ui.current_dial_0->setNeedle(needle);
-        ui.current_dial_1->setNeedle(needle);
-        ui.current_dial_2->setNeedle(needle);
-        ui.current_dial_3->setNeedle(needle);
-        ui.current_dial_4->setNeedle(needle);
-
-        start_time = ros::Time::now();
-
-        QObject::connect(this, SIGNAL(plotSignal()), this, SLOT(plotData()));
-
-        temp_subscriber[0] = nh->subscribe("temp0",1,&UVEN_CONTROL_CENTER_GUI::temp0_CB,this);
-        temp_subscriber[1] = nh->subscribe("temp1",1,&UVEN_CONTROL_CENTER_GUI::temp1_CB,this);
-        temp_subscriber[2] = nh->subscribe("temp2",1,&UVEN_CONTROL_CENTER_GUI::temp2_CB,this);
-        temp_subscriber[3] = nh->subscribe("temp3",1,&UVEN_CONTROL_CENTER_GUI::temp3_CB,this);
-        temp_subscriber[4] = nh->subscribe("temp4",1,&UVEN_CONTROL_CENTER_GUI::temp4_CB,this);
-
-        current_subscriber[0] = nh->subscribe("current0",1,&UVEN_CONTROL_CENTER_GUI::current0_CB,this);
-        current_subscriber[1] = nh->subscribe("current1",1,&UVEN_CONTROL_CENTER_GUI::current1_CB,this);
-        current_subscriber[2] = nh->subscribe("current2",1,&UVEN_CONTROL_CENTER_GUI::current2_CB,this);
-        current_subscriber[3] = nh->subscribe("current3",1,&UVEN_CONTROL_CENTER_GUI::current3_CB,this);
-        current_subscriber[4] = nh->subscribe("current4",1,&UVEN_CONTROL_CENTER_GUI::current4_CB,this);
-        //
-        // rps_subscriber = nh->subscribe("rps",1,&UVEN_CONTROL_CENTER_GUI::rps_CB,this);
-        // torque_subscriber = nh->subscribe("torque",1,&UVEN_CONTROL_CENTER_GUI::torque_CB,this);
-
-        ROS_INFO("uven gui initialized");
+void UVEN_CONTROL_CENTER_GUI::lamp_coms(){
+    ROS_INFO("lamp coms started");
+    start_time = ros::Time::now();
+    ros::Rate rate(10);
+    
+    while(ros::ok()){
+        boost::asio::io_service ios;
+        boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(lamp_ip), lamp_port);
+        boost::asio::ip::tcp::socket socket(ios);
+        socket.connect(endpoint);
+        boost::system::error_code error;
+        ros::Time t0 = ros::Time::now();
+        socket.write_some(boost::asio::buffer(tx.data, BUFFER_SIZE), error);
+        socket.read_some(boost::asio::buffer(rx.data, BUFFER_SIZE), error);
+        for(int i=0;i<16;i++){
+            current[i].push_back(rx.values.current[i]/1000.0);
+            current_time[i].push_back((t0-start_time).toSec());
+            temperature[i].push_back(rx.values.temperature[i]);
+            temperature_time[i].push_back((t0-start_time).toSec());
+            gate[i].push_back(rx.values.gate[i]);
+            gate_time[i].push_back((t0-start_time).toSec());
+            target_current[i].push_back(rx.values.target_current[i]/1000.0);
+            target_current_time[i].push_back((t0-start_time).toSec());
+            while((temperature_time[i].back()-temperature_time[i].front())>10){
+                current[i].pop_front();
+                current_time[i].pop_front();
+                temperature[i].pop_front();
+                temperature_time[i].pop_front();
+                gate[i].pop_front();
+                gate_time[i].pop_front();
+                target_current[i].pop_front();
+                target_current_time[i].pop_front();
+            }
+        }
+        chamber_fan = (int)rx.values.chamber_fan;
+        led_fan = (int)rx.values.led_fan;
+        Q_EMIT plotSignal();
+        socket.close();
+        rate.sleep();
+    }
 }
 
 void UVEN_CONTROL_CENTER_GUI::plotData(){
-        ui.temp_0->graph(0)->setData(values["temp0_sec"],values["temp0"]);
-        ui.temp_1->graph(0)->setData(values["temp1_sec"],values["temp1"]);
-        ui.temp_2->graph(0)->setData(values["temp2_sec"],values["temp2"]);
-        ui.temp_3->graph(0)->setData(values["temp3_sec"],values["temp3"]);
-        ui.temp_4->graph(0)->setData(values["temp4_sec"],values["temp4"]);
-
-        ui.current_0->graph(0)->setData(values["current0_sec"],values["current0"]);
-        ui.current_1->graph(0)->setData(values["current1_sec"],values["current1"]);
-        ui.current_2->graph(0)->setData(values["current2_sec"],values["current2"]);
-        ui.current_3->graph(0)->setData(values["current3_sec"],values["current3"]);
-        ui.current_4->graph(0)->setData(values["current4_sec"],values["current4"]);
-
-        if(values["temp0"].back()>warm) {
-                ui.temp_dial_0->setStyleSheet("background: yellow");
-                ui.temp_0->graph(0)->setPen(QColor(Qt::yellow));
-        }else if(values["temp0"].back()>hot) {
-                ui.temp_dial_0->setStyleSheet("background: red");
-                ui.temp_0->graph(0)->setPen(QColor(Qt::red));
-        }else{
-                ui.temp_dial_0->setStyleSheet("background: green");
-                ui.temp_0->graph(0)->setPen(QColor(Qt::blue));
+    for(int i=0;i<16;i++){
+        if(ui.tabWidget->currentIndex()==0){
+            if(current[i].back()>nominal_current) {
+                current_dial[i]->setStyleSheet("background: yellow");
+                current_plot[i]->graph(0)->setPen(QColor(Qt::darkYellow));
+            }else if(current[i].back()>a_lot_of_current) {
+                current_dial[i]->setStyleSheet("background: red");
+                current_plot[i]->graph(0)->setPen(QColor(Qt::red));
+            }else{
+                current_dial[i]->setStyleSheet("background: lightblue");
+                current_plot[i]->graph(0)->setPen(QColor(Qt::blue));
+            }
+            
+            current_plot[i]->graph(0)->setData(current_time[i],current[i]);
+            current_plot[i]->rescaleAxes();
+            current_plot[i]->replot();
+            current_dial[i]->setValue(current[i].back());
         }
 
-        if(values["temp1"].back()>warm) {
-                ui.temp_dial_1->setStyleSheet("background: yellow");
-                ui.temp_1->graph(0)->setPen(QColor(Qt::yellow));
-        }else if(values["temp1"].back()>hot) {
-                ui.temp_dial_1->setStyleSheet("background: red");
-                ui.temp_1->graph(0)->setPen(QColor(Qt::red));
-        }else{
-                ui.temp_dial_1->setStyleSheet("background: green");
-                ui.temp_1->graph(0)->setPen(QColor(Qt::blue));
+        if(ui.tabWidget->currentIndex()==1){
+            if(target_current[i].back()>nominal_current) {
+                target_current_dial[i]->setStyleSheet("background: yellow");
+                target_current_plot[i]->graph(0)->setPen(QColor(Qt::darkYellow));
+            }else if(target_current[i].back()>a_lot_of_current) {
+                target_current_dial[i]->setStyleSheet("background: red");
+                target_current_plot[i]->graph(0)->setPen(QColor(Qt::red));
+            }else{
+                target_current_dial[i]->setStyleSheet("background: lightblue");
+                target_current_plot[i]->graph(0)->setPen(QColor(Qt::blue));
+            }
+            
+            target_current_plot[i]->graph(0)->setData(target_current_time[i],target_current[i]);
+            target_current_plot[i]->rescaleAxes();
+            target_current_plot[i]->replot();
+            target_current_dial[i]->setValue(target_current[i].back());
+        }
+        
+        if(ui.tabWidget->currentIndex()==2){
+            if(temperature[i].back()>warm) {
+                temp_dial[i]->setStyleSheet("background: yellow");
+                temp_plot[i]->graph(0)->setPen(QColor(Qt::darkYellow));
+            }else if(temperature[i].back()>hot) {
+                temp_dial[i]->setStyleSheet("background: red");
+                temp_plot[i]->graph(0)->setPen(QColor(Qt::red));
+            }else{
+                temp_dial[i]->setStyleSheet("background: lightblue");
+                temp_plot[i]->graph(0)->setPen(QColor(Qt::blue));
+            }
+            
+            temp_plot[i]->graph(0)->setData(temperature_time[i],temperature[i]);
+            temp_plot[i]->rescaleAxes();
+            temp_plot[i]->replot();
+            temp_dial[i]->setValue(temperature[i].back());
         }
 
-        if(values["temp2"].back()>warm) {
-                ui.temp_dial_2->setStyleSheet("background: yellow");
-                ui.temp_2->graph(0)->setPen(QColor(Qt::yellow));
-        }else if(values["temp2"].back()>hot) {
-                ui.temp_dial_2->setStyleSheet("background: red");
-                ui.temp_2->graph(0)->setPen(QColor(Qt::red));
-        }else{
-                ui.temp_dial_2->setStyleSheet("background: green");
-                ui.temp_2->graph(0)->setPen(QColor(Qt::blue));
+        if(ui.tabWidget->currentIndex()==3){
+            if(gate[i].back()>warm) {
+                gate_dial[i]->setStyleSheet("background: yellow");
+                gate_plot[i]->graph(0)->setPen(QColor(Qt::darkYellow));
+            }else if(gate[i].back()>hot) {
+                gate_dial[i]->setStyleSheet("background: red");
+                gate_plot[i]->graph(0)->setPen(QColor(Qt::red));
+            }else{
+                gate_dial[i]->setStyleSheet("background: lightblue");
+                gate_plot[i]->graph(0)->setPen(QColor(Qt::blue));
+            }
+            
+            
+            gate_plot[i]->graph(0)->setData(gate_time[i],gate[i]);
+            gate_plot[i]->rescaleAxes();
+            gate_plot[i]->replot();
+            gate_dial[i]->setValue(gate[i].back()/4095.0*100);
         }
+    }
+    ui.chamber_fan_dial->setValue(chamber_fan);
+    ui.led_fan_dial->setValue(led_fan);
 
-        if(values["temp3"].back()>warm) {
-                ui.temp_dial_3->setStyleSheet("background: yellow");
-                ui.temp_3->graph(0)->setPen(QColor(Qt::yellow));
-        }else if(values["temp3"].back()>hot) {
-                ui.temp_dial_3->setStyleSheet("background: red");
-                ui.temp_3->graph(0)->setPen(QColor(Qt::red));
-        }else{
-                ui.temp_dial_3->setStyleSheet("background: green");
-                ui.temp_3->graph(0)->setPen(QColor(Qt::blue));
-        }
-
-        if(values["temp4"].back()>warm) {
-                ui.temp_dial_4->setStyleSheet("background: yellow");
-                ui.temp_4->graph(0)->setPen(QColor(Qt::yellow));
-        }else if(values["temp4"].back()>hot) {
-                ui.temp_dial_4->setStyleSheet("background: red");
-                ui.temp_4->graph(0)->setPen(QColor(Qt::red));
-        }else{
-                ui.temp_dial_4->setStyleSheet("background: green");
-                ui.temp_4->graph(0)->setPen(QColor(Qt::blue));
-        }
-
-        if(values["current0"].back()>nominal_current) {
-                ui.current_dial_0->setStyleSheet("background: yellow");
-                ui.current_0->graph(0)->setPen(QColor(Qt::yellow));
-        }else if(values["current0"].back()>a_lot_of_current) {
-                ui.current_dial_0->setStyleSheet("background: red");
-                ui.current_0->graph(0)->setPen(QColor(Qt::red));
-        }else{
-                ui.current_dial_0->setStyleSheet("background: green");
-                ui.current_0->graph(0)->setPen(QColor(Qt::blue));
-        }
-
-        if(values["current1"].back()>nominal_current) {
-                ui.current_dial_1->setStyleSheet("background: yellow");
-                ui.current_1->graph(0)->setPen(QColor(Qt::yellow));
-        }else if(values["current1"].back()>a_lot_of_current) {
-                ui.current_dial_1->setStyleSheet("background: red");
-                ui.current_1->graph(0)->setPen(QColor(Qt::red));
-        }else{
-                ui.current_dial_1->setStyleSheet("background: green");
-                ui.current_1->graph(0)->setPen(QColor(Qt::blue));
-        }
-
-        if(values["current2"].back()>nominal_current) {
-                ui.current_dial_2->setStyleSheet("background: yellow");
-                ui.current_2->graph(0)->setPen(QColor(Qt::yellow));
-        }else if(values["current2"].back()>a_lot_of_current) {
-                ui.current_dial_2->setStyleSheet("background: red");
-                ui.current_2->graph(0)->setPen(QColor(Qt::red));
-        }else{
-                ui.current_dial_2->setStyleSheet("background: green");
-                ui.current_2->graph(0)->setPen(QColor(Qt::blue));
-        }
-
-        if(values["current3"].back()>nominal_current) {
-                ui.current_dial_3->setStyleSheet("background: yellow");
-                ui.current_3->graph(0)->setPen(QColor(Qt::yellow));
-        }else if(values["current3"].back()>a_lot_of_current) {
-                ui.current_dial_3->setStyleSheet("background: red");
-                ui.current_3->graph(0)->setPen(QColor(Qt::red));
-        }else{
-                ui.current_dial_3->setStyleSheet("background: green");
-                ui.current_3->graph(0)->setPen(QColor(Qt::blue));
-        }
-
-        if(values["current4"].back()>nominal_current) {
-                ui.current_dial_4->setStyleSheet("background: yellow");
-                ui.current_4->graph(0)->setPen(QColor(Qt::yellow));
-        }else if(values["current4"].back()>a_lot_of_current) {
-                ui.current_dial_4->setStyleSheet("background: red");
-                ui.current_4->graph(0)->setPen(QColor(Qt::red));
-        }else{
-                ui.current_dial_4->setStyleSheet("background: green");
-                ui.current_4->graph(0)->setPen(QColor(Qt::blue));
-        }
-
-        ui.temp_0->rescaleAxes();
-        ui.temp_1->rescaleAxes();
-        ui.temp_2->rescaleAxes();
-        ui.temp_3->rescaleAxes();
-        ui.temp_4->rescaleAxes();
-
-        ui.current_0->rescaleAxes();
-        ui.current_1->rescaleAxes();
-        ui.current_2->rescaleAxes();
-        ui.current_3->rescaleAxes();
-        ui.current_4->rescaleAxes();
-
-        ui.temp_0->replot();
-        ui.temp_1->replot();
-        ui.temp_2->replot();
-        ui.temp_3->replot();
-        ui.temp_4->replot();
-
-        ui.current_0->replot();
-        ui.current_1->replot();
-        ui.current_2->replot();
-        ui.current_3->replot();
-        ui.current_4->replot();
-
-        ui.temp_dial_0->setValue(values["temp0"].back());
-        ui.temp_dial_1->setValue(values["temp1"].back());
-        ui.temp_dial_2->setValue(values["temp2"].back());
-        ui.temp_dial_3->setValue(values["temp3"].back());
-        ui.temp_dial_4->setValue(values["temp4"].back());
-
-        ui.current_dial_0->setValue(values["current0"].back());
-        ui.current_dial_1->setValue(values["current1"].back());
-        ui.current_dial_2->setValue(values["current2"].back());
-        ui.current_dial_3->setValue(values["current3"].back());
-        ui.current_dial_4->setValue(values["current4"].back());
-}
-
-void UVEN_CONTROL_CENTER_GUI::temp0_CB(const std_msgs::Float32ConstPtr &msg){
-        values["temp0_sec"].push_back((ros::Time::now()-start_time).toSec());
-        values["temp0"].push_back(msg->data);
-        if(values["temp0"].size()>100) {
-                values["temp0_sec"].pop_front();
-                values["temp0"].pop_front();
-        }
-        Q_EMIT plotSignal();
-}
-
-void UVEN_CONTROL_CENTER_GUI::temp1_CB(const std_msgs::Float32ConstPtr &msg){
-        values["temp1_sec"].push_back((ros::Time::now()-start_time).toSec());
-        values["temp1"].push_back(msg->data);
-        if(values["temp1"].size()>100) {
-                values["temp1_sec"].pop_front();
-                values["temp1"].pop_front();
-        }
-}
-
-void UVEN_CONTROL_CENTER_GUI::temp2_CB(const std_msgs::Float32ConstPtr &msg){
-        values["temp2_sec"].push_back((ros::Time::now()-start_time).toSec());
-        values["temp2"].push_back(msg->data);
-        if(values["temp2"].size()>100) {
-                values["temp2_sec"].pop_front();
-                values["temp2"].pop_front();
-        }
-}
-
-void UVEN_CONTROL_CENTER_GUI::temp3_CB(const std_msgs::Float32ConstPtr &msg){
-        values["temp3_sec"].push_back((ros::Time::now()-start_time).toSec());
-        values["temp3"].push_back(msg->data);
-        if(values["temp3"].size()>100) {
-                values["temp3_sec"].pop_front();
-                values["temp3"].pop_front();
-        }
-}
-
-void UVEN_CONTROL_CENTER_GUI::temp4_CB(const std_msgs::Float32ConstPtr &msg){
-        values["temp4_sec"].push_back((ros::Time::now()-start_time).toSec());
-        values["temp4"].push_back(msg->data);
-        if(values["temp4"].size()>100) {
-                values["temp4_sec"].pop_front();
-                values["temp4"].pop_front();
-        }
-}
-
-void UVEN_CONTROL_CENTER_GUI::current0_CB(const std_msgs::Float32ConstPtr &msg){
-        values["current0_sec"].push_back((ros::Time::now()-start_time).toSec());
-        values["current0"].push_back(msg->data);
-        if(values["current0"].size()>100) {
-                values["current0_sec"].pop_front();
-                values["current0"].pop_front();
-        }
-}
-
-void UVEN_CONTROL_CENTER_GUI::current1_CB(const std_msgs::Float32ConstPtr &msg){
-        values["current1_sec"].push_back((ros::Time::now()-start_time).toSec());
-        values["current1"].push_back(msg->data);
-        if(values["current1"].size()>100) {
-                values["current1_sec"].pop_front();
-                values["current1"].pop_front();
-        }
-}
-
-void UVEN_CONTROL_CENTER_GUI::current2_CB(const std_msgs::Float32ConstPtr &msg){
-        values["current2_sec"].push_back((ros::Time::now()-start_time).toSec());
-        values["current2"].push_back(msg->data);
-        if(values["current2"].size()>100) {
-                values["current2_sec"].pop_front();
-                values["current2"].pop_front();
-        }
-}
-
-void UVEN_CONTROL_CENTER_GUI::current3_CB(const std_msgs::Float32ConstPtr &msg){
-        values["current3_sec"].push_back((ros::Time::now()-start_time).toSec());
-        values["current3"].push_back(msg->data);
-        if(values["current3"].size()>100) {
-                values["current3_sec"].pop_front();
-                values["current3"].pop_front();
-        }
-}
-
-void UVEN_CONTROL_CENTER_GUI::current4_CB(const std_msgs::Float32ConstPtr &msg){
-        values["current4_sec"].push_back((ros::Time::now()-start_time).toSec());
-        values["current4"].push_back(msg->data);
-        if(values["current4"].size()>100) {
-                values["current4_sec"].pop_front();
-                values["current4"].pop_front();
-        }
-}
-
-void UVEN_CONTROL_CENTER_GUI::rps_CB(const std_msgs::Float32ConstPtr &msg){
-        values["rps_sec"].push_back((ros::Time::now()-start_time).toSec());
-        values["rps"].push_back(msg->data);
-        if(values["rps"].size()>100) {
-                values["rps_sec"].pop_front();
-                values["rps"].pop_front();
-        }
-}
-
-void UVEN_CONTROL_CENTER_GUI::torque_CB(const std_msgs::Float32ConstPtr &msg){
-        values["torque_sec"].push_back((ros::Time::now()-start_time).toSec());
-        values["torque"].push_back(msg->data);
-        if(values["torque"].size()>100) {
-                values["torque_sec"].pop_front();
-                values["torque"].pop_front();
-        }
+    if(!rx.values.control){
+        ui.interlock->setStyleSheet("background: lightgreen");
+    }else{
+        ui.interlock->setStyleSheet("background: red");
+    }
 }
 
 void UVEN_CONTROL_CENTER_GUI::shutdownPlugin() {

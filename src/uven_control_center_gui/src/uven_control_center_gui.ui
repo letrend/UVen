@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1064</width>
+    <width>1359</width>
     <height>765</height>
    </rect>
   </property>
@@ -19,523 +19,3514 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QFrame" name="frame">
+  <widget class="QTabWidget" name="tabWidget">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>10</y>
-     <width>341</width>
-     <height>731</height>
+     <x>0</x>
+     <y>0</y>
+     <width>1071</width>
+     <height>761</height>
     </rect>
    </property>
-   <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
+   <property name="currentIndex">
+    <number>1</number>
    </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
-   <widget class="QFrame" name="frame_14">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>600</y>
-      <width>341</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QCustomPlot" name="temp_4" native="true">
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Current</string>
+    </attribute>
+    <widget class="QFrame" name="frame_4">
      <property name="geometry">
       <rect>
-       <x>0</x>
+       <x>50</x>
+       <y>50</y>
+       <width>600</width>
+       <height>600</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QwtDial" name="current_dial_13">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_15">
+      <property name="geometry">
+       <rect>
+        <x>452</x>
+        <y>103</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_1">
+      <property name="geometry">
+       <rect>
+        <x>375</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_3">
+      <property name="geometry">
+       <rect>
+        <x>149</x>
+        <y>323</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_5">
+      <property name="geometry">
+       <rect>
+        <x>288</x>
+        <y>131</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_8">
+      <property name="geometry">
+       <rect>
+        <x>47</x>
+        <y>397</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_10">
+      <property name="geometry">
+       <rect>
+        <x>327</x>
+        <y>12</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_9">
+      <property name="geometry">
+       <rect>
+        <x>47</x>
+        <y>103</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_14">
+      <property name="geometry">
+       <rect>
+        <x>173</x>
+        <y>12</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_0">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_2">
+      <property name="geometry">
+       <rect>
+        <x>288</x>
+        <y>368</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_12">
+      <property name="geometry">
+       <rect>
+        <x>172</x>
+        <y>488</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_7">
+      <property name="geometry">
+       <rect>
+        <x>327</x>
+        <y>487</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_6">
+      <property name="geometry">
+       <rect>
+        <x>500</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_11">
+      <property name="geometry">
+       <rect>
+        <x>452</x>
+        <y>397</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="current_dial_4">
+      <property name="geometry">
+       <rect>
+        <x>148</x>
+        <y>176</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="frame_2">
+     <property name="geometry">
+      <rect>
+       <x>720</x>
        <y>0</y>
        <width>341</width>
-       <height>131</height>
+       <height>721</height>
       </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QFrame" name="frame_15">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_0" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_16">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>0</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_1" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_17">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>90</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_2" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_18">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>90</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_3" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_19">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>180</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_4" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_31">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>180</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_5" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_32">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>270</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_6" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_33">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>270</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_7" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_34">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>360</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_8" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_35">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>360</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_9" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_36">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>450</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_10" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_37">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>450</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_11" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_38">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>540</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_12" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_39">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>540</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_13" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_40">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>630</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_14" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_41">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>630</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="current_15" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_3">
+    <attribute name="title">
+     <string>Target Current</string>
+    </attribute>
+    <widget class="QFrame" name="frame_7">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>50</y>
+       <width>600</width>
+       <height>600</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QwtDial" name="target_current_dial_13">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_15">
+      <property name="geometry">
+       <rect>
+        <x>452</x>
+        <y>103</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_1">
+      <property name="geometry">
+       <rect>
+        <x>375</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_3">
+      <property name="geometry">
+       <rect>
+        <x>149</x>
+        <y>323</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_5">
+      <property name="geometry">
+       <rect>
+        <x>288</x>
+        <y>131</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_8">
+      <property name="geometry">
+       <rect>
+        <x>47</x>
+        <y>397</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_10">
+      <property name="geometry">
+       <rect>
+        <x>327</x>
+        <y>12</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_9">
+      <property name="geometry">
+       <rect>
+        <x>47</x>
+        <y>103</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_14">
+      <property name="geometry">
+       <rect>
+        <x>173</x>
+        <y>12</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_0">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_2">
+      <property name="geometry">
+       <rect>
+        <x>288</x>
+        <y>368</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_12">
+      <property name="geometry">
+       <rect>
+        <x>172</x>
+        <y>488</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_7">
+      <property name="geometry">
+       <rect>
+        <x>327</x>
+        <y>487</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_6">
+      <property name="geometry">
+       <rect>
+        <x>500</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_11">
+      <property name="geometry">
+       <rect>
+        <x>452</x>
+        <y>397</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="target_current_dial_4">
+      <property name="geometry">
+       <rect>
+        <x>148</x>
+        <y>176</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>5.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="frame_8">
+     <property name="geometry">
+      <rect>
+       <x>720</x>
+       <y>0</y>
+       <width>341</width>
+       <height>721</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QFrame" name="frame_58">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_0" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_59">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>0</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_1" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_60">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>90</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_2" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_61">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>90</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_3" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_62">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>180</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_4" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_63">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>180</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_5" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_64">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>270</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_6" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_65">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>270</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_7" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_66">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>360</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_8" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_67">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>360</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_9" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_68">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>450</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_10" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_69">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>450</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_11" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_70">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>540</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_12" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_71">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>540</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_13" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_72">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>630</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_14" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_73">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>630</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="target_current_15" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QwtSlider" name="target_current_slider">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>650</y>
+       <width>601</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="upperBound">
+      <double>4.000000000000000</double>
+     </property>
+     <property name="scaleMaxMajor">
+      <number>4</number>
+     </property>
+     <property name="scaleMaxMinor">
+      <number>8</number>
+     </property>
+     <property name="pageSteps">
+      <UInt>10</UInt>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </widget>
-   <widget class="QFrame" name="frame_12">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>320</y>
-      <width>341</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QCustomPlot" name="temp_2" native="true">
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Temperature</string>
+    </attribute>
+    <widget class="QFrame" name="frame">
      <property name="geometry">
       <rect>
-       <x>0</x>
+       <x>720</x>
        <y>0</y>
        <width>341</width>
-       <height>131</height>
+       <height>721</height>
       </rect>
      </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QFrame" name="frame_10">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_0" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_11">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>0</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_1" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_12">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>90</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_2" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_13">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>90</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_3" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_14">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>180</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_4" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_20">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>180</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_5" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_21">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>270</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_6" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_22">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>270</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_7" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_23">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>360</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_8" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_24">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>360</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_9" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_25">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>450</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_10" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_26">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>450</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_11" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_27">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>540</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_12" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_28">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>540</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_13" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_29">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>630</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_14" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_30">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>630</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="temp_15" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
     </widget>
-   </widget>
-   <widget class="QFrame" name="frame_13">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>460</y>
-      <width>341</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QCustomPlot" name="temp_3" native="true">
+    <widget class="QFrame" name="frame_3">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>341</width>
-       <height>131</height>
+       <x>50</x>
+       <y>50</y>
+       <width>600</width>
+       <height>600</height>
       </rect>
      </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QwtDial" name="temp_dial_13">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_15">
+      <property name="geometry">
+       <rect>
+        <x>452</x>
+        <y>103</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_1">
+      <property name="geometry">
+       <rect>
+        <x>375</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_3">
+      <property name="geometry">
+       <rect>
+        <x>149</x>
+        <y>323</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_5">
+      <property name="geometry">
+       <rect>
+        <x>288</x>
+        <y>131</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_8">
+      <property name="geometry">
+       <rect>
+        <x>47</x>
+        <y>397</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_10">
+      <property name="geometry">
+       <rect>
+        <x>327</x>
+        <y>12</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_9">
+      <property name="geometry">
+       <rect>
+        <x>47</x>
+        <y>103</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_14">
+      <property name="geometry">
+       <rect>
+        <x>173</x>
+        <y>12</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_0">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_2">
+      <property name="geometry">
+       <rect>
+        <x>288</x>
+        <y>368</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_12">
+      <property name="geometry">
+       <rect>
+        <x>172</x>
+        <y>488</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_7">
+      <property name="geometry">
+       <rect>
+        <x>327</x>
+        <y>487</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_6">
+      <property name="geometry">
+       <rect>
+        <x>500</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_11">
+      <property name="geometry">
+       <rect>
+        <x>452</x>
+        <y>397</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="temp_dial_4">
+      <property name="geometry">
+       <rect>
+        <x>148</x>
+        <y>176</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
     </widget>
    </widget>
-   <widget class="QFrame" name="frame_10">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>40</y>
-      <width>341</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QCustomPlot" name="temp_0" native="true">
+   <widget class="QWidget" name="tab_4">
+    <attribute name="title">
+     <string>Gate</string>
+    </attribute>
+    <widget class="QFrame" name="frame_5">
      <property name="geometry">
       <rect>
-       <x>0</x>
+       <x>720</x>
        <y>0</y>
        <width>341</width>
-       <height>131</height>
+       <height>721</height>
       </rect>
      </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QFrame" name="frame_42">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_0" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_43">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>0</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_1" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_44">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>90</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_2" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_45">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>90</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_3" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_46">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>180</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_4" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_47">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>180</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_5" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_48">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>270</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_6" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_49">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>270</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_7" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_50">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>360</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_8" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_51">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>360</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_9" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_52">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>450</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_10" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_53">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>450</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_11" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_54">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>540</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_12" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_55">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>540</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_13" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_56">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>630</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_14" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QFrame" name="frame_57">
+      <property name="geometry">
+       <rect>
+        <x>170</x>
+        <y>630</y>
+        <width>171</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <widget class="QCustomPlot" name="gate_15" native="true">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>171</width>
+         <height>91</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
     </widget>
-   </widget>
-   <widget class="QFrame" name="frame_11">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>180</y>
-      <width>341</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QCustomPlot" name="temp_1" native="true">
+    <widget class="QFrame" name="frame_6">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>341</width>
-       <height>131</height>
+       <x>50</x>
+       <y>50</y>
+       <width>600</width>
+       <height>600</height>
       </rect>
      </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QwtDial" name="gate_dial_13">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_15">
+      <property name="geometry">
+       <rect>
+        <x>452</x>
+        <y>103</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_1">
+      <property name="geometry">
+       <rect>
+        <x>375</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_3">
+      <property name="geometry">
+       <rect>
+        <x>149</x>
+        <y>323</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_5">
+      <property name="geometry">
+       <rect>
+        <x>288</x>
+        <y>131</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_8">
+      <property name="geometry">
+       <rect>
+        <x>47</x>
+        <y>397</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_10">
+      <property name="geometry">
+       <rect>
+        <x>327</x>
+        <y>12</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_9">
+      <property name="geometry">
+       <rect>
+        <x>47</x>
+        <y>103</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_14">
+      <property name="geometry">
+       <rect>
+        <x>173</x>
+        <y>12</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_0">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="upperBound">
+       <double>100.000000000000000</double>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_2">
+      <property name="geometry">
+       <rect>
+        <x>288</x>
+        <y>368</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_12">
+      <property name="geometry">
+       <rect>
+        <x>172</x>
+        <y>488</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_7">
+      <property name="geometry">
+       <rect>
+        <x>327</x>
+        <y>487</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_6">
+      <property name="geometry">
+       <rect>
+        <x>500</x>
+        <y>250</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_11">
+      <property name="geometry">
+       <rect>
+        <x>452</x>
+        <y>397</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
+     <widget class="QwtDial" name="gate_dial_4">
+      <property name="geometry">
+       <rect>
+        <x>148</x>
+        <y>176</y>
+        <width>100</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="scaleMaxMinor">
+       <number>2</number>
+      </property>
+      <property name="singleSteps">
+       <UInt>5</UInt>
+      </property>
+      <property name="invertedControls">
+       <bool>false</bool>
+      </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
+     </widget>
     </widget>
-   </widget>
-   <widget class="QLabel" name="label_2">
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>5</y>
-      <width>211</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>22</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>TEMPERATURE</string>
-    </property>
    </widget>
   </widget>
-  <widget class="QFrame" name="frame_2">
+  <widget class="QPushButton" name="emergency_off">
    <property name="geometry">
     <rect>
-     <x>720</x>
-     <y>10</y>
-     <width>341</width>
-     <height>731</height>
+     <x>1080</x>
+     <y>600</y>
+     <width>251</width>
+     <height>161</height>
     </rect>
    </property>
-   <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
+   <property name="text">
+    <string>STOP</string>
    </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
-   <widget class="QFrame" name="frame_15">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>600</y>
-      <width>341</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QCustomPlot" name="current_4" native="true">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>341</width>
-       <height>131</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QFrame" name="frame_16">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>320</y>
-      <width>341</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QCustomPlot" name="current_2" native="true">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>341</width>
-       <height>131</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QFrame" name="frame_17">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>460</y>
-      <width>341</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QCustomPlot" name="current_3" native="true">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>341</width>
-       <height>131</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QFrame" name="frame_18">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>40</y>
-      <width>341</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QCustomPlot" name="current_0" native="true">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>341</width>
-       <height>131</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QFrame" name="frame_19">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>180</y>
-      <width>341</width>
-      <height>131</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-    <widget class="QCustomPlot" name="current_1" native="true">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>341</width>
-       <height>131</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>5</y>
-      <width>131</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>22</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>CURRENT</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QwtDial" name="temp_dial_0">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>50</y>
-     <width>131</width>
-     <height>131</height>
-    </rect>
-   </property>
-   <property name="invertedControls">
-    <bool>false</bool>
-   </property>
-   <property name="lineWidth">
-    <number>4</number>
-   </property>
-  </widget>
-  <widget class="QwtDial" name="temp_dial_1">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>190</y>
-     <width>131</width>
-     <height>131</height>
-    </rect>
-   </property>
-   <property name="invertedControls">
-    <bool>false</bool>
-   </property>
-   <property name="lineWidth">
-    <number>4</number>
-   </property>
-  </widget>
-  <widget class="QwtDial" name="temp_dial_2">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>330</y>
-     <width>131</width>
-     <height>131</height>
-    </rect>
-   </property>
-   <property name="invertedControls">
-    <bool>false</bool>
-   </property>
-   <property name="lineWidth">
-    <number>4</number>
-   </property>
-  </widget>
-  <widget class="QwtDial" name="temp_dial_3">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>470</y>
-     <width>131</width>
-     <height>131</height>
-    </rect>
-   </property>
-   <property name="invertedControls">
-    <bool>false</bool>
-   </property>
-   <property name="lineWidth">
-    <number>4</number>
-   </property>
-  </widget>
-  <widget class="QwtDial" name="temp_dial_4">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>610</y>
-     <width>131</width>
-     <height>131</height>
-    </rect>
-   </property>
-   <property name="invertedControls">
-    <bool>false</bool>
-   </property>
-   <property name="lineWidth">
-    <number>4</number>
-   </property>
-  </widget>
-  <widget class="QwtDial" name="current_dial_0">
-   <property name="geometry">
-    <rect>
-     <x>580</x>
-     <y>50</y>
-     <width>131</width>
-     <height>131</height>
-    </rect>
-   </property>
-   <property name="upperBound">
-    <double>5.000000000000000</double>
-   </property>
-   <property name="readOnly">
+   <property name="checkable">
     <bool>true</bool>
    </property>
-   <property name="invertedControls">
+  </widget>
+  <widget class="QPushButton" name="interlock">
+   <property name="enabled">
     <bool>false</bool>
    </property>
-   <property name="lineWidth">
-    <number>4</number>
-   </property>
-  </widget>
-  <widget class="QwtDial" name="current_dial_1">
    <property name="geometry">
     <rect>
-     <x>580</x>
-     <y>190</y>
-     <width>131</width>
-     <height>131</height>
+     <x>1080</x>
+     <y>30</y>
+     <width>251</width>
+     <height>61</height>
     </rect>
    </property>
-   <property name="upperBound">
-    <double>5.000000000000000</double>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-   <property name="invertedControls">
-    <bool>false</bool>
-   </property>
-   <property name="lineWidth">
-    <number>4</number>
+   <property name="text">
+    <string>INTERLOCK</string>
    </property>
   </widget>
-  <widget class="QwtDial" name="current_dial_2">
+  <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>580</x>
-     <y>330</y>
-     <width>131</width>
-     <height>131</height>
+     <x>1080</x>
+     <y>100</y>
+     <width>120</width>
+     <height>191</height>
     </rect>
    </property>
-   <property name="upperBound">
-    <double>5.000000000000000</double>
+   <property name="title">
+    <string>Chamber Fan</string>
    </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-   <property name="invertedControls">
-    <bool>false</bool>
-   </property>
-   <property name="lineWidth">
-    <number>4</number>
-   </property>
+   <widget class="QwtDial" name="chamber_fan_dial">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>100</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="upperBound">
+     <double>100.000000000000000</double>
+    </property>
+    <property name="scaleMaxMinor">
+     <number>2</number>
+    </property>
+    <property name="singleSteps">
+     <UInt>5</UInt>
+    </property>
+    <property name="invertedControls">
+     <bool>false</bool>
+    </property>
+    <property name="lineWidth">
+     <number>4</number>
+    </property>
+   </widget>
+   <widget class="QwtSlider" name="chamber_fan_slider">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>130</y>
+      <width>121</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="scaleMaxMajor">
+     <number>4</number>
+    </property>
+    <property name="scaleMaxMinor">
+     <number>1</number>
+    </property>
+    <property name="pageSteps">
+     <UInt>10</UInt>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
   </widget>
-  <widget class="QwtDial" name="current_dial_3">
+  <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">
     <rect>
-     <x>580</x>
-     <y>470</y>
-     <width>131</width>
-     <height>131</height>
+     <x>1210</x>
+     <y>100</y>
+     <width>120</width>
+     <height>191</height>
     </rect>
    </property>
-   <property name="upperBound">
-    <double>5.000000000000000</double>
+   <property name="title">
+    <string>LED Fan</string>
    </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-   <property name="invertedControls">
-    <bool>false</bool>
-   </property>
-   <property name="lineWidth">
-    <number>4</number>
-   </property>
-  </widget>
-  <widget class="QwtDial" name="current_dial_4">
-   <property name="geometry">
-    <rect>
-     <x>580</x>
-     <y>610</y>
-     <width>131</width>
-     <height>131</height>
-    </rect>
-   </property>
-   <property name="upperBound">
-    <double>5.000000000000000</double>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-   <property name="invertedControls">
-    <bool>false</bool>
-   </property>
-   <property name="lineWidth">
-    <number>4</number>
-   </property>
+   <widget class="QwtDial" name="led_fan_dial">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>100</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="upperBound">
+     <double>100.000000000000000</double>
+    </property>
+    <property name="scaleMaxMinor">
+     <number>2</number>
+    </property>
+    <property name="singleSteps">
+     <UInt>5</UInt>
+    </property>
+    <property name="invertedControls">
+     <bool>false</bool>
+    </property>
+    <property name="lineWidth">
+     <number>4</number>
+    </property>
+   </widget>
+   <widget class="QwtSlider" name="led_fan_slider">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>130</y>
+      <width>121</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="scaleMaxMajor">
+     <number>4</number>
+    </property>
+    <property name="scaleMaxMinor">
+     <number>1</number>
+    </property>
+    <property name="pageSteps">
+     <UInt>10</UInt>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
   </widget>
  </widget>
  <customwidgets>
@@ -543,6 +3534,11 @@
    <class>QwtDial</class>
    <extends>QWidget</extends>
    <header>qwt_dial.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QwtSlider</class>
+   <extends>QWidget</extends>
+   <header>qwt_slider.h</header>
   </customwidget>
   <customwidget>
    <class>QCustomPlot</class>

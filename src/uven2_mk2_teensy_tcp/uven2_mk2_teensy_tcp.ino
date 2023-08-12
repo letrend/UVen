@@ -1,28 +1,3 @@
-// SPDX-FileCopyrightText: (c) 2021-2023 Shawn Silverman <shawn@pobox.com>
-// SPDX-License-Identifier: MIT
-
-// ServerWithListeners demonstrates how to use listeners to start and
-// stop services. Do some testing, then connect the Teensy to an
-// entirely different network by moving the Ethernet connection and
-// the program will still work.
-//
-// This also demonstrates:
-// 1. Using a link state listener,
-// 2. Setting a static IP if desired,
-// 3. Managing connections and attaching state to each connection,
-// 4. How to use `printf`,
-// 5. Very rudimentary HTTP server behaviour,
-// 6. Client timeouts, and
-// 7. Use of a half closed connection.
-//
-// This is a rudimentary basis for a complete server program.
-//
-// Note that the configuration code and logic is just for illustration.
-// Your program doesn't need to include everything here.
-//
-// This file is part of the QNEthernet library.
-
-// C++ includes
 #include <algorithm>
 #include <cstdio>
 #include <utility>
@@ -32,44 +7,53 @@
 
 using namespace qindesign::network;
 
-// --------------------------------------------------------------------------
-//  Configuration
-// --------------------------------------------------------------------------
-
-// NOTE: Not all the code here is needed
-
-// The DHCP timeout, in milliseconds. Set to zero to not wait and
-// instead rely on the listener to inform us of an address assignment.
 constexpr uint32_t kDHCPTimeout = 15'000;  // 15 seconds
-
-// The link timeout, in milliseconds. Set to zero to not wait and
-// instead rely on the listener to inform us of a link.
 constexpr uint32_t kLinkTimeout = 5'000;  // 5 seconds
-
 constexpr uint16_t kServerPort = 80;
-
-// Timeout for waiting for input from the client.
 constexpr uint32_t kClientTimeout = 5'000;  // 5 seconds
-
-// Timeout for waiting for a close from the client after a
-// half close.
 constexpr uint32_t kShutdownTimeout = 30'000;  // 30 seconds
-
 // Set the static IP to something other than INADDR_NONE (all zeros)
 // to not use DHCP. The values here are just examples.
 IPAddress staticIP{0, 0, 0, 0};//{192, 168, 1, 101};
 IPAddress subnetMask{255, 255, 255, 0};
 IPAddress gateway{192, 168, 1, 1};
 
-// --------------------------------------------------------------------------
-//  Types
-// --------------------------------------------------------------------------
+#include "pinConfig.h"
+#include "MCP48FEB28.h"
+#include <Arduino_CRC32.h>
+Arduino_CRC32 crc32;
+#include <USBHost_t36.h>
+
+USBHost myusb;
+USBSerial userial(myusb);
+
+#define SERIAL_FRAME_BUFFER_SIZE 176
+
+union SERIAL_FRAME{
+  struct{
+    uint16_t time;
+    uint16_t control;
+    float temperature[17];
+    uint16_t led_fan;
+    uint16_t chamber_fan;
+    uint16_t target_current[16];
+    uint16_t current[16];
+    uint16_t gate[16];
+    uint32_t crc;
+  }values;
+  volatile uint8_t data[SERIAL_FRAME_BUFFER_SIZE];
+};
+
+SERIAL_FRAME rx, tx;
+
+MCP48FEB28 *dac_0;
+MCP48FEB28 *dac_1;
 
 #define BUFFER_SIZE 176
-
 union FRAME{
   struct{
-    uint32_t time;
+    uint16_t time;
+    uint16_t control;
     float temperature[17];
     uint16_t led_fan;
     uint16_t chamber_fan;
@@ -98,7 +82,7 @@ struct ClientState {
   bool outputClosed = false;  // Whether the output was shut down
 
   // Parsing state
-  FRAME rx,tx;
+  FRAME rx, tx;
 };
 
 // --------------------------------------------------------------------------
@@ -111,33 +95,76 @@ std::vector<ClientState> clients;
 // The server.
 EthernetServer server{kServerPort};
 
-// --------------------------------------------------------------------------
-//  Main Program
-// --------------------------------------------------------------------------
+bool interlock = false;
+bool over_temp[7] = {false,false,false,false,false,false,false};
+int32_t current_raw[16];
+int32_t target_current[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+int32_t gate_sp[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+uint8_t temp_pins[17] = { TEMP_LED0,TEMP_LED1,TEMP_LED2,TEMP_LED3,
+                          TEMP_LED4,TEMP_LED5,TEMP_LED6,TEMP_LED7,
+                          TEMP_LED8,TEMP_LED9,TEMP_LED10,TEMP_LED11,
+                          TEMP_LED12,TEMP_LED13,TEMP_LED14,TEMP_LED15,
+                          TEMP_DRIVER };
+const float temp_poly[4] = {-1.06548079e-06, 1.17278707e-03, -5.32683331e-01, 1.31479023e+02};
+int32_t temp_raw[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+float temp[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+uint32_t iteration = 0;
 
-// Program setup.
+float calcTemp(int val, const float *p){
+  return p[0]*val*val*val+p[1]*val*val+p[2]*val+p[3];
+}
+
+
 void setup() {
-  Serial.begin(115200);
-  while (!Serial && millis() < 4000) {
-    // Wait for Serial
-  }
-  printf("Starting...\r\n");
+  dac_0 = new MCP48FEB28(CS0,LATCH0);
+  dac_1 = new MCP48FEB28(CS1,LATCH1);
+  dac_0->init();
+  dac_1->init();
 
-  // Unlike the Arduino API (which you can still use), QNEthernet uses
-  // the Teensy's internal MAC address by default, so we can retrieve
-  // it here
+  for(int i=0;i<8;i++){
+    dac_0->write(i,0);
+    dac_1->write(i,0);
+  }
+  myusb.begin();
+  userial.begin(4000000);
+  pinMode(LED_FAN,OUTPUT);
+  pinMode(CHAMBER_FAN,OUTPUT);
+  // analogWrite(LED_FAN,100);
+  // analogWrite(CHAMBER_FAN,200);
+
+  pinMode(LED_SEL0,OUTPUT);
+  pinMode(LED_SEL1,OUTPUT);
+
+  pinMode(LED_ENABLE, INPUT_PULLUP);
+
+  pinMode(LED_LATCH, OUTPUT);  
+  digitalWrite(LED_LATCH, true);
+  
+  pinMode(LED_DIAG_ENABLE_A, OUTPUT);
+  pinMode(LED_DIAG_ENABLE_B, OUTPUT);
+  pinMode(LED_DIAG_ENABLE_C, OUTPUT);
+  pinMode(LED_DIAG_ENABLE_D, OUTPUT);
+  pinMode(LED_DIAG_ENABLE_E, OUTPUT);
+  pinMode(LED_DIAG_ENABLE_F, OUTPUT);
+
+  digitalWrite(LED_DIAG_ENABLE_A, false);
+  digitalWrite(LED_DIAG_ENABLE_B, false);
+  digitalWrite(LED_DIAG_ENABLE_C, false);
+  digitalWrite(LED_DIAG_ENABLE_D, false);
+  digitalWrite(LED_DIAG_ENABLE_E, false);
+  digitalWrite(LED_DIAG_ENABLE_F, false);
+
+  pinMode(LED_SEL0, OUTPUT);
+  pinMode(LED_SEL1, OUTPUT);
+  digitalWrite(LED_SEL0, false);
+  digitalWrite(LED_SEL1, false);
+
   uint8_t mac[6];
   Ethernet.macAddress(mac);  // This is informative; it retrieves, not sets
-  printf("MAC = %02x:%02x:%02x:%02x:%02x:%02x\r\n",
-         mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-
-  // Add listeners
-  // It's important to add these before doing anything with Ethernet
-  // so no events are missed.
-
+  
   // Listen for link changes
   Ethernet.onLinkState([](bool state) {
-    printf("[Ethernet] Link %s\r\n", state ? "ON" : "OFF");
+    
   });
 
   // Listen for address changes
@@ -145,27 +172,15 @@ void setup() {
     IPAddress ip = Ethernet.localIP();
     bool hasIP = (ip != INADDR_NONE);
     if (hasIP) {
-      printf("[Ethernet] Address changed:\r\n");
-
-      printf("    Local IP = %u.%u.%u.%u\r\n", ip[0], ip[1], ip[2], ip[3]);
       ip = Ethernet.subnetMask();
-      printf("    Subnet   = %u.%u.%u.%u\r\n", ip[0], ip[1], ip[2], ip[3]);
       ip = Ethernet.gatewayIP();
-      printf("    Gateway  = %u.%u.%u.%u\r\n", ip[0], ip[1], ip[2], ip[3]);
       ip = Ethernet.dnsServerIP();
-      if (ip != INADDR_NONE) {  // May happen with static IP
-        printf("    DNS      = %u.%u.%u.%u\r\n", ip[0], ip[1], ip[2], ip[3]);
-      }
-    } else {
-      printf("[Ethernet] Address changed: No IP address\r\n");
     }
   });
 
   if (initEthernet()) {
     // Start the server
-    printf("Starting server on port %u...", kServerPort);
     server.begin();
-    printf("%s\r\n", (server) ? "Done." : "FAILED!");
   }
 }
 
@@ -211,8 +226,6 @@ bool initEthernet() {
   return true;
 }
 
-// The simplest possible (very non-compliant) HTTP server. Respond to
-// any input with an HTTP/1.1 response.
 void processClientData(ClientState &state) {
   int bytes_received = 0;
   bool first = true;
@@ -232,14 +245,16 @@ void processClientData(ClientState &state) {
       break;
     }
   }
-  state.tx.values.time = (millis()-t0);
+  // state.tx.values.time = (millis()-t0);
   IPAddress ip = state.client.remoteIP();
-  printf("Sending to client: %u.%u.%u.%u\r\n", ip[0], ip[1], ip[2], ip[3]);
+  memcpy(state.tx.data,tx.data,BUFFER_SIZE);
+  memcpy(rx.data,state.rx.data,BUFFER_SIZE);
+  for(int i=0;i<16;i++){
+    target_current[i] = rx.values.target_current[i];
+  }
   state.client.write((char *)state.tx.data,BUFFER_SIZE);
   state.client.flush();
 
-  // Half close the connection, per
-  // [Tear-down](https://datatracker.ietf.org/doc/html/rfc7230#section-6.6)
   state.client.closeOutput();
   state.closedTime = millis();
   state.outputClosed = true;
@@ -247,51 +262,203 @@ void processClientData(ClientState &state) {
 
 // Main program loop.
 void loop() {
-  EthernetClient client = server.accept();
-  if (client) {
-    // We got a connection!
-    IPAddress ip = client.remoteIP();
-    printf("Client connected: %u.%u.%u.%u\r\n", ip[0], ip[1], ip[2], ip[3]);
-    clients.emplace_back(std::move(client));
-    printf("Client count: %zu\r\n", clients.size());
-  }
+  unsigned long t0 = millis();
+  
+  // read LED currents
+  digitalWrite(LED_DIAG_ENABLE_A,  true);
+  digitalWrite(LED_SEL1, false);
+  delay(1);
+  current_raw[0] = analogRead(LED_SENS);
+  digitalWrite(LED_SEL1, true);
+  delay(1);
+  current_raw[1] = analogRead(LED_SENS);
+  digitalWrite(LED_DIAG_ENABLE_A,  false);
 
-  // Process data from each client
-  for (ClientState &state : clients) {  // Use a reference so we don't copy
-    if (!state.client.connected()) {
-      state.closed = true;
-      continue;
+  digitalWrite(LED_DIAG_ENABLE_B,  true);
+  digitalWrite(LED_SEL1, false);
+  delay(1);
+  current_raw[2] = analogRead(LED_SENS);
+  digitalWrite(LED_SEL1, true);
+  delay(1);
+  current_raw[3] = analogRead(LED_SENS);
+  digitalWrite(LED_DIAG_ENABLE_B,  false);
+
+  digitalWrite(LED_DIAG_ENABLE_C,  true);
+  digitalWrite(LED_SEL1, false);
+  delay(1);
+  current_raw[4] = analogRead(LED_SENS);
+  digitalWrite(LED_SEL1, true);
+  delay(1);
+  current_raw[5] = analogRead(LED_SENS);
+  digitalWrite(LED_DIAG_ENABLE_C,  false);
+
+  digitalWrite(LED_DIAG_ENABLE_D,  true);
+  digitalWrite(LED_SEL1, false);
+  delay(1);
+  current_raw[6] = analogRead(LED_SENS);
+  digitalWrite(LED_SEL1, true);
+  delay(1);
+  current_raw[7] = analogRead(LED_SENS);
+  digitalWrite(LED_DIAG_ENABLE_D,  false);
+
+  digitalWrite(LED_DIAG_ENABLE_E,  true);
+  digitalWrite(LED_SEL1, false);
+  delay(1);
+  current_raw[8] = analogRead(LED_SENS);
+  digitalWrite(LED_SEL1, true);
+  delay(1);
+  current_raw[9] = analogRead(LED_SENS);
+  digitalWrite(LED_DIAG_ENABLE_E,  false);
+
+  digitalWrite(LED_DIAG_ENABLE_F,  true);
+  digitalWrite(LED_SEL1, false);
+  delay(1);
+  current_raw[10] = analogRead(LED_SENS);
+  digitalWrite(LED_SEL1, true);
+  delay(1);
+  current_raw[11] = analogRead(LED_SENS);
+  digitalWrite(LED_DIAG_ENABLE_F,  false);
+
+  digitalWrite(LED_DIAG_ENABLE_G,  true);
+  digitalWrite(LED_SEL1, false);
+  delay(1);
+  current_raw[12] = analogRead(LED_SENS);
+  digitalWrite(LED_SEL1, true);
+  delay(1);
+  current_raw[13] = analogRead(LED_SENS);
+  digitalWrite(LED_DIAG_ENABLE_G,  false);
+
+  digitalWrite(LED_DIAG_ENABLE_H,  true);
+  digitalWrite(LED_SEL1, false);
+  delay(1);
+  current_raw[14] = analogRead(LED_SENS);
+  digitalWrite(LED_SEL1, true);
+  delay(1);
+  current_raw[15] = analogRead(LED_SENS);
+  digitalWrite(LED_DIAG_ENABLE_H,  false);
+
+  interlock = !digitalRead(LED_ENABLE);
+  if(interlock){
+    for(int i=0;i<8;i++){
+      dac_0->write(i,0);
+      dac_1->write(i,0);
+      target_current[i] = 0;
+      target_current[i+8] = 0;
+      gate_sp[i] = 0;
+      gate_sp[i+8] = 0;
+    }
+  }else{
+    for(int i=0;i<16;i++){
+      if(target_current[i]==0){
+        gate_sp[i] = 0;
+      }
+
+      if(target_current[i]>0 && gate_sp[i]==0){
+        gate_sp[i] = 2500;
+      }
+
+      if(current_raw[i]<target_current[i]){
+        if(gate_sp[i]<3000){
+          gate_sp[i]+=1;
+        }
+      }else{
+        if(gate_sp[i]>0){
+          gate_sp[i]-=1;  
+        }
+      }
     }
 
-    // Check if we need to force close the client
-    if (state.outputClosed) {
-      if (millis() - state.closedTime >= kShutdownTimeout) {
-        IPAddress ip = state.client.remoteIP();
-        printf("Client shutdown timeout: %u.%u.%u.%u\r\n",
-               ip[0], ip[1], ip[2], ip[3]);
-        state.client.close();
+    for(int i=0;i<8;i++){
+      dac_0->write(i,gate_sp[i]);
+      dac_1->write(i,gate_sp[i+8]);
+    }
+  }
+  tx.values.control = interlock;
+
+  unsigned long t1 = millis();
+
+  for(int i=0;i<17;i++){
+    temp_raw[i] = analogRead(temp_pins[i]);
+    temp[i] = calcTemp(temp_raw[i],temp_poly);
+  }
+
+  for(int i=0;i<16;i++){
+    tx.values.target_current[i] = target_current[i];
+    tx.values.current[i] = current_raw[i];
+    tx.values.gate[i] = gate_sp[i];
+    tx.values.temperature[i] = temp[i];
+  }
+  tx.values.temperature[16] = temp[16];
+  tx.values.time = millis()-t0;
+
+  tx.values.led_fan = rx.values.led_fan;
+  tx.values.chamber_fan = rx.values.chamber_fan;
+
+  analogWrite(LED_FAN,rx.values.led_fan);
+  analogWrite(CHAMBER_FAN,rx.values.chamber_fan);
+
+  tx.values.crc = crc32.calc((uint8_t const *)&tx.data[0], BUFFER_SIZE-4);
+
+  if(iteration++%10==0){
+    // userial.write((char*)tx.data,BUFFER_SIZE);
+    // userial.readBytes((char*)&rx.data[0], BUFFER_SIZE);
+    // uint32_t crc = crc32.calc((uint8_t const *)&rx.data[0], BUFFER_SIZE-4);
+    // if(crc==rx.values.crc){
+    //   for(int i=0;i<16;i++){
+    //     target_current[i] = (rx.values.target_current[i]>=0 && rx.values.target_current[i]<100)?rx.values.target_current[i]:0;
+    //   }
+    //   if(rx.values.chamber_fan!=tx.values.chamber_fan){
+    //     analogWrite(CHAMBER_FAN,rx.values.chamber_fan);
+    //     tx.values.chamber_fan = rx.values.chamber_fan;
+    //   }
+    //   if(rx.values.led_fan!=tx.values.led_fan){
+    //     analogWrite(LED_FAN,rx.values.led_fan);
+    //     tx.values.led_fan = rx.values.led_fan;
+    //   }
+    // }
+  }
+
+  {
+    EthernetClient client = server.accept();
+    if (client) {
+      // We got a connection!
+      IPAddress ip = client.remoteIP();
+      clients.emplace_back(std::move(client));
+    }
+
+    // Process data from each client
+    for (ClientState &state : clients) {  // Use a reference so we don't copy
+      if (!state.client.connected()) {
         state.closed = true;
         continue;
       }
-    } else {
-      if (millis() - state.lastRead >= kClientTimeout) {
-        IPAddress ip = state.client.remoteIP();
-        printf("Client timeout: %u.%u.%u.%u\r\n", ip[0], ip[1], ip[2], ip[3]);
-        state.client.close();
-        state.closed = true;
-        continue;
+
+      // Check if we need to force close the client
+      if (state.outputClosed) {
+        if (millis() - state.closedTime >= kShutdownTimeout) {
+          IPAddress ip = state.client.remoteIP();
+          state.client.close();
+          state.closed = true;
+          continue;
+        }
+      } else {
+        if (millis() - state.lastRead >= kClientTimeout) {
+          IPAddress ip = state.client.remoteIP();
+          state.client.close();
+          state.closed = true;
+          continue;
+        }
       }
+
+      processClientData(state);
     }
+    
 
-    processClientData(state);
+    // Clean up all the closed clients
+    size_t size = clients.size();
+    clients.erase(std::remove_if(clients.begin(), clients.end(),
+                                [](const auto &state) { return state.closed; }),
+                  clients.end());
   }
-
-  // Clean up all the closed clients
-  size_t size = clients.size();
-  clients.erase(std::remove_if(clients.begin(), clients.end(),
-                               [](const auto &state) { return state.closed; }),
-                clients.end());
-  if (clients.size() != size) {
-    printf("New client count: %zu\r\n", clients.size());
-  }
+  tx.values.time = millis()-t0;
 }

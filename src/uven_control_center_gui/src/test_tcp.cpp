@@ -28,9 +28,9 @@ void send_something(std::string host, int port, std::string message)
 {
 	boost::asio::io_service ios;
 			
-        boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(host), port);
+    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(host), port);
 
-        boost::asio::ip::tcp::socket socket(ios);
+    boost::asio::ip::tcp::socket socket(ios);
 
 	socket.connect(endpoint);
 
@@ -45,6 +45,6 @@ void send_something(std::string host, int port, std::string message)
 
 int main()
 {
-    send_something("10.42.0.132", 80, "hello flowers team\n\n");
+    send_something("192.168.2.68", 80, "hello flowers team\n\n");
     return 0;
 }
