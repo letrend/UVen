@@ -250,7 +250,7 @@ void processClientData(ClientState &state) {
   memcpy(state.tx.data,tx.data,BUFFER_SIZE);
   memcpy(rx.data,state.rx.data,BUFFER_SIZE);
   for(int i=0;i<16;i++){
-    target_current[i] = rx.values.target_current[i];
+    target_current[i] = (int)(rx.values.target_current[i])/3.4; // 200 ticks == 680mA
   }
   state.client.write((char *)state.tx.data,BUFFER_SIZE);
   state.client.flush();
@@ -358,7 +358,7 @@ void loop() {
       }
 
       if(current_raw[i]<target_current[i]){
-        if(gate_sp[i]<3000){
+        if(gate_sp[i]<3600){
           gate_sp[i]+=1;
         }
       }else{
@@ -383,8 +383,8 @@ void loop() {
   }
 
   for(int i=0;i<16;i++){
-    tx.values.target_current[i] = target_current[i];
-    tx.values.current[i] = current_raw[i];
+    tx.values.target_current[i] = target_current[i]*3.4; // 200 ticks == 680mA
+    tx.values.current[i] = current_raw[i]*3.4; // 200 ticks == 680mA
     tx.values.gate[i] = gate_sp[i];
     tx.values.temperature[i] = temp[i];
   }

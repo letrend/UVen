@@ -169,24 +169,23 @@ void UVEN_CONTROL_CENTER_GUI::lamp_coms(){
     ROS_INFO("lamp coms started");
     start_time = ros::Time::now();
     ros::Rate rate(10);
-    
+    boost::asio::io_service ios;
+    boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(lamp_ip), lamp_port);
+    boost::asio::ip::tcp::socket socket(ios);
     while(ros::ok()){
-        boost::asio::io_service ios;
-        boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(lamp_ip), lamp_port);
-        boost::asio::ip::tcp::socket socket(ios);
         socket.connect(endpoint);
         boost::system::error_code error;
         ros::Time t0 = ros::Time::now();
         socket.write_some(boost::asio::buffer(tx.data, BUFFER_SIZE), error);
         socket.read_some(boost::asio::buffer(rx.data, BUFFER_SIZE), error);
         for(int i=0;i<16;i++){
-            current[i].push_back(rx.values.current[i]/1000.0);
+            current[i].push_back(((int)rx.values.current[i])/1000.0);
             current_time[i].push_back((t0-start_time).toSec());
             temperature[i].push_back(rx.values.temperature[i]);
             temperature_time[i].push_back((t0-start_time).toSec());
             gate[i].push_back(rx.values.gate[i]);
             gate_time[i].push_back((t0-start_time).toSec());
-            target_current[i].push_back(rx.values.target_current[i]/1000.0);
+            target_current[i].push_back(((int)rx.values.target_current[i])/1000.0);
             target_current_time[i].push_back((t0-start_time).toSec());
             while((temperature_time[i].back()-temperature_time[i].front())>10){
                 current[i].pop_front();
