@@ -133,12 +133,12 @@ void UVEN_CONTROL_CENTER_GUI::initPlugin(qt_gui_cpp::PluginContext &context) {
 
 void UVEN_CONTROL_CENTER_GUI::led_fan_changed(double value){
     // ROS_INFO("led fan changed to %d", (int)value);
-    tx.values.led_fan = (int)value;
+    tx.values.led_fan = (int)value/100.0*255;
 }
 
 void UVEN_CONTROL_CENTER_GUI::chamber_fan_changed(double value){
     // ROS_INFO("chamber fan changed to %d", (int)value);
-    tx.values.chamber_fan = (int)value;
+    tx.values.chamber_fan = (int)value/100.0*255;
 }
 
 void UVEN_CONTROL_CENTER_GUI::target_current_changed(double value){
@@ -199,8 +199,8 @@ void UVEN_CONTROL_CENTER_GUI::lamp_coms(){
                 target_current_time[i].pop_front();
             }
         }
-        chamber_fan = (int)rx.values.chamber_fan;
-        led_fan = (int)rx.values.led_fan;
+        chamber_fan = ((int)rx.values.chamber_fan)/255.0f*100;
+        led_fan = ((int)rx.values.led_fan)/255.0f*100;
         Q_EMIT plotSignal();
         socket.close();
         rate.sleep();
