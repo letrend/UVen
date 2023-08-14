@@ -1736,31 +1736,6 @@
       </widget>
      </widget>
     </widget>
-    <widget class="QwtSlider" name="target_current_slider">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>650</y>
-       <width>601</width>
-       <height>51</height>
-      </rect>
-     </property>
-     <property name="upperBound">
-      <double>4.000000000000000</double>
-     </property>
-     <property name="scaleMaxMajor">
-      <number>4</number>
-     </property>
-     <property name="scaleMaxMinor">
-      <number>8</number>
-     </property>
-     <property name="pageSteps">
-      <UInt>10</UInt>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
    </widget>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -3527,6 +3502,28 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
+  </widget>
+  <widget class="QwtSlider" name="target_current_slider">
+   <property name="geometry">
+    <rect>
+     <x>1100</x>
+     <y>300</y>
+     <width>71</width>
+     <height>291</height>
+    </rect>
+   </property>
+   <property name="upperBound">
+    <double>4.000000000000000</double>
+   </property>
+   <property name="scaleMaxMajor">
+    <number>4</number>
+   </property>
+   <property name="scaleMaxMinor">
+    <number>8</number>
+   </property>
+   <property name="pageSteps">
+    <UInt>10</UInt>
+   </property>
   </widget>
  </widget>
  <customwidgets>
