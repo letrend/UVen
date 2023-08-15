@@ -250,7 +250,7 @@ void processClientData(ClientState &state) {
   memcpy(state.tx.data,tx.data,BUFFER_SIZE);
   memcpy(rx.data,state.rx.data,BUFFER_SIZE);
   for(int i=0;i<16;i++){
-    target_current[i] = (int)(rx.values.target_current[i])/3.4; // 200 ticks == 680mA
+    target_current[i] = (int)(rx.values.target_current[i])/4.8125; // 800 ticks == 3850mA
   }
   state.client.write((char *)state.tx.data,BUFFER_SIZE);
   state.client.flush();
@@ -348,9 +348,12 @@ void loop() {
       gate_sp[i+8] = 0;
     }
   }else{
+    bool all_off = true;     
     for(int i=0;i<16;i++){
       if(target_current[i]==0){
         gate_sp[i] = 0;
+      }else{
+        all_off = false;
       }
 
       if(target_current[i]>0 && gate_sp[i]==0){
@@ -372,6 +375,8 @@ void loop() {
       dac_0->write(i,gate_sp[i]);
       dac_1->write(i,gate_sp[i+8]);
     }
+
+    
   }
   tx.values.control = interlock;
 
@@ -379,12 +384,12 @@ void loop() {
 
   for(int i=0;i<17;i++){
     temp_raw[i] = analogRead(temp_pins[i]);
-    temp[i] = calcTemp(temp_raw[i],temp_poly);
+    temp[i] = temp[i]*0.9+0.1*calcTemp(temp_raw[i],temp_poly);
   }
 
   for(int i=0;i<16;i++){
-    tx.values.target_current[i] = target_current[i]*3.4; // 200 ticks == 680mA
-    tx.values.current[i] = current_raw[i]*3.4; // 200 ticks == 680mA
+    tx.values.target_current[i] = target_current[i]*4.8125; // 800 ticks == 3850mA
+    tx.values.current[i] = current_raw[i]*4.8125; // 800 ticks == 3850mA
     tx.values.gate[i] = gate_sp[i];
     tx.values.temperature[i] = temp[i];
   }
@@ -394,8 +399,8 @@ void loop() {
   tx.values.led_fan = rx.values.led_fan;
   tx.values.chamber_fan = rx.values.chamber_fan;
 
-  analogWrite(LED_FAN,rx.values.led_fan);
-  analogWrite(CHAMBER_FAN,rx.values.chamber_fan);
+  analogWrite(LED_FAN,255-rx.values.led_fan);
+  analogWrite(CHAMBER_FAN,255-rx.values.chamber_fan);
 
   tx.values.crc = crc32.calc((uint8_t const *)&tx.data[0], BUFFER_SIZE-4);
 

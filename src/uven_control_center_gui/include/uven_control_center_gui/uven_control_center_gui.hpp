@@ -81,9 +81,11 @@ private:
     ros::Time start_time;
     float warm = 40, hot = 60, nominal_current = 2.25, a_lot_of_current = 3.5;
     vector<QCustomPlot*> temp_plot, current_plot, gate_plot, target_current_plot;
+    vector<QCheckBox*> enable_led;
     vector<QwtDial*> temp_dial, current_dial, gate_dial, target_current_dial;
     vector<QVector<double>> temperature, temperature_time, current, current_time, gate, gate_time, target_current, target_current_time;
     double chamber_fan = 0, led_fan = 0;
+    float temp_driver = 0;
     string lamp_ip;
     int lamp_port;
     FRAME tx,rx;

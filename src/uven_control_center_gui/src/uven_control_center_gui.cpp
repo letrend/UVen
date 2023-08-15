@@ -106,6 +106,12 @@ void UVEN_CONTROL_CENTER_GUI::initPlugin(qt_gui_cpp::PluginContext &context) {
     ui.chamber_fan_dial->setNeedle(needle);
     ui.led_fan_dial->setNeedle(needle);
 
+    enable_led.push_back(ui.enable_0); enable_led.push_back(ui.enable_1); enable_led.push_back(ui.enable_2); enable_led.push_back(ui.enable_3);
+    enable_led.push_back(ui.enable_4); enable_led.push_back(ui.enable_5); enable_led.push_back(ui.enable_6); enable_led.push_back(ui.enable_7);
+    enable_led.push_back(ui.enable_8); enable_led.push_back(ui.enable_9); enable_led.push_back(ui.enable_10); enable_led.push_back(ui.enable_11);
+    enable_led.push_back(ui.enable_12); enable_led.push_back(ui.enable_13); enable_led.push_back(ui.enable_14); enable_led.push_back(ui.enable_15);
+
+
     current.resize(16);
     current_time.resize(16);
     temperature.resize(16);
@@ -152,7 +158,11 @@ void UVEN_CONTROL_CENTER_GUI::target_current_changed(double value){
     // ROS_INFO("target current changed to %d", (int)value);
     if(!emergency_off_flag){
         for(int i=0;i<16;i++){
-            tx.values.target_current[i] = (int)(value*1000);
+            if(enable_led[i]->isChecked()){
+                tx.values.target_current[i] = (int)(value*1000);
+            }else{
+                tx.values.target_current[i] = 0;
+            }
         }
     }
 }
@@ -192,12 +202,19 @@ void UVEN_CONTROL_CENTER_GUI::lamp_coms(){
     boost::asio::io_service ios;
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(lamp_ip), lamp_port);
     boost::asio::ip::tcp::socket socket(ios);
+    ros::Time t0;
     while(ros::ok()){
-        socket.connect(endpoint);
-        boost::system::error_code error;
-        ros::Time t0 = ros::Time::now();
-        socket.write_some(boost::asio::buffer(tx.data, BUFFER_SIZE), error);
-        socket.read_some(boost::asio::buffer(rx.data, BUFFER_SIZE), error);
+        try{
+            socket.connect(endpoint);
+            boost::system::error_code error;
+            t0 = ros::Time::now();
+            socket.write_some(boost::asio::buffer(tx.data, BUFFER_SIZE), error);
+            socket.read_some(boost::asio::buffer(rx.data, BUFFER_SIZE), error);
+            socket.close();
+        }catch( const boost::system::system_error& ex ){
+            ROS_ERROR_STREAM_THROTTLE(1,ex.what());
+            continue;
+        }
         for(int i=0;i<16;i++){
             current[i].push_back(((int)rx.values.current[i])/1000.0);
             current_time[i].push_back((t0-start_time).toSec());
@@ -207,7 +224,7 @@ void UVEN_CONTROL_CENTER_GUI::lamp_coms(){
             gate_time[i].push_back((t0-start_time).toSec());
             target_current[i].push_back(((int)rx.values.target_current[i])/1000.0);
             target_current_time[i].push_back((t0-start_time).toSec());
-            while((temperature_time[i].back()-temperature_time[i].front())>10){
+            while((temperature_time[i].back()-temperature_time[i].front())>60){
                 current[i].pop_front();
                 current_time[i].pop_front();
                 temperature[i].pop_front();
@@ -218,10 +235,11 @@ void UVEN_CONTROL_CENTER_GUI::lamp_coms(){
                 target_current_time[i].pop_front();
             }
         }
+        temp_driver = rx.values.temperature[16];
         chamber_fan = ((int)rx.values.chamber_fan)/255.0f*100;
         led_fan = ((int)rx.values.led_fan)/255.0f*100;
         Q_EMIT plotSignal();
-        socket.close();
+        
         rate.sleep();
     }
 }
@@ -311,6 +329,8 @@ void UVEN_CONTROL_CENTER_GUI::plotData(){
     }
 
     ui.temp_external->setValue(temp_external);
+    ui.temp_driver->setValue(temp_driver);
+
     if(record_flag){
         static ros::Time t0 = ros::Time::now();
         if((ros::Time::now()-t0).toSec()>1){
