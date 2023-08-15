@@ -347,7 +347,9 @@ void loop() {
       gate_sp[i] = 0;
       gate_sp[i+8] = 0;
     }
+    digitalWrite(LED_LATCH, false);
   }else{
+    digitalWrite(LED_LATCH, true);
     bool all_off = true;     
     for(int i=0;i<16;i++){
       if(target_current[i]==0){
