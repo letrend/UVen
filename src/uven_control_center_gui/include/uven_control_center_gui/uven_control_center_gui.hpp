@@ -15,6 +15,9 @@
 #include <std_msgs/Float32.h>
 #include <qwt_dial_needle.h>
 #include <boost/asio.hpp>
+#include <std_msgs/Int32.h>
+#include <fstream>
+#include <chrono>
 
 #endif
 
@@ -57,19 +60,21 @@ public Q_SLOTS:;
     void chamber_fan_changed(double value);
     void target_current_changed(double value);
     void emergency_off();
+    void record();
 
 Q_SIGNALS:
     void plotSignal();
 
 private:
     void lamp_coms();
+    void TempExternal(const std_msgs::Int32ConstPtr &msg);
 
     Ui::UVEN_CONTROL_CENTER_GUI ui;
     QColor color_pallette[16] = {Qt::blue, Qt::red, Qt::green, Qt::cyan, Qt::magenta, Qt::darkGray, Qt::darkRed, Qt::darkGreen,
                                 Qt::darkBlue, Qt::darkCyan, Qt::darkMagenta, Qt::darkYellow, Qt::black, Qt::gray, Qt::green, Qt::cyan};
     QWidget *widget_;
     ros::NodeHandlePtr nh;
-    ros::Subscriber temp_subscriber[5], current_subscriber[5];
+    ros::Subscriber temp_external_sub;
     map<string,QVector<double> > values;
     boost::shared_ptr<ros::AsyncSpinner> spinner;
     boost::shared_ptr<std::thread> lamp_coms_thread;
@@ -83,4 +88,7 @@ private:
     int lamp_port;
     FRAME tx,rx;
     bool emergency_off_flag = false;
+    int temp_external = 0;
+    ofstream record_file;
+    bool record_flag = false;
 };

@@ -29,7 +29,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -3355,9 +3355,9 @@
    <property name="geometry">
     <rect>
      <x>1080</x>
-     <y>600</y>
+     <y>660</y>
      <width>251</width>
-     <height>161</height>
+     <height>101</height>
     </rect>
    </property>
    <property name="text">
@@ -3525,6 +3525,35 @@
     <UInt>10</UInt>
    </property>
   </widget>
+  <widget class="QwtThermo" name="temp_external">
+   <property name="geometry">
+    <rect>
+     <x>1260</x>
+     <y>290</y>
+     <width>60</width>
+     <height>301</height>
+    </rect>
+   </property>
+   <property name="upperBound">
+    <double>150.000000000000000</double>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="record">
+   <property name="geometry">
+    <rect>
+     <x>1080</x>
+     <y>610</y>
+     <width>251</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>record</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>
@@ -3536,6 +3565,11 @@
    <class>QwtSlider</class>
    <extends>QWidget</extends>
    <header>qwt_slider.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QwtThermo</class>
+   <extends>QWidget</extends>
+   <header>qwt_thermo.h</header>
   </customwidget>
   <customwidget>
    <class>QCustomPlot</class>

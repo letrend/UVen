@@ -7,13 +7,13 @@ analogValues = []
 temp = []
 print("reading " + sys.argv[1])
 with open(sys.argv[1]) as csvfile:
-    has_header = csv.Sniffer().has_header(csvfile.read(1024))
-    csvfile.seek(0)  # Rewind.
+    # has_header = csv.Sniffer().has_header(csvfile.read(1024))
+    # csvfile.seek(0)  # Rewind.
     reader = csv.reader(csvfile)
-    if has_header:
-        next(reader)  # Skip header row
+    # if has_header:
+    next(reader)  # Skip header row
     for row in reader: # each row is a list
-        analogValues.append(float(row[0]))
+        analogValues.append(float(row[2]))
         temp.append(float(row[1]))
 
 z = np.polyfit(analogValues, temp, 3)

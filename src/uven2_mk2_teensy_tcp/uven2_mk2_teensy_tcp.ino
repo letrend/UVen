@@ -105,7 +105,7 @@ uint8_t temp_pins[17] = { TEMP_LED0,TEMP_LED1,TEMP_LED2,TEMP_LED3,
                           TEMP_LED8,TEMP_LED9,TEMP_LED10,TEMP_LED11,
                           TEMP_LED12,TEMP_LED13,TEMP_LED14,TEMP_LED15,
                           TEMP_DRIVER };
-const float temp_poly[4] = {-1.06548079e-06, 1.17278707e-03, -5.32683331e-01, 1.31479023e+02};
+const float temp_poly[4] = {-1.52720929e-06,  1.49737064e-03, -6.06179414e-01,  1.37842069e+02};
 int32_t temp_raw[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 float temp[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 uint32_t iteration = 0;

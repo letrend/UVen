@@ -120,6 +120,7 @@ void UVEN_CONTROL_CENTER_GUI::initPlugin(qt_gui_cpp::PluginContext &context) {
     QObject::connect(ui.led_fan_slider, SIGNAL(valueChanged(double)), this, SLOT(led_fan_changed(double)));
     QObject::connect(ui.target_current_slider, SIGNAL(valueChanged(double)), this, SLOT(target_current_changed(double)));
     QObject::connect(ui.emergency_off, SIGNAL(clicked()), this, SLOT(emergency_off()));
+    QObject::connect(ui.record, SIGNAL(clicked()), this, SLOT(record()));
 
     if(nh->hasParam("lamp_ip") && nh->hasParam("lamp_port")){
         nh->getParam("lamp_ip",lamp_ip);
@@ -128,7 +129,13 @@ void UVEN_CONTROL_CENTER_GUI::initPlugin(qt_gui_cpp::PluginContext &context) {
         lamp_coms_thread->detach();
     }
 
+    temp_external_sub = nh->subscribe("temp_external", 1, &UVEN_CONTROL_CENTER_GUI::TempExternal, this);
+
     ROS_INFO("uven gui initialized");
+}
+
+void UVEN_CONTROL_CENTER_GUI::TempExternal(const std_msgs::Int32ConstPtr &msg){
+    temp_external = msg->data;
 }
 
 void UVEN_CONTROL_CENTER_GUI::led_fan_changed(double value){
@@ -162,6 +169,19 @@ void UVEN_CONTROL_CENTER_GUI::emergency_off(){
         emergency_off_flag = false;
         ui.emergency_off->setStyleSheet("background: lightgrey");
         ui.target_current_slider->setEnabled(true);
+    }
+}
+
+void UVEN_CONTROL_CENTER_GUI::record(){
+    if(ui.record->isChecked()){
+        ROS_INFO("record started");
+        record_file.open("uven.log",ios_base::out);
+        record_file << "time, temp_external[C], temp(0-15)[1], current(0-15)[mA]\n";
+        record_flag = true;
+    }else{
+        ROS_INFO("record stopped");
+        record_flag = false;
+        record_file.close();
     }
 }
 
@@ -288,6 +308,26 @@ void UVEN_CONTROL_CENTER_GUI::plotData(){
         ui.interlock->setStyleSheet("background: lightgreen");
     }else{
         ui.interlock->setStyleSheet("background: red");
+    }
+
+    ui.temp_external->setValue(temp_external);
+    if(record_flag){
+        static ros::Time t0 = ros::Time::now();
+        if((ros::Time::now()-t0).toSec()>1){
+            t0 = ros::Time::now();
+            const auto now = std::chrono::system_clock::now();
+            record_file << std::chrono::time_point_cast<std::chrono::milliseconds>(now).time_since_epoch().count() << ", " << temp_external << ", ";
+            for(int i=0;i<16;i++){
+                record_file << int(temperature[i].back()) << ", ";
+            }
+            for(int i=0;i<16;i++){
+                record_file << int(current[i].back()*1000);
+                if(i<15){
+                   record_file << ", ";
+                }
+            }
+            record_file << endl;
+        }
     }
 }
 
