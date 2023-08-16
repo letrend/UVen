@@ -113,9 +113,10 @@ gslc_tsXTogglebtn               m_asXToggle1;
 
 // Element References for direct access
 //<Extern_References !Start!>
-extern gslc_tsElemRef* m_chamberFan;
+extern gslc_tsElemRef* m_chamberFanSlider;
 extern gslc_tsElemRef* m_drvTemp;
 extern gslc_tsElemRef* m_drvTempSlider;
+extern gslc_tsElemRef* m_intensity;
 extern gslc_tsElemRef* m_intensitySlider;
 extern gslc_tsElemRef* m_interlock;
 extern gslc_tsElemRef* m_ledTemp;
@@ -123,7 +124,6 @@ extern gslc_tsElemRef* m_ledTempSlider;
 extern gslc_tsElemRef* m_rep;
 extern gslc_tsElemRef* m_repEnable;
 extern gslc_tsElemRef* m_repSec;
-extern gslc_tsElemRef* m_slider;
 extern gslc_tsElemRef* m_timeHour;
 extern gslc_tsElemRef* m_timeMin;
 extern gslc_tsElemRef* m_timeSec;
@@ -201,12 +201,12 @@ void InitGUIslice_gen()
 
   // Create seekbar E_ELEM_SEEKBAR1 
   pElemRef = gslc_ElemXSeekbarCreate(&m_gui,E_ELEM_SEEKBAR1,E_PG_MAIN,&m_sXSeekbar1,
-    (gslc_tsRect){10,200,175,30},0,100,0,
+    (gslc_tsRect){10,200,175,30},0,106,0,
     4,2,8,GSLC_COL_BLUE,GSLC_COL_GRAY,GSLC_COL_BLUE_DK2,false);
   gslc_ElemXSeekbarSetPosFunc(&m_gui,pElemRef,&CbSlidePos);
   gslc_ElemXSeekbarSetStyle(&m_gui,pElemRef,true,GSLC_COL_BLUE_LT4,true,GSLC_COL_GRAY,
     0,10,GSLC_COL_GRAY);
-  m_chamberFan = pElemRef;
+  m_chamberFanSlider = pElemRef;
   
   // Create E_ELEM_TEXT1 text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT1,E_PG_MAIN,(gslc_tsRect){268,220,32,10},
@@ -268,7 +268,7 @@ void InitGUIslice_gen()
   gslc_ElemSetFrameEn(&m_gui,pElemRef,true);
   gslc_ElemSetClickEn(&m_gui, pElemRef, true);
   gslc_ElemSetTouchFunc(&m_gui, pElemRef, &CbBtnCommon);
-  m_slider = pElemRef;
+  m_intensity = pElemRef;
   
   // Create E_ELEM_TEXT5 text label
   pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT5,E_PG_MAIN,(gslc_tsRect){30,20,124,14},
@@ -278,11 +278,11 @@ void InitGUIslice_gen()
 
   // Create seekbar E_ELEM_SEEKBAR4 
   pElemRef = gslc_ElemXSeekbarCreate(&m_gui,E_ELEM_SEEKBAR4,E_PG_MAIN,&m_sXSeekbar4,
-    (gslc_tsRect){10,140,175,30},0,100,20,
+    (gslc_tsRect){10,140,175,30},0,108,20,
     10,2,12,((gslc_tsColor){0,255,238}),GSLC_COL_GRAY,GSLC_COL_BLUE_DK2,false);
   gslc_ElemXSeekbarSetPosFunc(&m_gui,pElemRef,&CbSlidePos);
   gslc_ElemXSeekbarSetStyle(&m_gui,pElemRef,true,GSLC_COL_BLUE_LT4,true,GSLC_COL_GRAY,
-    4,10,GSLC_COL_GRAY);
+    0,10,GSLC_COL_GRAY);
   m_intensitySlider = pElemRef;
   
   // Create E_ELEM_TEXT6 text label
