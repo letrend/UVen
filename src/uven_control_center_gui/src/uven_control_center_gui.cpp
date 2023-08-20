@@ -216,7 +216,7 @@ void UVEN_CONTROL_CENTER_GUI::lamp_coms(){
             continue;
         }
         for(int i=0;i<16;i++){
-            current[i].push_back(((int)rx.values.current[i])/1000.0);
+            current[i].push_back(((int)rx.values.current[i]/1000.0));
             current_time[i].push_back((t0-start_time).toSec());
             temperature[i].push_back(rx.values.temperature[i]);
             temperature_time[i].push_back((t0-start_time).toSec());

@@ -110,6 +110,13 @@ int32_t temp_raw[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 float temp[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 uint32_t iteration = 0;
 
+const float raw_current_to_mA[16] = {
+          2810.0f/830.0f,2760.0f/830.0f,4000.0f/836.0f,4000.0f/836.0f,
+          4000.0f/834.0f,4000.0f/830.0f,4000.0f/834.0f,4000.0f/822.0f,
+          4000.0f/827.0f,4000.0f/830.0f,4000.0f/830.0f,4000.0f/836.0f,
+          4000.0f/830.0f,4000.0f/830.0f,4000.0f/830.0f,4000.0f/822.0f
+          };
+
 float calcTemp(int val, const float *p){
   return p[0]*val*val*val+p[1]*val*val+p[2]*val+p[3];
 }
@@ -250,7 +257,7 @@ void processClientData(ClientState &state) {
   memcpy(state.tx.data,tx.data,BUFFER_SIZE);
   memcpy(rx.data,state.rx.data,BUFFER_SIZE);
   for(int i=0;i<16;i++){
-    target_current[i] = (int)(rx.values.target_current[i])/4.8125; // 800 ticks == 3850mA
+    target_current[i] = (int)(rx.values.target_current[i])/raw_current_to_mA[i]; // 800 ticks == 3850mA
   }
   state.client.write((char *)state.tx.data,BUFFER_SIZE);
   state.client.flush();
@@ -359,11 +366,11 @@ void loop() {
       }
 
       if(target_current[i]>0 && gate_sp[i]==0){
-        gate_sp[i] = 2500;
+        gate_sp[i] = 2400;
       }
 
       if(current_raw[i]<target_current[i]){
-        if(gate_sp[i]<3600){
+        if(gate_sp[i]<4095){
           gate_sp[i]+=1;
         }
       }else{
@@ -390,8 +397,8 @@ void loop() {
   }
 
   for(int i=0;i<16;i++){
-    tx.values.target_current[i] = target_current[i]*4.8125; // 800 ticks == 3850mA
-    tx.values.current[i] = current_raw[i]*4.8125; // 800 ticks == 3850mA
+    tx.values.target_current[i] = target_current[i]*raw_current_to_mA[i];
+    tx.values.current[i] = current_raw[i]*raw_current_to_mA[i];
     tx.values.gate[i] = gate_sp[i];
     tx.values.temperature[i] = temp[i];
   }
