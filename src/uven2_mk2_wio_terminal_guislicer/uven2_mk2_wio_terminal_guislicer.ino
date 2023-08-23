@@ -21,8 +21,6 @@ Arduino_CRC32 crc32;
 #include "seeed_line_chart.h"
 TFT_eSPI tft;
 
-#define BUFFER_SIZE 176
-
 // ------------------------------------------------
 // Program Globals
 // ------------------------------------------------
@@ -46,24 +44,36 @@ gslc_tsElemRef* m_timeSec         = NULL;
 gslc_tsElemRef* m_pElemKeyPadNum  = NULL;
 //<Save_References !End!>
 
-union SERIAL_FRAME{
+#define SERIAL_FRAME_RX_BUFFER_SIZE 16
+#define SERIAL_FRAME_TX_BUFFER_SIZE 8
+
+union SERIAL_FRAME_RX{
   struct{
-    uint32_t time;
-    float temperature[17];
-    uint16_t led_fan;
-    uint16_t chamber_fan;
-    uint16_t target_current[16];
-    uint16_t current[16];
-    uint16_t gate[16];
+    uint16_t status;
+    uint16_t led_status;
+    float led_temp;
+    float drv_temp;
     uint32_t crc;
   }values;
-  volatile uint8_t data[BUFFER_SIZE];
+  volatile uint8_t data[SERIAL_FRAME_RX_BUFFER_SIZE];
 };
 
-SERIAL_FRAME rx, tx;
+union SERIAL_FRAME_TX{
+  struct{
+    uint16_t chamber_fan;
+    uint16_t target_current;
+    uint32_t crc;
+  }values;
+  volatile uint8_t data[SERIAL_FRAME_TX_BUFFER_SIZE];
+};
+
+SERIAL_FRAME_TX tx_serial_frame;
+SERIAL_FRAME_RX rx_serial_frame;
 
 EasyButton but_a(WIO_KEY_A), but_b(WIO_KEY_B), but_c(WIO_KEY_C);
 EasyButton but_up(WIO_5S_UP), but_down(WIO_5S_DOWN), but_left(WIO_5S_LEFT), but_right(WIO_5S_RIGHT), but_press(WIO_5S_PRESS);
+
+bool fire = false;
 
 // ------------------------------------------------
 // Callback Methods
@@ -282,7 +292,6 @@ void aPressed() {
     int t1 = millis();
     if((t1-t0)>150){
       t0 = t1;
-      Serial.println("Button a has been pressed for the given duration!");
       switch(row_selected){
         case 0: {
           if(col_selected==1){
@@ -348,7 +357,7 @@ void aPressed() {
 }
 
 void bPressed() {
-    Serial.println("Button b has been pressed for the given duration!");
+  fire = !fire;
 }
 
 void cPressed() {
@@ -356,7 +365,6 @@ void cPressed() {
     int t1 = millis();
     if((t1-t0)>150){
       t0 = t1;
-      Serial.println("Button c has been pressed for the given duration!");
       switch(row_selected){
         case 0: {
           if(col_selected==1){
@@ -422,7 +430,6 @@ void cPressed() {
 }
 
 void upPressed() {
-  Serial.println("Button up has been pressed for the given duration!");    
   row_selected--;
   if(row_selected<0){
     row_selected = 3;
@@ -431,7 +438,6 @@ void upPressed() {
 }
 
 void downPressed() {
-  Serial.println("Button down has been pressed for the given duration!");
   row_selected++;
   if(row_selected>3){
     row_selected = 0;
@@ -440,7 +446,6 @@ void downPressed() {
 }
 
 void leftPressed() {
-  Serial.println("Button left has been pressed for the given duration!");
   col_selected--;
   if(col_selected<0){
     col_selected=0;
@@ -449,7 +454,6 @@ void leftPressed() {
 }
 
 void rightPressed() {
-  Serial.println("Button right has been pressed for the given duration!");
   col_selected++;
   if(col_selected>2){
     col_selected=2;
@@ -458,18 +462,18 @@ void rightPressed() {
 }
 
 void pressPressed() {
-  Serial.println("Button press has been pressed for the given duration!");
+//  Serial.println("Button press has been pressed for the given duration!");
   if(row_selected==0 && col_selected==0){
     rep_enable = !rep_enable;
     gslc_ElemXTogglebtnSetState(&m_gui, m_repEnable, rep_enable);
-    Serial.println(rep_enable);
+//    Serial.println(rep_enable);
   }
   
 }
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(4000000);
   
   but_a.begin(); but_b.begin(); but_c.begin();
   but_up.begin(); but_down.begin(); but_left.begin(); but_right.begin(); but_press.begin();
@@ -513,6 +517,39 @@ bool toggle = true;
 
 void loop()
 {
+  if(Serial.available()){
+    Serial.readBytes((char*)&rx_serial_frame.data[0], SERIAL_FRAME_RX_BUFFER_SIZE);
+    uint32_t crc = crc32.calc((uint8_t const *)&rx_serial_frame.data[0], SERIAL_FRAME_RX_BUFFER_SIZE-4);
+    if(crc==rx_serial_frame.values.crc){
+      if(fire){
+        tx_serial_frame.values.target_current = gslc_ElemXSeekbarGetPos(&m_gui, m_intensitySlider);
+      }else{
+        tx_serial_frame.values.target_current = 0;
+      }
+      tx_serial_frame.values.chamber_fan = gslc_ElemXSeekbarGetPos(&m_gui, m_chamberFanSlider);
+      tx_serial_frame.values.crc = crc32.calc((uint8_t const *)&tx_serial_frame.data[0], SERIAL_FRAME_TX_BUFFER_SIZE-4);
+      Serial.write((char*)tx_serial_frame.data,SERIAL_FRAME_TX_BUFFER_SIZE);
+      gslc_ElemXProgressSetVal(&m_gui,m_interlock,(rx_serial_frame.values.status==1?100:0));
+      gslc_ElemXProgressSetVal(&m_gui,m_drvTempSlider,rx_serial_frame.values.drv_temp);
+      gslc_ElemXProgressSetVal(&m_gui,m_ledTempSlider,rx_serial_frame.values.led_temp);
+      char str4[3];
+      sprintf(str4,"%d", (int)rx_serial_frame.values.drv_temp);
+      gslc_ElemSetTxtStr(&m_gui, m_drvTemp, str4);
+      sprintf(str4,"%d", (int)rx_serial_frame.values.led_temp);
+      gslc_ElemSetTxtStr(&m_gui, m_ledTemp, str4);
+//      tft.fillScreen(TFT_GREEN);
+    }else{
+//      tft.fillScreen(TFT_RED);
+//      char str[20];
+//      sprintf(str,"%x != %x",crc,rx_serial_frame.values.crc);
+//      tft.drawString(str, 100, 0);
+    }
+  }
+
+//  static float counter = 30;
+//  char str4[3];
+//  sprintf(str4,"%d", (int)counter++);
+//  gslc_ElemSetTxtStr(&m_gui, m_drvTemp, str4);
 
   // ------------------------------------------------
   // Update GUI Elements

@@ -27,24 +27,31 @@ Arduino_CRC32 crc32;
 USBHost myusb;
 USBSerial userial(myusb);
 
-#define SERIAL_FRAME_BUFFER_SIZE 176
+#define SERIAL_FRAME_TX_BUFFER_SIZE 16
+#define SERIAL_FRAME_RX_BUFFER_SIZE 8
 
-union SERIAL_FRAME{
+union SERIAL_FRAME_TX{
   struct{
-    uint16_t time;
-    uint16_t control;
-    float temperature[17];
-    uint16_t led_fan;
-    uint16_t chamber_fan;
-    uint16_t target_current[16];
-    uint16_t current[16];
-    uint16_t gate[16];
+    uint16_t status;
+    uint16_t led_status;
+    float led_temp;
+    float drv_temp;
     uint32_t crc;
   }values;
-  volatile uint8_t data[SERIAL_FRAME_BUFFER_SIZE];
+  volatile uint8_t data[SERIAL_FRAME_TX_BUFFER_SIZE];
 };
 
-SERIAL_FRAME rx, tx;
+union SERIAL_FRAME_RX{
+  struct{
+    uint16_t chamber_fan;
+    uint16_t target_current;
+    uint32_t crc;
+  }values;
+  volatile uint8_t data[SERIAL_FRAME_RX_BUFFER_SIZE];
+};
+
+SERIAL_FRAME_TX tx_serial_frame;
+SERIAL_FRAME_RX rx_serial_frame;
 
 MCP48FEB28 *dac_0;
 MCP48FEB28 *dac_1;
@@ -64,6 +71,8 @@ union FRAME{
   }values;
   volatile uint8_t data[BUFFER_SIZE];
 };
+
+FRAME tx,rx;
 
 // Keeps track of state for a single client.
 struct ClientState {
@@ -96,7 +105,11 @@ std::vector<ClientState> clients;
 EthernetServer server{kServerPort};
 
 bool interlock = false;
-bool over_temp[7] = {false,false,false,false,false,false,false};
+bool cool_down = false;
+bool over_temp[17] = {false,false,false,false,false,false,false,false,
+                      false,false,false,false,false,false,false,false,
+                      false
+};
 int32_t current_raw[16];
 int32_t target_current[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 int32_t gate_sp[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -345,7 +358,7 @@ void loop() {
   digitalWrite(LED_DIAG_ENABLE_H,  false);
 
   interlock = !digitalRead(LED_ENABLE);
-  if(interlock){
+  if(interlock || cool_down){
     for(int i=0;i<8;i++){
       dac_0->write(i,0);
       dac_1->write(i,0);
@@ -394,42 +407,76 @@ void loop() {
   for(int i=0;i<17;i++){
     temp_raw[i] = analogRead(temp_pins[i]);
     temp[i] = temp[i]*0.9+0.1*calcTemp(temp_raw[i],temp_poly);
+    over_temp[i] = temp[i]>70;
   }
 
+  if(cool_down){
+    bool cooled_down = true;
+    for(int i=0;i<17;i++){
+      if(temp[i]>35){
+        cooled_down = false;
+      }
+    }
+    cool_down = !cooled_down;
+  }
+
+  bool led_fan_cooling = false;
   for(int i=0;i<16;i++){
     tx.values.target_current[i] = target_current[i]*raw_current_to_mA[i];
     tx.values.current[i] = current_raw[i]*raw_current_to_mA[i];
     tx.values.gate[i] = gate_sp[i];
     tx.values.temperature[i] = temp[i];
+    if(temp[i]>30){
+      led_fan_cooling = true;
+    }
   }
+
+  if(led_fan_cooling){
+    analogWrite(LED_FAN,0);
+  }else{
+    analogWrite(LED_FAN,255);    
+  }
+
   tx.values.temperature[16] = temp[16];
   tx.values.time = millis()-t0;
 
   tx.values.led_fan = rx.values.led_fan;
   tx.values.chamber_fan = rx.values.chamber_fan;
 
-  analogWrite(LED_FAN,255-rx.values.led_fan);
-  analogWrite(CHAMBER_FAN,255-rx.values.chamber_fan);
-
   tx.values.crc = crc32.calc((uint8_t const *)&tx.data[0], BUFFER_SIZE-4);
 
   if(iteration++%10==0){
-    // userial.write((char*)tx.data,BUFFER_SIZE);
-    // userial.readBytes((char*)&rx.data[0], BUFFER_SIZE);
-    // uint32_t crc = crc32.calc((uint8_t const *)&rx.data[0], BUFFER_SIZE-4);
-    // if(crc==rx.values.crc){
-    //   for(int i=0;i<16;i++){
-    //     target_current[i] = (rx.values.target_current[i]>=0 && rx.values.target_current[i]<100)?rx.values.target_current[i]:0;
-    //   }
-    //   if(rx.values.chamber_fan!=tx.values.chamber_fan){
-    //     analogWrite(CHAMBER_FAN,rx.values.chamber_fan);
-    //     tx.values.chamber_fan = rx.values.chamber_fan;
-    //   }
-    //   if(rx.values.led_fan!=tx.values.led_fan){
-    //     analogWrite(LED_FAN,rx.values.led_fan);
-    //     tx.values.led_fan = rx.values.led_fan;
-    //   }
-    // }
+    tx_serial_frame.values.status = 0;
+
+    float average_led_temp = 0;
+    for(int i=0;i<16;i++){
+      average_led_temp+=temp[i];
+      tx_serial_frame.values.led_status |= ((tx.values.current[i]>10)<<i);
+    }
+
+    tx_serial_frame.values.status = interlock;
+        
+    tx_serial_frame.values.led_temp = average_led_temp / 16.0f;
+    tx_serial_frame.values.drv_temp = temp[16];
+
+    tx_serial_frame.values.crc = crc32.calc((uint8_t const *)&tx_serial_frame.data[0], SERIAL_FRAME_TX_BUFFER_SIZE-4);
+    
+    userial.write((char*)tx_serial_frame.data,SERIAL_FRAME_TX_BUFFER_SIZE);
+    userial.readBytes((char*)&rx_serial_frame.data[0], SERIAL_FRAME_RX_BUFFER_SIZE);
+    uint32_t crc = crc32.calc((uint8_t const *)&rx_serial_frame.data[0], SERIAL_FRAME_RX_BUFFER_SIZE-4);
+    if(crc==rx.values.crc){
+      for(int i=0;i<16;i++){
+        target_current[i] = rx_serial_frame.values.target_current;
+        if(target_current[i]>4000){
+          target_current[i] = 4000;
+        }
+        if(target_current[i]<0){
+          target_current[i] = 0;
+        }
+        target_current[i] = (int)(target_current[i])/raw_current_to_mA[i];
+      }
+      analogWrite(CHAMBER_FAN,rx_serial_frame.values.chamber_fan);
+    }
   }
 
   {
@@ -465,6 +512,8 @@ void loop() {
       }
 
       processClientData(state);
+      analogWrite(LED_FAN,255-rx.values.led_fan);
+      analogWrite(CHAMBER_FAN,255-rx.values.chamber_fan);
     }
     
 
@@ -474,5 +523,4 @@ void loop() {
                                 [](const auto &state) { return state.closed; }),
                   clients.end());
   }
-  tx.values.time = millis()-t0;
 }
