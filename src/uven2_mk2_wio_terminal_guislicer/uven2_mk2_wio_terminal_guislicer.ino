@@ -478,7 +478,7 @@ void setup()
   but_a.begin(); but_b.begin(); but_c.begin();
   but_up.begin(); but_down.begin(); but_left.begin(); but_right.begin(); but_press.begin();
 //  but_a.onPressedFor(press_duration, aPressed); 
-//  but_b.onPressedFor(press_duration, bPressed);
+  but_b.onPressedFor(500, bPressed);
 //  but_c.onPressedFor(press_duration, cPressed);
   but_up.onPressedFor(press_duration, upPressed); 
   but_down.onPressedFor(press_duration, downPressed);
@@ -522,13 +522,15 @@ void loop()
     uint32_t crc = crc32.calc((uint8_t const *)&rx_serial_frame.data[0], SERIAL_FRAME_RX_BUFFER_SIZE-4);
     if(crc==rx_serial_frame.values.crc){
       if(fire){
-        tx_serial_frame.values.target_current = gslc_ElemXSeekbarGetPos(&m_gui, m_intensitySlider);
+        tx_serial_frame.values.target_current = gslc_ElemXSeekbarGetPos(&m_gui, m_intensitySlider)*40;
       }else{
         tx_serial_frame.values.target_current = 0;
       }
       tx_serial_frame.values.chamber_fan = gslc_ElemXSeekbarGetPos(&m_gui, m_chamberFanSlider);
+      
       tx_serial_frame.values.crc = crc32.calc((uint8_t const *)&tx_serial_frame.data[0], SERIAL_FRAME_TX_BUFFER_SIZE-4);
       Serial.write((char*)tx_serial_frame.data,SERIAL_FRAME_TX_BUFFER_SIZE);
+      
       gslc_ElemXProgressSetVal(&m_gui,m_interlock,(rx_serial_frame.values.status==1?100:0));
       gslc_ElemXProgressSetVal(&m_gui,m_drvTempSlider,rx_serial_frame.values.drv_temp);
       gslc_ElemXProgressSetVal(&m_gui,m_ledTempSlider,rx_serial_frame.values.led_temp);

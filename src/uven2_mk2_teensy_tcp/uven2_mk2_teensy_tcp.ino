@@ -149,8 +149,8 @@ void setup() {
   userial.begin(4000000);
   pinMode(LED_FAN,OUTPUT);
   pinMode(CHAMBER_FAN,OUTPUT);
-  // analogWrite(LED_FAN,100);
-  // analogWrite(CHAMBER_FAN,200);
+  analogWrite(LED_FAN,200);
+  analogWrite(CHAMBER_FAN,200);
 
   pinMode(LED_SEL0,OUTPUT);
   pinMode(LED_SEL1,OUTPUT);
@@ -426,7 +426,7 @@ void loop() {
     tx.values.current[i] = current_raw[i]*raw_current_to_mA[i];
     tx.values.gate[i] = gate_sp[i];
     tx.values.temperature[i] = temp[i];
-    if(temp[i]>30){
+    if(temp[i]>35){
       led_fan_cooling = true;
     }
   }
@@ -464,7 +464,7 @@ void loop() {
     userial.write((char*)tx_serial_frame.data,SERIAL_FRAME_TX_BUFFER_SIZE);
     userial.readBytes((char*)&rx_serial_frame.data[0], SERIAL_FRAME_RX_BUFFER_SIZE);
     uint32_t crc = crc32.calc((uint8_t const *)&rx_serial_frame.data[0], SERIAL_FRAME_RX_BUFFER_SIZE-4);
-    if(crc==rx.values.crc){
+    if(crc==rx_serial_frame.values.crc){
       for(int i=0;i<16;i++){
         target_current[i] = rx_serial_frame.values.target_current;
         if(target_current[i]>4000){
@@ -476,6 +476,7 @@ void loop() {
         target_current[i] = (int)(target_current[i])/raw_current_to_mA[i];
       }
       analogWrite(CHAMBER_FAN,rx_serial_frame.values.chamber_fan);
+      analogWrite(LED_FAN,200);
     }
   }
 
