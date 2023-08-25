@@ -55,8 +55,9 @@ enum {E_ELEM_BOX1,E_ELEM_BOX2,E_ELEM_BOX3,E_ELEM_BOX5,E_ELEM_BOX6
       ,E_ELEM_NUMINPUT1,E_ELEM_NUMINPUT2,E_ELEM_NUMINPUT3
       ,E_ELEM_NUMINPUT4,E_ELEM_NUMINPUT5,E_ELEM_NUMINPUT6
       ,E_ELEM_NUMINPUT7,E_ELEM_NUMINPUT8,E_ELEM_PROGRESS1
-      ,E_ELEM_PROGRESS3,E_ELEM_PROGRESS4,E_ELEM_SEEKBAR1
-      ,E_ELEM_SEEKBAR4,E_ELEM_TEXT1,E_ELEM_TEXT2,E_ELEM_TEXT3
+      ,E_ELEM_PROGRESS3,E_ELEM_PROGRESS4,E_ELEM_PROGRESS5
+      ,E_ELEM_PROGRESS6,E_ELEM_SEEKBAR1,E_ELEM_SEEKBAR4,E_ELEM_TEXT1
+      ,E_ELEM_TEXT10,E_ELEM_TEXT11,E_ELEM_TEXT2,E_ELEM_TEXT3
       ,E_ELEM_TEXT4,E_ELEM_TEXT5,E_ELEM_TEXT6,E_ELEM_TEXT7,E_ELEM_TEXT8
       ,E_ELEM_TEXT9,E_ELEM_TOGGLE1,E_ELEM_KEYPAD_NUM};
 // Must use separate enum for fonts with MAX_FONT at end to use gslc_FontSet.
@@ -73,7 +74,7 @@ enum {E_BUILTIN5X8,E_FREEMONO12,E_FREEMONO9,E_FREEMONOBOLD12,MAX_FONT};
 //<ElementDefines !Start!>
 #define MAX_PAGE                3
 
-#define MAX_ELEM_PG_MAIN 28 // # Elems total on page
+#define MAX_ELEM_PG_MAIN 32 // # Elems total on page
 #define MAX_ELEM_PG_MAIN_RAM MAX_ELEM_PG_MAIN // # Elems in RAM
 
 #define MAX_ELEM_PG2 0 // # Elems total on page
@@ -96,6 +97,8 @@ gslc_tsElemRef                  m_asPage2ElemRef[MAX_ELEM_PG2];
 gslc_tsElem                     m_asKeypadNumElem[1];
 gslc_tsElemRef                  m_asKeypadNumElemRef[1];
 gslc_tsXKeyPad                  m_sKeyPadNum;
+gslc_tsXProgress                m_sXBarGauge5;
+gslc_tsXProgress                m_sXBarGauge6;
 gslc_tsXProgress                m_sXBarGauge4;
 gslc_tsXProgress                m_sXBarGauge1;
 gslc_tsXSeekbar                 m_sXSeekbar1;
@@ -116,11 +119,13 @@ gslc_tsXTogglebtn               m_asXToggle1;
 extern gslc_tsElemRef* m_chamberFanSlider;
 extern gslc_tsElemRef* m_drvTemp;
 extern gslc_tsElemRef* m_drvTempSlider;
+extern gslc_tsElemRef* m_fire;
 extern gslc_tsElemRef* m_intensity;
 extern gslc_tsElemRef* m_intensitySlider;
 extern gslc_tsElemRef* m_interlock;
 extern gslc_tsElemRef* m_ledTemp;
 extern gslc_tsElemRef* m_ledTempSlider;
+extern gslc_tsElemRef* m_overTemp;
 extern gslc_tsElemRef* m_rep;
 extern gslc_tsElemRef* m_repEnable;
 extern gslc_tsElemRef* m_repSec;
@@ -179,6 +184,21 @@ void InitGUIslice_gen()
   // -----------------------------------
   // PAGE: E_PG_MAIN
   
+
+  // Create progress bar E_ELEM_PROGRESS5 
+  pElemRef = gslc_ElemXProgressCreate(&m_gui,E_ELEM_PROGRESS5,E_PG_MAIN,&m_sXBarGauge5,
+    (gslc_tsRect){2,24,93,22},0,100,0,GSLC_COL_BLUE_DK1,false);
+  m_fire = pElemRef;
+
+  // Create progress bar E_ELEM_PROGRESS6 
+  pElemRef = gslc_ElemXProgressCreate(&m_gui,E_ELEM_PROGRESS6,E_PG_MAIN,&m_sXBarGauge6,
+    (gslc_tsRect){95,24,93,22},0,100,0,GSLC_COL_RED,false);
+  m_overTemp = pElemRef;
+
+  // Create progress bar E_ELEM_PROGRESS4 
+  pElemRef = gslc_ElemXProgressCreate(&m_gui,E_ELEM_PROGRESS4,E_PG_MAIN,&m_sXBarGauge4,
+    (gslc_tsRect){2,2,186,22},0,100,0,GSLC_COL_RED,false);
+  m_interlock = pElemRef;
    
   // Create E_ELEM_BOX1 box
   pElemRef = gslc_ElemCreateBox(&m_gui,E_ELEM_BOX1,E_PG_MAIN,(gslc_tsRect){191,2,125,235});
@@ -188,11 +208,6 @@ void InitGUIslice_gen()
    
   // Create E_ELEM_BOX3 box
   pElemRef = gslc_ElemCreateBox(&m_gui,E_ELEM_BOX3,E_PG_MAIN,(gslc_tsRect){2,110,186,62});
-
-  // Create progress bar E_ELEM_PROGRESS4 
-  pElemRef = gslc_ElemXProgressCreate(&m_gui,E_ELEM_PROGRESS4,E_PG_MAIN,&m_sXBarGauge4,
-    (gslc_tsRect){2,2,186,44},0,100,0,GSLC_COL_RED,false);
-  m_interlock = pElemRef;
 
   // Create progress bar E_ELEM_PROGRESS1 
   pElemRef = gslc_ElemXProgressCreate(&m_gui,E_ELEM_PROGRESS1,E_PG_MAIN,&m_sXBarGauge1,
@@ -269,12 +284,6 @@ void InitGUIslice_gen()
   gslc_ElemSetClickEn(&m_gui, pElemRef, true);
   gslc_ElemSetTouchFunc(&m_gui, pElemRef, &CbBtnCommon);
   m_intensity = pElemRef;
-  
-  // Create E_ELEM_TEXT5 text label
-  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT5,E_PG_MAIN,(gslc_tsRect){30,20,124,14},
-    (char*)"INTERLOCK",0,E_FREEMONOBOLD12);
-  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
-  gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
 
   // Create seekbar E_ELEM_SEEKBAR4 
   pElemRef = gslc_ElemXSeekbarCreate(&m_gui,E_ELEM_SEEKBAR4,E_PG_MAIN,&m_sXSeekbar4,
@@ -375,6 +384,24 @@ void InitGUIslice_gen()
     (char*)"sec",0,E_FREEMONO9);
   gslc_ElemSetFillEn(&m_gui,pElemRef,false);
   gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLUE_LT3);
+  
+  // Create E_ELEM_TEXT10 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT10,E_PG_MAIN,(gslc_tsRect){18,29,55,14},
+    (char*)"FIRE",0,E_FREEMONOBOLD12);
+  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
+  
+  // Create E_ELEM_TEXT11 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT11,E_PG_MAIN,(gslc_tsRect){113,29,53,14},
+    (char*)"TEMP",0,E_FREEMONOBOLD12);
+  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
+  
+  // Create E_ELEM_TEXT5 text label
+  pElemRef = gslc_ElemCreateTxt(&m_gui,E_ELEM_TEXT5,E_PG_MAIN,(gslc_tsRect){30,5,124,14},
+    (char*)"INTERLOCK",0,E_FREEMONOBOLD12);
+  gslc_ElemSetFillEn(&m_gui,pElemRef,false);
+  gslc_ElemSetTxtCol(&m_gui,pElemRef,GSLC_COL_BLACK);
 
   // -----------------------------------
   // PAGE: E_PG2

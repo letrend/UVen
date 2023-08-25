@@ -30,11 +30,13 @@ TFT_eSPI tft;
 gslc_tsElemRef* m_chamberFanSlider= NULL;
 gslc_tsElemRef* m_drvTemp         = NULL;
 gslc_tsElemRef* m_drvTempSlider   = NULL;
+gslc_tsElemRef* m_fire            = NULL;
 gslc_tsElemRef* m_intensity       = NULL;
 gslc_tsElemRef* m_intensitySlider = NULL;
 gslc_tsElemRef* m_interlock       = NULL;
 gslc_tsElemRef* m_ledTemp         = NULL;
 gslc_tsElemRef* m_ledTempSlider   = NULL;
+gslc_tsElemRef* m_overTemp        = NULL;
 gslc_tsElemRef* m_rep             = NULL;
 gslc_tsElemRef* m_repEnable       = NULL;
 gslc_tsElemRef* m_repSec          = NULL;
@@ -73,7 +75,7 @@ SERIAL_FRAME_RX rx_serial_frame;
 EasyButton but_a(WIO_KEY_A), but_b(WIO_KEY_B), but_c(WIO_KEY_C);
 EasyButton but_up(WIO_5S_UP), but_down(WIO_5S_DOWN), but_left(WIO_5S_LEFT), but_right(WIO_5S_RIGHT), but_press(WIO_5S_PRESS);
 
-bool fire = false;
+bool fire = false, interlock = false, overTemp = false;
 
 // ------------------------------------------------
 // Callback Methods
@@ -357,7 +359,9 @@ void aPressed() {
 }
 
 void bPressed() {
-  fire = !fire;
+  if(!interlock && !overTemp){
+    fire = !fire;
+  }
 }
 
 void cPressed() {
@@ -512,8 +516,6 @@ void setup()
 // -----------------------------------
 // Main event loop
 // -----------------------------------
-int val = 0, iter = 0;
-bool toggle = true;
 
 void loop()
 {
@@ -530,8 +532,31 @@ void loop()
       
       tx_serial_frame.values.crc = crc32.calc((uint8_t const *)&tx_serial_frame.data[0], SERIAL_FRAME_TX_BUFFER_SIZE-4);
       Serial.write((char*)tx_serial_frame.data,SERIAL_FRAME_TX_BUFFER_SIZE);
+
+      interlock = (rx_serial_frame.values.status&0x1);
+      overTemp = ((rx_serial_frame.values.status>>1)&0x1);
+      gslc_ElemXProgressSetVal(&m_gui,m_interlock,(interlock?100:0));
+      gslc_ElemXProgressSetVal(&m_gui,m_overTemp,(overTemp?100:0));
+      gslc_ElemXProgressSetVal(&m_gui,m_fire,(fire?100:0));
+      if((rx_serial_frame.values.status>>1)&0x1){
+        fire = 0;
+      }
+      if(rx_serial_frame.values.drv_temp<30){
+        gslc_ElemXProgressSetGaugeCol(&m_gui,m_drvTempSlider,GSLC_COL_BLUE_LT1);
+      }else if(rx_serial_frame.values.drv_temp>30 && rx_serial_frame.values.drv_temp<70){
+        gslc_ElemXProgressSetGaugeCol(&m_gui,m_drvTempSlider,GSLC_COL_YELLOW);
+      }else{
+        gslc_ElemXProgressSetGaugeCol(&m_gui,m_drvTempSlider,GSLC_COL_RED);
+      }
+
+      if(rx_serial_frame.values.led_temp<30){
+        gslc_ElemXProgressSetGaugeCol(&m_gui,m_ledTempSlider,GSLC_COL_BLUE_LT1);
+      }else if(rx_serial_frame.values.led_temp>30 && rx_serial_frame.values.led_temp<70){
+        gslc_ElemXProgressSetGaugeCol(&m_gui,m_ledTempSlider,GSLC_COL_YELLOW);
+      }else{
+        gslc_ElemXProgressSetGaugeCol(&m_gui,m_ledTempSlider,GSLC_COL_RED);
+      }
       
-      gslc_ElemXProgressSetVal(&m_gui,m_interlock,(rx_serial_frame.values.status==1?100:0));
       gslc_ElemXProgressSetVal(&m_gui,m_drvTempSlider,rx_serial_frame.values.drv_temp);
       gslc_ElemXProgressSetVal(&m_gui,m_ledTempSlider,rx_serial_frame.values.led_temp);
       char str4[3];
@@ -539,12 +564,11 @@ void loop()
       gslc_ElemSetTxtStr(&m_gui, m_drvTemp, str4);
       sprintf(str4,"%d", (int)rx_serial_frame.values.led_temp);
       gslc_ElemSetTxtStr(&m_gui, m_ledTemp, str4);
-//      tft.fillScreen(TFT_GREEN);
     }else{
-//      tft.fillScreen(TFT_RED);
-//      char str[20];
-//      sprintf(str,"%x != %x",crc,rx_serial_frame.values.crc);
-//      tft.drawString(str, 100, 0);
+      tft.fillScreen(TFT_RED);
+      char str[20];
+      sprintf(str,"%x != %x",crc,rx_serial_frame.values.crc);
+      tft.drawString(str, 100, 0);
     }
   }
 

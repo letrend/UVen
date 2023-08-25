@@ -382,13 +382,22 @@ void loop() {
         gate_sp[i] = 2400;
       }
 
+      float error = abs(current_raw[i]-target_current[i]);
       if(current_raw[i]<target_current[i]){
         if(gate_sp[i]<4095){
-          gate_sp[i]+=1;
+          if(error>30){
+            gate_sp[i]+=100;
+          }else{
+            gate_sp[i]+=1;
+          }
         }
       }else{
         if(gate_sp[i]>0){
-          gate_sp[i]-=1;  
+          if(error>30){
+            gate_sp[i]-=100;
+          }else{
+            gate_sp[i]-=1;
+          }
         }
       }
     }
@@ -404,10 +413,14 @@ void loop() {
 
   unsigned long t1 = millis();
 
+  cool_down = false;
   for(int i=0;i<17;i++){
     temp_raw[i] = analogRead(temp_pins[i]);
     temp[i] = temp[i]*0.9+0.1*calcTemp(temp_raw[i],temp_poly);
     over_temp[i] = temp[i]>70;
+    if(over_temp[i]){
+      cool_down = true;
+    }
   }
 
   if(cool_down){
@@ -420,22 +433,31 @@ void loop() {
     cool_down = !cooled_down;
   }
 
-  bool led_fan_cooling = false;
+  int led_fan_cooling[16] = {255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255};
+  int led_fan_cooling_min = 255;
   for(int i=0;i<16;i++){
     tx.values.target_current[i] = target_current[i]*raw_current_to_mA[i];
     tx.values.current[i] = current_raw[i]*raw_current_to_mA[i];
     tx.values.gate[i] = gate_sp[i];
     tx.values.temperature[i] = temp[i];
-    if(temp[i]>35){
-      led_fan_cooling = true;
+    if(temp[i]<=24){
+      led_fan_cooling[i] = 255;
+    }else if(temp[i]>24 && temp[i]<50){
+      led_fan_cooling[i] = 255-255*(((temp[i]-24.0f)/(50.0f-24.0f)));      
+    }else{
+      led_fan_cooling[i] = 0;
+    }
+    if(led_fan_cooling[i]<led_fan_cooling_min){
+      led_fan_cooling_min = led_fan_cooling[i];
     }
   }
 
-  if(led_fan_cooling){
-    analogWrite(LED_FAN,0);
+  if(!cool_down){
+    analogWrite(LED_FAN,led_fan_cooling_min);    
   }else{
-    analogWrite(LED_FAN,255);    
+    analogWrite(LED_FAN,0);
   }
+      
 
   tx.values.temperature[16] = temp[16];
   tx.values.time = millis()-t0;
@@ -454,7 +476,7 @@ void loop() {
       tx_serial_frame.values.led_status |= ((tx.values.current[i]>10)<<i);
     }
 
-    tx_serial_frame.values.status = interlock;
+    tx_serial_frame.values.status = (cool_down<<1|interlock);
         
     tx_serial_frame.values.led_temp = average_led_temp / 16.0f;
     tx_serial_frame.values.drv_temp = temp[16];
