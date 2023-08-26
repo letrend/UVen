@@ -18,6 +18,8 @@ IPAddress staticIP{0, 0, 0, 0};//{192, 168, 1, 101};
 IPAddress subnetMask{255, 255, 255, 0};
 IPAddress gateway{192, 168, 1, 1};
 
+bool ethernet_control = false;
+
 #include "pinConfig.h"
 #include "MCP48FEB28.h"
 #include <Arduino_CRC32.h>
@@ -278,6 +280,8 @@ void processClientData(ClientState &state) {
   state.client.closeOutput();
   state.closedTime = millis();
   state.outputClosed = true;
+
+  ethernet_control = true;
 }
 
 // Main program loop.
@@ -385,16 +389,16 @@ void loop() {
       float error = abs(current_raw[i]-target_current[i]);
       if(current_raw[i]<target_current[i]){
         if(gate_sp[i]<4095){
-          if(error>30){
-            gate_sp[i]+=100;
+          if(error>40){
+            gate_sp[i]+=50;
           }else{
             gate_sp[i]+=1;
           }
         }
       }else{
         if(gate_sp[i]>0){
-          if(error>30){
-            gate_sp[i]-=100;
+          if(error>40){
+            gate_sp[i]-=50;
           }else{
             gate_sp[i]-=1;
           }
@@ -467,7 +471,7 @@ void loop() {
 
   tx.values.crc = crc32.calc((uint8_t const *)&tx.data[0], BUFFER_SIZE-4);
 
-  if(iteration++%10==0){
+  if(iteration++%10==0 && !ethernet_control){
     tx_serial_frame.values.status = 0;
 
     float average_led_temp = 0;
