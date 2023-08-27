@@ -501,8 +501,7 @@ void loop() {
         }
         target_current[i] = (int)(target_current[i])/raw_current_to_mA[i];
       }
-      analogWrite(CHAMBER_FAN,rx_serial_frame.values.chamber_fan);
-      analogWrite(LED_FAN,200);
+      analogWrite(CHAMBER_FAN,255-((float)rx_serial_frame.values.chamber_fan/100.0f*255.0f));
     }
   }
 
