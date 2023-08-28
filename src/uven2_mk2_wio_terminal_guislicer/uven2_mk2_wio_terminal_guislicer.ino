@@ -76,6 +76,7 @@ EasyButton but_a(WIO_KEY_A), but_b(WIO_KEY_B), but_c(WIO_KEY_C);
 EasyButton but_up(WIO_5S_UP), but_down(WIO_5S_DOWN), but_left(WIO_5S_LEFT), but_right(WIO_5S_RIGHT), but_press(WIO_5S_PRESS);
 
 bool fire = false, interlock = false, overTemp = false;
+int fire_time_start = 0, fire_time_elapsed = 0, fire_time_target = 0, rep_pause_time_start = 0, rep_pause_time_elapsed = 0, reps = 0;
 
 // ------------------------------------------------
 // Callback Methods
@@ -234,9 +235,9 @@ bool CbSlidePos(void* pvGui,void* pvElemRef,int16_t nPos)
 //<Tick Callback !Start!>
 //<Tick Callback !End!>
 
-int press_duration = 20, row_selected = 0, col_selected = 0;
-bool rep_enable = false;
-int drvTemp = 0, ledTemp = 0, intensity = 500, chamber_fan = 0, rep = 1, repSec = 10, minute = 0, second = 0, hour = 0;
+int press_duration = 20, row_selected = 2, col_selected = 2;
+bool rep_enable = false, rep_enabled = false;
+int drvTemp = 0, ledTemp = 0, intensity = 250, chamber_fan = 0, rep = 3, repSec = 1, minute = 0, second = 0, hour = 0;
 
 void updateMenuSelected(){
   gslc_ElemSetGlow(&m_gui, m_repEnable, false);
@@ -276,17 +277,19 @@ void updateText(){
   char str4[4];
   sprintf(str4,"%d", intensity);
   gslc_ElemSetTxtStr(&m_gui, m_intensity, str4);
-  char str2[2];
-  sprintf(str2,"%d", rep);
-  gslc_ElemSetTxtStr(&m_gui, m_rep, str2);
-  sprintf(str2,"%d", repSec);
-  gslc_ElemSetTxtStr(&m_gui, m_repSec, str2);
-  sprintf(str2,"%d", second);
-  gslc_ElemSetTxtStr(&m_gui, m_timeSec, str2);
-  sprintf(str2,"%d", minute);
-  gslc_ElemSetTxtStr(&m_gui, m_timeMin, str2);
-  sprintf(str2,"%d", hour);
-  gslc_ElemSetTxtStr(&m_gui, m_timeHour, str2);
+  if(!fire){
+    char str2[2];
+    sprintf(str2,"%d", rep);
+    gslc_ElemSetTxtStr(&m_gui, m_rep, str2);
+    sprintf(str2,"%d", repSec);
+    gslc_ElemSetTxtStr(&m_gui, m_repSec, str2);
+    sprintf(str2,"%d", second);
+    gslc_ElemSetTxtStr(&m_gui, m_timeSec, str2);
+    sprintf(str2,"%d", minute);
+    gslc_ElemSetTxtStr(&m_gui, m_timeMin, str2);
+    sprintf(str2,"%d", hour);
+    gslc_ElemSetTxtStr(&m_gui, m_timeHour, str2);
+  }
 }
 
 void aPressed() {
@@ -310,35 +313,38 @@ void aPressed() {
           break;
         }
         case 1: {
-          if(col_selected==0){
-            hour++;
-            if(hour>99){
-              hour = 99;
-            }
-          }else if(col_selected==1){
-            minute++;
-            if(minute>60){
-              minute = 0;
+          if(!fire){
+            if(col_selected==0){
               hour++;
-            }
-          }else if(col_selected==2){
-            second++;
-            if(second>60){
-              second = 0;
+              if(hour>99){
+                hour = 99;
+              }
+            }else if(col_selected==1){
               minute++;
               if(minute>60){
                 minute = 0;
                 hour++;
-                if(hour>99){
-                  hour = 99;
+              }
+            }else if(col_selected==2){
+              second++;
+              if(second>60){
+                second = 0;
+                minute++;
+                if(minute>60){
+                  minute = 0;
+                  hour++;
+                  if(hour>99){
+                    hour = 99;
+                  }
                 }
               }
             }
+            fire_time_target = hour*3600+minute*60+second;
           }
           break;
         }
         case 2:{
-          intensity+=500;
+          intensity+=250;
           if(intensity>4000){
             intensity = 4000;
           }
@@ -361,6 +367,12 @@ void aPressed() {
 void bPressed() {
   if(!interlock && !overTemp){
     fire = !fire;
+    if(fire){
+      fire_time_start = millis();
+    }
+    if(rep_enable){
+      reps = rep-1;
+    }
   }
 }
 
@@ -385,35 +397,38 @@ void cPressed() {
           break;
         }
         case 1: {
-          if(col_selected==0){
-            hour--;
-            if(hour<0){
-              hour = 0;
-            }
-          }else if(col_selected==1){
-            minute--;
-            if(minute<0){
-              minute = 0;
+          if(!fire){
+            if(col_selected==0){
               hour--;
-            }
-          }else if(col_selected==2){
-            second--;
-            if(second<0){
-              second = 0;
+              if(hour<0){
+                hour = 0;
+              }
+            }else if(col_selected==1){
               minute--;
               if(minute<0){
                 minute = 0;
                 hour--;
-                if(hour<0){
-                  hour = 0;
+              }
+            }else if(col_selected==2){
+              second--;
+              if(second<0){
+                second = 0;
+                minute--;
+                if(minute<0){
+                  minute = 0;
+                  hour--;
+                  if(hour<0){
+                    hour = 0;
+                  }
                 }
               }
             }
+            fire_time_target = hour*3600+minute*60+second;
           }
           break;
         }
         case 2:{
-          intensity-=500;
+          intensity-=250;
           if(intensity<0){
             intensity = 0;
           }
@@ -466,13 +481,12 @@ void rightPressed() {
 }
 
 void pressPressed() {
-//  Serial.println("Button press has been pressed for the given duration!");
   if(row_selected==0 && col_selected==0){
-    rep_enable = !rep_enable;
-    gslc_ElemXTogglebtnSetState(&m_gui, m_repEnable, rep_enable);
-//    Serial.println(rep_enable);
-  }
-  
+    if(second>0 || minute>0 || hour>0){
+      rep_enable = !rep_enable;
+      gslc_ElemXTogglebtnSetState(&m_gui, m_repEnable, rep_enable);
+    }
+  }  
 }
 
 void setup()
@@ -538,32 +552,32 @@ void loop()
       gslc_ElemXProgressSetVal(&m_gui,m_interlock,(interlock?100:0));
       gslc_ElemXProgressSetVal(&m_gui,m_overTemp,(overTemp?100:0));
       gslc_ElemXProgressSetVal(&m_gui,m_fire,(fire?100:0));
-      if((rx_serial_frame.values.status>>1)&0x1){
-        fire = 0;
+      if(overTemp || interlock){
+        fire = false;
       }
-      if(rx_serial_frame.values.drv_temp<30){
+      if(rx_serial_frame.values.drv_temp<=40){
         gslc_ElemXProgressSetGaugeCol(&m_gui,m_drvTempSlider,GSLC_COL_BLUE_LT1);
-      }else if(rx_serial_frame.values.drv_temp>30 && rx_serial_frame.values.drv_temp<70){
+      }else if(rx_serial_frame.values.drv_temp>40 && rx_serial_frame.values.drv_temp<70){
         gslc_ElemXProgressSetGaugeCol(&m_gui,m_drvTempSlider,GSLC_COL_YELLOW);
       }else{
         gslc_ElemXProgressSetGaugeCol(&m_gui,m_drvTempSlider,GSLC_COL_RED);
       }
 
-      if(rx_serial_frame.values.led_temp<30){
+      if(rx_serial_frame.values.led_temp<=40){
         gslc_ElemXProgressSetGaugeCol(&m_gui,m_ledTempSlider,GSLC_COL_BLUE_LT1);
-      }else if(rx_serial_frame.values.led_temp>30 && rx_serial_frame.values.led_temp<70){
+      }else if(rx_serial_frame.values.led_temp>40 && rx_serial_frame.values.led_temp<70){
         gslc_ElemXProgressSetGaugeCol(&m_gui,m_ledTempSlider,GSLC_COL_YELLOW);
       }else{
         gslc_ElemXProgressSetGaugeCol(&m_gui,m_ledTempSlider,GSLC_COL_RED);
       }
       
-      gslc_ElemXProgressSetVal(&m_gui,m_drvTempSlider,rx_serial_frame.values.drv_temp);
-      gslc_ElemXProgressSetVal(&m_gui,m_ledTempSlider,rx_serial_frame.values.led_temp);
-      char str4[3];
-      sprintf(str4,"%d", (int)rx_serial_frame.values.drv_temp);
-      gslc_ElemSetTxtStr(&m_gui, m_drvTemp, str4);
-      sprintf(str4,"%d", (int)rx_serial_frame.values.led_temp);
-      gslc_ElemSetTxtStr(&m_gui, m_ledTemp, str4);
+      gslc_ElemXProgressSetVal(&m_gui,m_drvTempSlider,(int)(rx_serial_frame.values.drv_temp>=20?rx_serial_frame.values.drv_temp:20));
+      gslc_ElemXProgressSetVal(&m_gui,m_ledTempSlider,(int)(rx_serial_frame.values.led_temp>=20?rx_serial_frame.values.led_temp:20));
+      char str3[3];
+      sprintf(str3,"%d", (int)(rx_serial_frame.values.drv_temp>=20?rx_serial_frame.values.drv_temp:20));
+      gslc_ElemSetTxtStr(&m_gui, m_drvTemp, str3);
+      sprintf(str3,"%d", (int)(rx_serial_frame.values.led_temp>=20?rx_serial_frame.values.led_temp:20));
+      gslc_ElemSetTxtStr(&m_gui, m_ledTemp, str3);
     }else{
       tft.fillScreen(TFT_RED);
       char str[20];
@@ -571,12 +585,7 @@ void loop()
       tft.drawString(str, 100, 0);
     }
   }
-
-//  static float counter = 30;
-//  char str4[3];
-//  sprintf(str4,"%d", (int)counter++);
-//  gslc_ElemSetTxtStr(&m_gui, m_drvTemp, str4);
-
+  
   // ------------------------------------------------
   // Update GUI Elements
   // ------------------------------------------------
@@ -587,6 +596,64 @@ void loop()
     aPressed();
   }else if(!digitalRead(WIO_KEY_C)){
     cPressed();
+  }
+
+  if(fire){
+    fire_time_elapsed = (millis()-fire_time_start)/1000;
+    char str2[2];
+    
+    if(fire_time_target!=0){
+      if(fire_time_elapsed>=fire_time_target){
+        fire = false;
+      }
+      int fire_time_left = fire_time_target-fire_time_elapsed;
+      int minutes_left = fire_time_left/60;
+      int hours_left = fire_time_left/60;
+      sprintf(str2,"%d", fire_time_left%60);
+      gslc_ElemSetTxtStr(&m_gui, m_timeSec, str2);
+      sprintf(str2,"%d", minutes_left%60);
+      gslc_ElemSetTxtStr(&m_gui, m_timeMin, str2);
+      sprintf(str2,"%d", hours_left%60);
+      gslc_ElemSetTxtStr(&m_gui, m_timeHour, str2);
+    }else{
+      int minutes_elapsed = fire_time_elapsed/60;
+      int hours_elapsed = minutes_elapsed/60;
+      sprintf(str2,"%d", fire_time_elapsed%60);
+      gslc_ElemSetTxtStr(&m_gui, m_timeSec, str2);
+      sprintf(str2,"%d", minutes_elapsed%60);
+      gslc_ElemSetTxtStr(&m_gui, m_timeMin, str2);
+      sprintf(str2,"%d", hours_elapsed%60);
+      gslc_ElemSetTxtStr(&m_gui, m_timeHour, str2);
+    }
+    
+    if(rep_enable && !rep_enabled){
+      rep_enabled = true;
+    }
+  }else{
+    if(rep_enable){
+      if((reps>0)){
+        if(!interlock && !overTemp){
+          if(rep_enabled){
+            rep_enabled = false;
+            rep_pause_time_start = millis();
+          }else{
+            rep_pause_time_elapsed = (millis()-rep_pause_time_start)/1000;
+            char str2[2];
+            if(rep_pause_time_elapsed>(repSec-1)){
+              reps--;
+              sprintf(str2,"%d", reps);
+              gslc_ElemSetTxtStr(&m_gui, m_rep, str2);
+              fire = true;
+              fire_time_start = millis();
+            }else{
+              sprintf(str2,"%d", rep_pause_time_elapsed);
+              gslc_ElemSetTxtStr(&m_gui, m_repSec, str2);
+            }
+          }
+        }
+      }
+    }
+    updateText();
   }
   
   // ------------------------------------------------
