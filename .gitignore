@@ -4,3 +4,7 @@ devel/
 .idea/
 #auto_saved_files#
 *-backups/
+src/uven2_mk2_wio_terminal_guislicer/gui_backup
+.vscode/
+src/light_distribution/sweep
+hardware/sbm-120-uv-copper-base-board/sbm-120-uv-single-led/
