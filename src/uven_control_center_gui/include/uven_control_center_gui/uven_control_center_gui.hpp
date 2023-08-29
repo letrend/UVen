@@ -61,7 +61,8 @@ public Q_SLOTS:;
     void target_current_changed(double value);
     void emergency_off();
     void record();
-
+    void disableALL();
+    void enableALL();
 Q_SIGNALS:
     void plotSignal();
 

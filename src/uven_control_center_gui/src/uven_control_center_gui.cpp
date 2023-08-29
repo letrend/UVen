@@ -114,8 +114,8 @@ void UVEN_CONTROL_CENTER_GUI::initPlugin(qt_gui_cpp::PluginContext &context) {
 
     current.resize(16);
     current_time.resize(16);
-    temperature.resize(16);
-    temperature_time.resize(16);
+    temperature.resize(17);
+    temperature_time.resize(17);
     gate.resize(16);
     gate_time.resize(16);
     target_current.resize(16);
@@ -127,6 +127,8 @@ void UVEN_CONTROL_CENTER_GUI::initPlugin(qt_gui_cpp::PluginContext &context) {
     QObject::connect(ui.target_current_slider, SIGNAL(valueChanged(double)), this, SLOT(target_current_changed(double)));
     QObject::connect(ui.emergency_off, SIGNAL(clicked()), this, SLOT(emergency_off()));
     QObject::connect(ui.record, SIGNAL(clicked()), this, SLOT(record()));
+    QObject::connect(ui.enableALL, SIGNAL(clicked()), this, SLOT(enableALL()));
+    QObject::connect(ui.disableALL, SIGNAL(clicked()), this, SLOT(disableALL()));
 
     if(nh->hasParam("lamp_ip") && nh->hasParam("lamp_port")){
         nh->getParam("lamp_ip",lamp_ip);
@@ -182,11 +184,56 @@ void UVEN_CONTROL_CENTER_GUI::emergency_off(){
     }
 }
 
+void UVEN_CONTROL_CENTER_GUI::disableALL(){
+    ui.enable_0->setChecked(false);
+    ui.enable_1->setChecked(false);
+    ui.enable_2->setChecked(false);
+    ui.enable_3->setChecked(false);
+    ui.enable_4->setChecked(false);
+    ui.enable_5->setChecked(false);
+    ui.enable_6->setChecked(false);
+    ui.enable_7->setChecked(false);
+    ui.enable_8->setChecked(false);
+    ui.enable_9->setChecked(false);
+    ui.enable_10->setChecked(false);
+    ui.enable_11->setChecked(false);
+    ui.enable_12->setChecked(false);
+    ui.enable_13->setChecked(false);
+    ui.enable_14->setChecked(false);
+    ui.enable_15->setChecked(false);
+}
+
+void UVEN_CONTROL_CENTER_GUI::enableALL(){
+    ui.enable_0->setChecked(true);
+    ui.enable_1->setChecked(true);
+    ui.enable_2->setChecked(true);
+    ui.enable_3->setChecked(true);
+    ui.enable_4->setChecked(true);
+    ui.enable_5->setChecked(true);
+    ui.enable_6->setChecked(true);
+    ui.enable_7->setChecked(true);
+    ui.enable_8->setChecked(true);
+    ui.enable_9->setChecked(true);
+    ui.enable_10->setChecked(true);
+    ui.enable_11->setChecked(true);
+    ui.enable_12->setChecked(true);
+    ui.enable_13->setChecked(true);
+    ui.enable_14->setChecked(true);
+    ui.enable_15->setChecked(true);
+}
+
 void UVEN_CONTROL_CENTER_GUI::record(){
     if(ui.record->isChecked()){
         ROS_INFO("record started");
-        record_file.open("uven.log",ios_base::out);
-        record_file << "time, temp_external[C], temp(0-15)[1], current(0-15)[mA]\n";
+        time_t rawtime;
+        struct tm * timeinfo;
+        char buffer[80];
+        time (&rawtime);
+        timeinfo = localtime(&rawtime);
+        strftime(buffer,sizeof(buffer),"uven_%d-%m-%Y %H:%M:%S.log",timeinfo);
+        std::string str(buffer);
+        record_file.open(buffer,ios_base::out);
+        record_file << "time, temp(0-16)[C], target_current(0-15)[mA], current(0-15)[mA], gate(0-15)[1]\n";
         record_flag = true;
     }else{
         ROS_INFO("record stopped");
@@ -202,12 +249,13 @@ void UVEN_CONTROL_CENTER_GUI::lamp_coms(){
     boost::asio::io_service ios;
     boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(lamp_ip), lamp_port);
     boost::asio::ip::tcp::socket socket(ios);
-    ros::Time t0;
+    ros::Time t0, t1, last_update = ros::Time::now();
+    
     while(ros::ok()){
         try{
+            t0 = ros::Time::now();
             socket.connect(endpoint);
             boost::system::error_code error;
-            t0 = ros::Time::now();
             socket.write_some(boost::asio::buffer(tx.data, BUFFER_SIZE), error);
             socket.read_some(boost::asio::buffer(rx.data, BUFFER_SIZE), error);
             socket.close();
@@ -235,12 +283,41 @@ void UVEN_CONTROL_CENTER_GUI::lamp_coms(){
                 target_current_time[i].pop_front();
             }
         }
+        temperature[16].push_back(rx.values.temperature[16]);
+        temperature_time[16].push_back((t0-start_time).toSec());
         temp_driver = rx.values.temperature[16];
         chamber_fan = ((int)rx.values.chamber_fan)/255.0f*100;
         led_fan = ((int)rx.values.led_fan)/255.0f*100;
-        Q_EMIT plotSignal();
         
-        rate.sleep();
+        if(record_flag){
+            t0 = ros::Time::now();
+            const auto now = std::chrono::system_clock::now();
+            record_file << std::chrono::time_point_cast<std::chrono::milliseconds>(now).time_since_epoch().count() << ", ";
+            for(int i=0;i<17;i++){
+                record_file << int(temperature[i].back()) << ", ";
+            }
+            for(int i=0;i<16;i++){
+                record_file << int(target_current[i].back()) << ", ";
+            }
+            for(int i=0;i<16;i++){
+                record_file << int(current[i].back()*1000) << ", ";
+            }
+            for(int i=0;i<16;i++){
+                record_file << int(gate[i].back());
+                if(i<15){
+                   record_file << ", ";
+                }
+            }
+            record_file << endl;
+        }
+
+        // rate.sleep();
+        t1 = ros::Time::now();
+        ROS_INFO_THROTTLE(10,"coms hz %.2f", (1.0f/(t1-t0).toSec()));
+        if((t1-last_update).toSec()>0.1){
+            Q_EMIT plotSignal();
+            last_update = ros::Time::now();
+        }
     }
 }
 
@@ -330,25 +407,6 @@ void UVEN_CONTROL_CENTER_GUI::plotData(){
 
     ui.temp_external->setValue(temp_external);
     ui.temp_driver->setValue(temp_driver);
-
-    if(record_flag){
-        static ros::Time t0 = ros::Time::now();
-        if((ros::Time::now()-t0).toSec()>1){
-            t0 = ros::Time::now();
-            const auto now = std::chrono::system_clock::now();
-            record_file << std::chrono::time_point_cast<std::chrono::milliseconds>(now).time_since_epoch().count() << ", " << temp_external << ", ";
-            for(int i=0;i<16;i++){
-                record_file << int(temperature[i].back()) << ", ";
-            }
-            for(int i=0;i<16;i++){
-                record_file << int(current[i].back()*1000);
-                if(i<15){
-                   record_file << ", ";
-                }
-            }
-            record_file << endl;
-        }
-    }
 }
 
 void UVEN_CONTROL_CENTER_GUI::shutdownPlugin() {

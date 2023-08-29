@@ -272,7 +272,18 @@ void processClientData(ClientState &state) {
   memcpy(state.tx.data,tx.data,BUFFER_SIZE);
   memcpy(rx.data,state.rx.data,BUFFER_SIZE);
   for(int i=0;i<16;i++){
-    target_current[i] = (int)(rx.values.target_current[i])/raw_current_to_mA[i]; // 800 ticks == 3850mA
+    if(rx.values.target_current[i]<0){
+      target_current[i] = 0;
+    }else if((i==0 || i==1 || i==10) & rx.values.target_current[i]>2500){
+      target_current[i] = (int)(2500.0f/raw_current_to_mA[i]);
+    }else if((i==9 || i==13 || i==14) & rx.values.target_current[i]>3300){
+      target_current[i] = (int)(3500.0f/raw_current_to_mA[i]);      
+    }else if(rx.values.target_current[i]>3500){
+      target_current[i] = (int)(3500.0f/raw_current_to_mA[i]);
+    }else{
+      target_current[i] = (int)(rx.values.target_current[i]/raw_current_to_mA[i]);
+    }
+
   }
   state.client.write((char *)state.tx.data,BUFFER_SIZE);
   state.client.flush();
@@ -417,16 +428,6 @@ void loop() {
 
   unsigned long t1 = millis();
 
-  cool_down = false;
-  for(int i=0;i<17;i++){
-    temp_raw[i] = analogRead(temp_pins[i]);
-    temp[i] = temp[i]*0.9+0.1*calcTemp(temp_raw[i],temp_poly);
-    over_temp[i] = temp[i]>70;
-    if(over_temp[i]){
-      cool_down = true;
-    }
-  }
-
   if(cool_down){
     bool cooled_down = true;
     for(int i=0;i<17;i++){
@@ -435,7 +436,20 @@ void loop() {
       }
     }
     cool_down = !cooled_down;
+  }else{
+    for(int i=0;i<17;i++){
+      if(over_temp[i]){
+        cool_down = true;
+      }
+    }
   }
+  for(int i=0;i<17;i++){
+    temp_raw[i] = analogRead(temp_pins[i]);
+    temp[i] = temp[i]*0.9+0.1*calcTemp(temp_raw[i],temp_poly);
+    over_temp[i] = temp[i]>90;
+  }
+
+  
 
   int led_fan_cooling[16] = {255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255};
   int led_fan_cooling_min = 255;
@@ -446,8 +460,8 @@ void loop() {
     tx.values.temperature[i] = temp[i];
     if(temp[i]<=24){
       led_fan_cooling[i] = 255;
-    }else if(temp[i]>24 && temp[i]<50){
-      led_fan_cooling[i] = 255-255*(((temp[i]-24.0f)/(50.0f-24.0f)));      
+    }else if(temp[i]>24 && temp[i]<40){
+      led_fan_cooling[i] = 255-255*(((temp[i]-24.0f)/(40.0f-24.0f)));      
     }else{
       led_fan_cooling[i] = 0;
     }
@@ -493,12 +507,16 @@ void loop() {
     if(crc==rx_serial_frame.values.crc){
       for(int i=0;i<16;i++){
         target_current[i] = rx_serial_frame.values.target_current;
-        if(target_current[i]>4000){
-          target_current[i] = 4000;
-        }
         if(target_current[i]<0){
           target_current[i] = 0;
+        }else if((i==0 || i==1 || i==10) && target_current[i]>2500){  // current limit too sensitive for led 0+1+10, we threshold here. this should really be dealt with in hardware
+          target_current[i] = 2500;
+        }else if((i==9 || i==13 || i==14) && target_current[i]>3300){  // same for these
+          target_current[i] = 3300;
+        }else if(target_current[i]>3500){
+          target_current[i] = 3500;
         }
+        
         target_current[i] = (int)(target_current[i])/raw_current_to_mA[i];
       }
       analogWrite(CHAMBER_FAN,255-((float)rx_serial_frame.values.chamber_fan/100.0f*255.0f));
@@ -538,7 +556,7 @@ void loop() {
       }
 
       processClientData(state);
-      analogWrite(LED_FAN,255-rx.values.led_fan);
+      //analogWrite(LED_FAN,255-rx.values.led_fan);
       analogWrite(CHAMBER_FAN,255-rx.values.chamber_fan);
     }
     

@@ -1944,6 +1944,32 @@
       </widget>
      </widget>
     </widget>
+    <widget class="QPushButton" name="enableALL">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>0</y>
+       <width>89</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>enable ALL</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="disableALL">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>89</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>disable ALL</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -3689,6 +3715,9 @@
     </property>
    </widget>
    <widget class="QwtSlider" name="led_fan_slider">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>0</x>
