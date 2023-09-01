@@ -277,7 +277,7 @@ void processClientData(ClientState &state) {
     }else if((i==0 || i==1 || i==10) & rx.values.target_current[i]>2500){
       target_current[i] = (int)(2500.0f/raw_current_to_mA[i]);
     }else if((i==9 || i==13 || i==14) & rx.values.target_current[i]>3300){
-      target_current[i] = (int)(3500.0f/raw_current_to_mA[i]);      
+      target_current[i] = (int)(3300.0f/raw_current_to_mA[i]);      
     }else if(rx.values.target_current[i]>3500){
       target_current[i] = (int)(3500.0f/raw_current_to_mA[i]);
     }else{
@@ -405,6 +405,9 @@ void loop() {
           }else{
             gate_sp[i]+=1;
           }
+          if(gate_sp[i]>4095){
+            gate_sp[i]=4095;
+          }
         }
       }else{
         if(gate_sp[i]>0){
@@ -412,6 +415,9 @@ void loop() {
             gate_sp[i]-=50;
           }else{
             gate_sp[i]-=1;
+          }
+          if(gate_sp[i]<0){
+            gate_sp[i]=0;
           }
         }
       }
