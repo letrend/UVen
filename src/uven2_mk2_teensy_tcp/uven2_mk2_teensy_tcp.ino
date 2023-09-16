@@ -125,8 +125,17 @@ int32_t temp_raw[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 float temp[17] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 uint32_t iteration = 0;
 
+// // Berlin
+// const float raw_current_to_mA[16] = {
+//           2810.0f/830.0f,2760.0f/830.0f,4000.0f/836.0f,4000.0f/836.0f,
+//           4000.0f/834.0f,4000.0f/830.0f,4000.0f/834.0f,4000.0f/822.0f,
+//           4000.0f/827.0f,4000.0f/830.0f,4000.0f/830.0f,4000.0f/836.0f,
+//           4000.0f/830.0f,4000.0f/830.0f,4000.0f/830.0f,4000.0f/822.0f
+//           };
+
+// Munich
 const float raw_current_to_mA[16] = {
-          2810.0f/830.0f,2760.0f/830.0f,4000.0f/836.0f,4000.0f/836.0f,
+          4000.0f/830.0f,4000.0f/830.0f,4000.0f/836.0f,4000.0f/836.0f,
           4000.0f/834.0f,4000.0f/830.0f,4000.0f/834.0f,4000.0f/822.0f,
           4000.0f/827.0f,4000.0f/830.0f,4000.0f/830.0f,4000.0f/836.0f,
           4000.0f/830.0f,4000.0f/830.0f,4000.0f/830.0f,4000.0f/822.0f
@@ -274,12 +283,12 @@ void processClientData(ClientState &state) {
   for(int i=0;i<16;i++){
     if(rx.values.target_current[i]<0){
       target_current[i] = 0;
-    }else if((i==0 || i==1 || i==10) & rx.values.target_current[i]>2500){
-      target_current[i] = (int)(2500.0f/raw_current_to_mA[i]);
-    }else if((i==9 || i==13 || i==14) & rx.values.target_current[i]>3300){
-      target_current[i] = (int)(3300.0f/raw_current_to_mA[i]);      
-    }else if(rx.values.target_current[i]>3500){
-      target_current[i] = (int)(3500.0f/raw_current_to_mA[i]);
+    // }else if((i==0 || i==1 || i==10) & rx.values.target_current[i]>2500){
+    //   target_current[i] = (int)(2500.0f/raw_current_to_mA[i]);
+    // }else if((i==9 || i==13 || i==14) & rx.values.target_current[i]>3300){
+    //   target_current[i] = (int)(3300.0f/raw_current_to_mA[i]);      
+    }else if(rx.values.target_current[i]>4000){
+      target_current[i] = (int)(4000.0f/raw_current_to_mA[i]);
     }else{
       target_current[i] = (int)(rx.values.target_current[i]/raw_current_to_mA[i]);
     }
@@ -515,12 +524,12 @@ void loop() {
         target_current[i] = rx_serial_frame.values.target_current;
         if(target_current[i]<0){
           target_current[i] = 0;
-        }else if((i==0 || i==1 || i==10) && target_current[i]>2500){  // current limit too sensitive for led 0+1+10, we threshold here. this should really be dealt with in hardware
-          target_current[i] = 2500;
-        }else if((i==9 || i==13 || i==14) && target_current[i]>3300){  // same for these
-          target_current[i] = 3300;
-        }else if(target_current[i]>3500){
-          target_current[i] = 3500;
+        // }else if((i==0 || i==1 || i==10) && target_current[i]>2500){  // current limit too sensitive for led 0+1+10, we threshold here. this should really be dealt with in hardware
+        //   target_current[i] = 2500;
+        // }else if((i==9 || i==13 || i==14) && target_current[i]>3300){  // same for these
+        //   target_current[i] = 3300;
+        }else if(target_current[i]>4000){
+          target_current[i] = 4000;
         }
         
         target_current[i] = (int)(target_current[i])/raw_current_to_mA[i];
