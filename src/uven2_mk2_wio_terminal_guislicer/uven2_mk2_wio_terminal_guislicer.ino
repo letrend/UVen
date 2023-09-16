@@ -237,7 +237,7 @@ bool CbSlidePos(void* pvGui,void* pvElemRef,int16_t nPos)
 
 int press_duration = 20, row_selected = 2, col_selected = 2;
 bool rep_enable = false, rep_enabled = false;
-int drvTemp = 0, ledTemp = 0, intensity = 350, chamber_fan = 0, rep = 3, repSec = 1, minute = 0, second = 0, hour = 0;
+int drvTemp = 0, ledTemp = 0, intensity = 250, chamber_fan = 0, rep = 3, repSec = 1, minute = 0, second = 0, hour = 0;
 
 void updateMenuSelected(){
   gslc_ElemSetGlow(&m_gui, m_repEnable, false);
@@ -275,7 +275,7 @@ void updateMenuSelected(){
 
 void updateText(){
   char str4[4];
-  sprintf(str4,"%d", intensity/35);
+  sprintf(str4,"%d", intensity/40);
   gslc_ElemSetTxtStr(&m_gui, m_intensity, str4);
   if(!fire){
     char str2[2];
@@ -347,11 +347,11 @@ void aPressed() {
           break;
         }
         case 2:{
-          intensity+=350;
-          if(intensity>3500){
-            intensity = 3500;
+          intensity+=250;
+          if(intensity>4000){
+            intensity = 4000;
           }
-          gslc_ElemXSeekbarSetPos(&m_gui, m_intensitySlider, (int16_t)intensity/35);
+          gslc_ElemXSeekbarSetPos(&m_gui, m_intensitySlider, (int16_t)intensity/40);
           break;
         }
         case 3:{
@@ -431,11 +431,11 @@ void cPressed() {
           break;
         }
         case 2:{
-          intensity-=350;
+          intensity-=250;
           if(intensity<0){
             intensity = 0;
           }
-          gslc_ElemXSeekbarSetPos(&m_gui, m_intensitySlider, (int16_t)intensity/35);
+          gslc_ElemXSeekbarSetPos(&m_gui, m_intensitySlider, (int16_t)intensity/40);
           break;
         }
         case 3:{
