@@ -275,7 +275,7 @@ void updateMenuSelected(){
 
 void updateText(){
   char str4[4];
-  sprintf(str4,"%d", intensity/40);
+  sprintf(str4,"%d", intensity/35);
   gslc_ElemSetTxtStr(&m_gui, m_intensity, str4);
   if(!fire){
     char str2[2];
@@ -348,10 +348,10 @@ void aPressed() {
         }
         case 2:{
           intensity+=250;
-          if(intensity>4000){
-            intensity = 4000;
+          if(intensity>3500){
+            intensity = 3500;
           }
-          gslc_ElemXSeekbarSetPos(&m_gui, m_intensitySlider, (int16_t)intensity/40);
+          gslc_ElemXSeekbarSetPos(&m_gui, m_intensitySlider, (int16_t)intensity/35);
           break;
         }
         case 3:{
@@ -435,7 +435,7 @@ void cPressed() {
           if(intensity<0){
             intensity = 0;
           }
-          gslc_ElemXSeekbarSetPos(&m_gui, m_intensitySlider, (int16_t)intensity/40);
+          gslc_ElemXSeekbarSetPos(&m_gui, m_intensitySlider, (int16_t)intensity/35);
           break;
         }
         case 3:{
