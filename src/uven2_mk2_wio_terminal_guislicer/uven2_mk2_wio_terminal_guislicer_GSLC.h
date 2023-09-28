@@ -287,7 +287,7 @@ void InitGUIslice_gen()
 
   // Create seekbar E_ELEM_SEEKBAR4 
   pElemRef = gslc_ElemXSeekbarCreate(&m_gui,E_ELEM_SEEKBAR4,E_PG_MAIN,&m_sXSeekbar4,
-    (gslc_tsRect){10,140,175,30},0,108,20,
+    (gslc_tsRect){10,140,175,30},0,108,100,
     10,2,12,((gslc_tsColor){0,255,238}),GSLC_COL_GRAY,GSLC_COL_BLUE_DK2,false);
   gslc_ElemXSeekbarSetPosFunc(&m_gui,pElemRef,&CbSlidePos);
   gslc_ElemXSeekbarSetStyle(&m_gui,pElemRef,true,GSLC_COL_BLUE_LT4,true,GSLC_COL_GRAY,
