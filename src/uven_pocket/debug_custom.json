@@ -1,7 +1,0 @@
-{
-
-      "servertype": "JLink",     
-      "device": "ATSAM3X8E",
-      "interface": "SWD",
-      "serverpath": "/opt/SEGGER/JLink/JLinkGDBServer"
-}

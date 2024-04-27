@@ -1,4 +1,0 @@
-(sym_lib_table
-  (lib (name "uven-mainboard-rescue")(type "Legacy")(uri "${KIPRJMOD}/uven-mainboard-rescue.lib")(options "")(descr ""))
-  (lib (name "custom")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/custom.kicad_sym")(options "")(descr ""))
-)
