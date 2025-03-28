@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "LM3409QMY_NOPB")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/LM3409QMY_NOPB.kicad_sym")(options "")(descr ""))
+)
