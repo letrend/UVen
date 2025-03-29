@@ -2,5 +2,6 @@
   (version 7)
   (lib (name "LM3409QMY_NOPB")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/LM3409QMY_NOPB.kicad_sym")(options "")(descr ""))
   (lib (name "SBT-10X-UV-A120-AH380-22")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/SBT-10X-UV-A120-AH380-22.kicad_sym")(options "")(descr ""))
-  (lib (name "SS34")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/SS34.kicad_sym")(options "")(descr ""))
+  (lib (name "SS54-HF")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/SS54-HF.kicad_sym")(options "")(descr ""))
+  (lib (name "16SVP3R3M")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/16SVP3R3M.kicad_sym")(options "")(descr ""))
 )
