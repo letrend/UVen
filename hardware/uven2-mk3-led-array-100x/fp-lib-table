@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "custom_lib")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/custom_modules/custom_lib.pretty")(options "")(descr ""))
+)
