@@ -3,4 +3,5 @@
   (lib (name "custom")(type "Legacy")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/custom.lib")(options "")(descr ""))
   (lib (name "SBT-10X-UV-A120-AH380-22")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/SBT-10X-UV-A120-AH380-22.kicad_sym")(options "")(descr ""))
   (lib (name "TSM-150-01-S-DH")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/TSM-150-01-S-DH.kicad_sym")(options "")(descr ""))
+  (lib (name "TSM-104-01-L-DH")(type "KiCad")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/TSM-104-01-L-DH.kicad_sym")(options "")(descr ""))
 )
