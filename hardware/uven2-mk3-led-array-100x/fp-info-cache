@@ -1,4 +1,4 @@
-22691434112508805
+22694937550438321
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -92609,6 +92609,20 @@ translated Allegro footprint
 0
 36
 36
+custom_lib
+SAMTEC_TSM-104-01-L-DH
+
+
+0
+8
+8
+custom_lib
+SAMTEC_TSM-150-01-S-DH
+
+
+0
+100
+100
 custom_lib
 SBM-120-UV
 
