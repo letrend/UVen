@@ -426,7 +426,7 @@
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "uven2-mk3-led-array-100x.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""
