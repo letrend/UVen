@@ -1,3 +1,5 @@
 (sym_lib_table
-  (lib (name custom)(type Legacy)(uri /home/letrend/workspace/uven/hardware/kicad_db/lib/custom.lib)(options "")(descr ""))
+  (version 7)
+  (lib (name "custom")(type "Legacy")(uri "/home/letrend/workspace/uven/hardware/kicad_db/lib/custom.lib")(options "")(descr ""))
+  (lib (name "MTSM340UV2-F5120S-current-driver-rescue")(type "KiCad")(uri "${KIPRJMOD}/MTSM340UV2-F5120S-current-driver-rescue.kicad_sym")(options "")(descr ""))
 )
