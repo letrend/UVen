@@ -5,15 +5,21 @@ import struct
 import numpy as np
 import matplotlib.pyplot as plt
 
+# -----------------------------
+# CONFIG
+# -----------------------------
+DISABLE_CENTER_LED = False  # <-- toggle this to enable/disable the center LED (ring 0)
+
 
 # -----------------------------
 # 1) LED positions from ring config (KiCad logic)
 # -----------------------------
 
-def generate_led_positions():
+def generate_led_positions(disable_center_led=False):
     """
     Recreate the KiCad ring placement and return a list of
     (ref, x_mm, y_mm, angle_deg) for D1..D100.
+    Optionally skip the center LED (ring_index == 0).
     """
 
     # Same as in your KiCad script
@@ -37,6 +43,12 @@ def generate_led_positions():
         radius_mm = ring_index * ring_spacing_mm
 
         for i in range(led_count):
+            # If we want to disable the center LED, skip ring 0 entirely
+            if disable_center_led and ring_index == 0:
+                # Still advance ref_counter so references match the PCB (D1 is “missing”)
+                ref_counter += 1
+                continue
+
             angle_rad = -2.0 * math.pi * i / float(led_count)
             angle_deg = -math.degrees(angle_rad)
 
@@ -136,17 +148,31 @@ def propagate_to_plane(rays, distance_mm):
 # -----------------------------
 
 def plot_and_save_heatmap(x, y, flux, distance_mm, bins=400,
-                          outfile_prefix="array_irradiance"):
+                          outfile_prefix="array_irradiance",
+                          window_mm=150.0,
+                          center_x_mm=100.0,
+                          center_y_mm=111.0):
     """
-    Plot 2D heatmap using numpy histogram2d and matplotlib.
-    Overlay the distance in the plot and save to PNG.
+    Plot 2D heatmap cropped to a fixed physical window (e.g. 150 mm × 150 mm),
+    recentered so that the center LED is at (0, 0).
+
+    x, y are in mm in the original PCB coordinate system.
+    center_x_mm, center_y_mm define the center LED position in that system.
     """
-    margin = 0.01
-    xmin, xmax = np.percentile(x, [margin * 100.0, (1.0 - margin) * 100.0])
-    ymin, ymax = np.percentile(y, [margin * 100.0, (1.0 - margin) * 100.0])
+
+    # Recenter: center LED goes to (0, 0)
+    x_centered = x - center_x_mm
+    y_centered = y - center_y_mm
+
+    half = window_mm / 2.0
+
+    # Fixed window: 150 mm × 150 mm around the center LED
+    xmin, xmax = -half, half
+    ymin, ymax = -half, half
 
     H, xe, ye = np.histogram2d(
-        x, y, bins=bins, range=[[xmin, xmax], [ymin, ymax]], weights=flux
+        x_centered,
+        y_centered, bins=bins, range=[[xmin, xmax], [ymin, ymax]], weights=flux
     )
 
     fig, ax = plt.subplots(figsize=(7, 6))
@@ -155,17 +181,22 @@ def plot_and_save_heatmap(x, y, flux, distance_mm, bins=400,
         origin="lower",
         extent=[xe[0], xe[-1], ye[0], ye[-1]],
         aspect="equal",
+        cmap="jet"  
     )
     cbar = fig.colorbar(im, ax=ax)
     cbar.set_label("Irradiance (arb units)")
     ax.set_xlabel("x (mm)")
     ax.set_ylabel("y (mm)")
-    ax.set_title("UVEN2 mk3 SBT-10X Array of 100 LEDs at z = {} mm".format(distance_mm))
+    if DISABLE_CENTER_LED:
+        ax.set_title("UVEN2 mk3 100x SBT-10X LEDs (no center) at z = {} mm".format(distance_mm))
+    else:
+        ax.set_title("UVEN2 mk3 100x SBT-10X LEDs at z = {} mm".format(distance_mm))
 
     plt.tight_layout()
 
     # Save to PNG
-    filename = "{}_{:02d}mm.png".format(outfile_prefix, int(distance_mm))
+    suffix = "no_center" if DISABLE_CENTER_LED else "all"
+    filename = "{}_{}_{}mm.png".format(outfile_prefix, suffix, int(distance_mm))
     plt.savefig(filename, dpi=200)
     plt.close(fig)
     print("Saved:", filename)
@@ -177,13 +208,11 @@ def plot_and_save_heatmap(x, y, flux, distance_mm, bins=400,
 
 def main():
     # Path to your single LED Zemax SDF file
-    sdf_path = "SBT-10_1000mA_#1-20200526-1_175000_100000Rays_ZEMAX.sdf"  # change if needed
-    # sdf_path = "SBT-10_1000mA_#1-20200526-1_175000_1000000Rays_ZEMAX.sdf"  # change if needed
-    # sdf_path = "SBT-10_1000mA_#1-20200526-1_175000_5000000Rays_ZEMAX.sdf"  # change if needed
+    sdf_path = "SBT-10_1000mA_#1-20200526-1_175000_5000000Rays_ZEMAX.sdf"  # change if needed
 
     # 1) LED positions from the KiCad ring script
-    led_positions = generate_led_positions()
-    print("Number of LEDs:", len(led_positions))
+    led_positions = generate_led_positions(disable_center_led=DISABLE_CENTER_LED)
+    print("Number of LEDs used in simulation:", len(led_positions))
 
     # 2) Load single LED ray data once
     rays = load_sdf(sdf_path)
