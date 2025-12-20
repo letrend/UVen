@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 # -----------------------------
 # ABSOLUTE POWER CONFIG
 # -----------------------------
-LED_CURRENT_A = 2.15
+LED_CURRENT_A = 2.5
 
 # Datasheet typical radiometric flux at 1.0 A for 365 nm is often used as the baseline.
 # If you prefer guaranteed minimum bin flux at 1 A, replace 1.6 with 1.3.
@@ -147,7 +147,7 @@ def plot_heatmap_absolute_irradiance(x, y, flux_W, bins=200,
     plt.ylabel("y (mm)")
     plt.title(title)
     plt.tight_layout()
-    plt.show()
+    # plt.show()
 
     plt.savefig(filename, dpi=200)
     plt.close()
@@ -177,7 +177,7 @@ if __name__ == "__main__":
         y_plane,
         flux_W,
         bins=300,
-        title="Absolute irradiance at 10 mm (single LED, 2.15 A)",
+        title="Absolute irradiance at 10 mm (single LED, {:.2f} A)".format(LED_CURRENT_A),
         cmap="jet",
         filename="irradiance_single_led_10mm.png"
     )
