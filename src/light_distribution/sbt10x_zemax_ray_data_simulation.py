@@ -14,18 +14,27 @@ LED_CURRENT_A = 2.5
 # If you prefer guaranteed minimum bin flux at 1 A, replace 1.6 with 1.3.
 LED_FLUX_AT_1A_W = 1.6
 
-# Choose how to map current -> radiometric flux:
-#  - "linear": flux scales linearly with current (default)
-#  - "fixed": use LED_FLUX_AT_DRIVE_W exactly (e.g., from measurement)
-FLUX_MODEL = "linear"
-LED_FLUX_AT_DRIVE_W = 3.44  # only used when FLUX_MODEL == "fixed"
+def relative_flux_factor_365nm(current_a):
+    """
+    Relative radiometric flux vs current for SBT-10X 365 nm,
+    extracted from datasheet curve (Tc=25C, pulsed).
+    Returns φ / φ(1A).
+    """
+    # Datasheet-derived anchor points
+    currents = np.array([1.0, 1.5, 2.0, 2.5, 3.0, 4.0])
+    rel_flux = np.array([1.0, 1.55, 1.95, 2.4, 2.7, 3.4])
 
+    # Clamp outside range
+    if current_a <= currents[0]:
+        return rel_flux[0]
+    if current_a >= currents[-1]:
+        return rel_flux[-1]
 
-def radiometric_flux_at_drive(current_a):
-    if FLUX_MODEL == "fixed":
-        return float(LED_FLUX_AT_DRIVE_W)
-    # linear model
-    return float(LED_FLUX_AT_1A_W) * float(current_a)
+    # Linear interpolation between points
+    return float(np.interp(current_a, currents, rel_flux))
+
+REL_FACTOR = relative_flux_factor_365nm(LED_CURRENT_A)
+LED_FLUX_PER_LED_W = LED_FLUX_AT_1A_W * REL_FACTOR
 
 
 def load_sdf(filename):
@@ -108,14 +117,29 @@ def propagate_to_plane(rays, distance_mm=10.0):
 
     return x_plane, y_plane, flux_W
 
+def aperture_average_W_per_cm2(H_W_per_cm2, xmin, xmax, ymin, ymax, radius_mm=5.0):
+    """
+    H_W_per_cm2: 2D array of irradiance in W/cm^2 (shape: [bins_y, bins_x] or similar)
+    extent is [xmin,xmax] and [ymin,ymax] in mm, centered such that (0,0) is LED center.
+    radius_mm: aperture radius (5 mm for 10 mm diameter)
+    """
+    ny, nx = H_W_per_cm2.shape
+    xs = np.linspace(xmin, xmax, nx, endpoint=False) + (xmax - xmin) / nx / 2.0
+    ys = np.linspace(ymin, ymax, ny, endpoint=False) + (ymax - ymin) / ny / 2.0
+    X, Y = np.meshgrid(xs, ys)
+
+    mask = (X**2 + Y**2) <= radius_mm**2
+    return float(np.mean(H_W_per_cm2[mask]))
 
 def plot_heatmap_absolute_irradiance(x, y, flux_W, bins=200,
                                      title="Irradiance",
                                      cmap="jet",
-                                     filename="irradiance_single_led_10mm.png"):
+                                     filename="irradiance_single_led_10mm.png",
+                                     aperture_radius_mm=5.0):
     """
     Builds a 2D histogram in absolute watts per bin, converts to irradiance (W/cm^2),
-    and saves a heatmap PNG.
+    computes peak irradiance and aperture-averaged meter reading,
+    overlays both on the plot, and saves a PNG.
     """
 
     margin = 0.02
@@ -132,28 +156,62 @@ def plot_heatmap_absolute_irradiance(x, y, flux_W, bins=200,
     bin_area_mm2 = dx_mm * dy_mm
 
     H_W_per_mm2 = H_W / bin_area_mm2
-    H_W_per_cm2 = H_W_per_mm2 * 100.0  # mm^2 -> cm^2
+    H_W_per_cm2 = H_W_per_mm2 * 100.0  # mm² → cm²
 
-    plt.figure(figsize=(6, 5))
-    plt.imshow(
+    # -----------------------------
+    # Peak + meter-equivalent reading
+    # -----------------------------
+    peak_irradiance = np.max(H_W_per_cm2)
+
+    ny, nx = H_W_per_cm2.shape
+    xs = np.linspace(xmin, xmax, nx, endpoint=False) + dx_mm / 2.0
+    ys = np.linspace(ymin, ymax, ny, endpoint=False) + dy_mm / 2.0
+    X, Y = np.meshgrid(xs, ys)
+
+    mask = (X**2 + Y**2) <= aperture_radius_mm**2
+    meter_irradiance = float(np.mean(H_W_per_cm2[mask]))  # W/cm²
+
+    # -----------------------------
+    # Plot
+    # -----------------------------
+    fig, ax = plt.subplots(figsize=(6, 5))
+    im = ax.imshow(
         H_W_per_cm2.T,
         origin="lower",
-        extent=[xe[0], xe[-1], ye[0], ye[-1]],
+        extent=[xmin, xmax, ymin, ymax],
         aspect="equal",
         cmap=cmap
     )
-    plt.colorbar(label="Irradiance (W/cm²)")
-    plt.xlabel("x (mm)")
-    plt.ylabel("y (mm)")
-    plt.title(title)
-    plt.tight_layout()
-    # plt.show()
+    cbar = fig.colorbar(im, ax=ax)
+    cbar.set_label("Irradiance (W/cm²)")
 
+    ax.set_xlabel("x (mm)")
+    ax.set_ylabel("y (mm)")
+    ax.set_title(title)
+
+    # Overlay text box (top-left)
+    ax.text(
+        0.02, 0.98,
+        "Peak: {:.3f} W/cm²\n"
+        "LS128 (Ø10 mm): {:.0f} mW/cm²".format(
+            peak_irradiance,
+            meter_irradiance * 1000.0
+        ),
+        transform=ax.transAxes,
+        fontsize=10,
+        va="top",
+        bbox=dict(boxstyle="round", facecolor="white", alpha=0.8)
+    )
+
+    plt.tight_layout()
     plt.savefig(filename, dpi=200)
     plt.close()
 
     print("Saved:", filename)
-    print("Peak irradiance: {:.6f} W/cm²".format(np.max(H_W_per_cm2)))
+    print("Peak irradiance: {:.6f} W/cm²".format(peak_irradiance))
+    print("Meter reading (Ø10 mm): {:.1f} mW/cm²".format(meter_irradiance * 1000.0))
+
+    return peak_irradiance, meter_irradiance
 
 
 if __name__ == "__main__":
@@ -163,7 +221,7 @@ if __name__ == "__main__":
     print("Loaded rays:", rays.shape)
 
     # Convert SDF weights -> absolute watts at your drive current
-    led_flux_w = radiometric_flux_at_drive(LED_CURRENT_A)
+    led_flux_w = LED_FLUX_PER_LED_W
     print("Assumed radiometric flux per LED at {:.2f} A: {:.3f} W".format(LED_CURRENT_A, led_flux_w))
 
     rays_W = scale_flux_to_absolute_watts(rays, led_flux_w)
@@ -179,5 +237,6 @@ if __name__ == "__main__":
         bins=300,
         title="Absolute irradiance at 10 mm (single LED, {:.2f} A)".format(LED_CURRENT_A),
         cmap="jet",
-        filename="irradiance_single_led_10mm.png"
+        filename="irradiance_single_led_10mm.png",
+        aperture_radius_mm=5.0
     )
