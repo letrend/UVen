@@ -1,12 +1,12 @@
-%TF.GenerationSoftware,KiCad,Pcbnew,7.0.11-7.0.11~ubuntu20.04.1*%
-%TF.CreationDate,2025-11-23T21:37:55+01:00*%
+%TF.GenerationSoftware,KiCad,Pcbnew,7.0.11*%
+%TF.CreationDate,2026-01-16T07:48:59+01:00*%
 %TF.ProjectId,uven2-mk3-led-array-100x,7576656e-322d-46d6-9b33-2d6c65642d61,rev?*%
 %TF.SameCoordinates,Original*%
 %TF.FileFunction,Copper,L1,Top*%
 %TF.FilePolarity,Positive*%
 %FSLAX46Y46*%
 G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
-G04 Created by KiCad (PCBNEW 7.0.11-7.0.11~ubuntu20.04.1) date 2025-11-23 21:37:55*
+G04 Created by KiCad (PCBNEW 7.0.11) date 2026-01-16 07:48:59*
 %MOMM*%
 %LPD*%
 G01*
